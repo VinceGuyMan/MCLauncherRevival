@@ -2,6 +2,10 @@
 
 ## Unreleased / v0.1.0-alpha prep
 
+- Fixed Windows 7 Java dependency setup by forcing TLS 1.2 before downloading Temurin 8 from
+  Adoptium.
+- Improved JDK setup fallback behavior so an existing `tools\jdk8` install or local
+  `tools\temurin8-jdk.zip` is used before downloading again.
 - Rebuilt the February 2011-style launcher as a small Java launcher compiled as Java 7 bytecode.
 - Added Windows XP offline/classic mode support.
 - Replaced legacy Mojang username/password login with Microsoft browser OAuth.

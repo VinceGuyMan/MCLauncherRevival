@@ -43,6 +43,8 @@ build-win7.cmd
 ## Notes
 
 - Java 8 is recommended on Windows 7 and newer.
+- Windows 7 dependency setup forces TLS 1.2 for the Temurin 8 download and will reuse
+  `tools\jdk8` or `tools\temurin8-jdk.zip` if either is already present.
 - Windows XP is supported for offline/classic play with Java 7 or an XP-compatible Java 8 build.
 - The launcher never asks for a raw Microsoft password.
 - If the jar is missing, `run-win7.cmd` will attempt to build it.

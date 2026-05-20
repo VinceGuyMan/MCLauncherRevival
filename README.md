@@ -60,7 +60,7 @@ Use the attached ZIP from the GitHub Releases page. Do not use GitHub's green
 The current alpha package is:
 
 ```text
-MCLauncherRevival-v0.2.0-alpha.zip
+MCLauncherRevival-v0.2.5.zip
 ```
 
 After extracting the release ZIP on Windows, run:

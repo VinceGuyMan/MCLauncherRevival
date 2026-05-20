@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.2.5
 
 - Added preliminary Linux `run-linux.sh` and `build-linux.sh` wrappers.
 - Added Linux compatibility documentation with honest testing limits and runtime requirements.

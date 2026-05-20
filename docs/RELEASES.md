@@ -7,10 +7,10 @@ Alpha releases are distributed as attached ZIP files on GitHub Releases.
 Use the attached release ZIP, not GitHub's green **Code -> Download ZIP** source archive. The source
 archive is useful for code review, but it is not the same as the runnable release package.
 
-For `v0.2.0-alpha`, download:
+For `v0.2.5`, download:
 
 ```text
-MCLauncherRevival-v0.2.0-alpha.zip
+MCLauncherRevival-v0.2.5.zip
 ```
 
 Extract it, then double-click:
@@ -30,7 +30,7 @@ Start MCLauncherRevival XP Offline.cmd
 Recommended release zip layout:
 
 ```text
-MCLauncherRevival-v0.2.0-alpha/
+MCLauncherRevival-v0.2.5/
   Start MCLauncherRevival.cmd
   Start MCLauncherRevival XP Offline.cmd
   run-win7.cmd

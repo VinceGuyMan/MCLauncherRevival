@@ -27,6 +27,7 @@ if exist MCLauncherRevival.jar (
 
 if not defined JAVA_EXE goto NEED_JAVA
 
+if /I "%JAVA_SOURCE%"=="java7" echo Using bundled Java runtime: tools\java7
 echo Java runtime found: %JAVA_EXE%
 "%JAVA_EXE%" %MCLAUNCHER_JAVA_OPTS% -jar MCLauncherRevival.jar
 if errorlevel 1 (
@@ -38,7 +39,9 @@ exit /b 0
 :NEED_JAVA
 echo Java runtime not found.
 if /I "%MCLAUNCHER_XP_MODE%"=="1" (
-  echo Windows XP offline/classic mode needs Java 7 or an XP-compatible Java 8 runtime already installed or extracted at tools\jdk8.
+  echo Windows XP offline/classic mode needs Java 7 or an XP-compatible Java 8 runtime.
+  echo Use the XP bundled-Java release package, or place Java at tools\java7.
+  echo Expected runtime path: tools\java7\bin\java.exe
   pause
   exit /b 1
 )
@@ -71,6 +74,7 @@ if not defined JAVA_EXE (
   pause
   exit /b 1
 )
+if /I "%JAVA_SOURCE%"=="java7" echo Using bundled Java runtime: tools\java7
 echo Java runtime found: %JAVA_EXE%
 "%JAVA_EXE%" %MCLAUNCHER_JAVA_OPTS% -jar MCLauncherRevival.jar
 if errorlevel 1 (
@@ -81,10 +85,21 @@ exit /b 0
 
 :FindJava
 set "JAVA_EXE="
+set "JAVA_SOURCE="
+if /I "%MCLAUNCHER_XP_MODE%"=="1" (
+  if exist "%~dp0tools\java7\bin\java.exe" (
+    set "JAVA_HOME=%~dp0tools\java7"
+    set "PATH=%~dp0tools\java7\bin;%PATH%"
+    set "JAVA_EXE=%~dp0tools\java7\bin\java.exe"
+    set "JAVA_SOURCE=java7"
+  )
+)
 if exist "%~dp0tools\jdk8\bin\java.exe" (
-  set "JAVA_HOME=%~dp0tools\jdk8"
-  set "PATH=%~dp0tools\jdk8\bin;%PATH%"
-  set "JAVA_EXE=%~dp0tools\jdk8\bin\java.exe"
+  if not defined JAVA_EXE (
+    set "JAVA_HOME=%~dp0tools\jdk8"
+    set "PATH=%~dp0tools\jdk8\bin;%PATH%"
+    set "JAVA_EXE=%~dp0tools\jdk8\bin\java.exe"
+  )
 )
 if not defined JAVA_EXE (
   for /d %%D in ("%~dp0tools\jdk8\*") do (

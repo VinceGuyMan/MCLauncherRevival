@@ -70,6 +70,16 @@ The current alpha package is:
 MCLauncherRevival-v0.2.5-alpha.zip
 ```
 
+If an XP bundled-Java package is published, it should be named like:
+
+```text
+MCLauncherRevival-v0.2.5-alpha-xp-bundled-java.zip
+```
+
+That XP package is for offline/classic use only. It may include a maintainer-provided
+XP-compatible Java runtime under `tools\java7`. Bundled Java is third-party software under its own
+license/readme files, and old Java runtimes are not secure for general browsing or production use.
+
 After extracting the release ZIP on Windows, run:
 
 ```bat
@@ -85,7 +95,9 @@ Start MCLauncherRevival XP Offline.cmd
 ```
 
 The XP shortcut starts the launcher with XP/offline compatibility flags. It does not make modern
-Microsoft login reliable on XP.
+Microsoft login reliable on XP. If Java is missing on XP, use the XP bundled-Java release package
+or manually place a verified XP-compatible runtime at `tools\java7` so
+`tools\java7\bin\java.exe` exists.
 
 For preliminary Linux testing, use:
 
@@ -163,6 +175,8 @@ See [SECURITY.md](SECURITY.md) and [Trust and Safety](docs/TRUST_AND_SAFETY.md) 
 - Authentication may need testing across browsers, Java versions, and Windows versions.
 - Older operating systems may have limited online login support due to TLS/root certificate/browser
   limits.
+- XP bundled-Java packages, when published, include old third-party Java runtimes that should only
+  be used for this offline/classic launcher scenario.
 - Some Minecraft versions may require specific Java/LWJGL combinations.
 - Linux behavior has preliminary scripts/docs, but still needs native distro field testing.
 - macOS behavior has preliminary scripts/docs, but still needs native macOS field testing.

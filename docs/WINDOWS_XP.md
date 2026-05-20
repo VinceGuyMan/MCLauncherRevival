@@ -5,6 +5,8 @@ Windows XP is supported for classic/offline play.
 Modern Microsoft login and fresh online downloads are best-effort on XP because XP-era TLS, root
 certificates, Internet Explorer, and Java networking are the limiting pieces.
 
+XP mode is intended for offline/classic play only.
+
 ## Recommended XP flow
 
 Double-click:
@@ -47,6 +49,20 @@ Recommended:
 - Java 7 on Windows XP, or
 - an XP-compatible Java 8 build if you already have one.
 
+If a bundled-Java XP release is published, it should include a maintainer-provided runtime at:
+
+```text
+tools\java7\bin\java.exe
+```
+
+The launcher does not choose or download this runtime automatically. The maintainer must manually
+place a verified redistributable Java 7 or XP-compatible Java 8 runtime at `tools\java7` before
+creating the XP bundled-Java package.
+
+Bundled Java is third-party software under its own license/readme files. Old Java runtimes are not
+secure for general browsing or production use; use them only for this offline/classic launcher
+scenario.
+
 The normal `Start MCLauncherRevival.cmd` path can still be used on Windows 7 through Windows 11.
 
 ## Troubleshooting
@@ -72,6 +88,18 @@ MCLauncherRevival-v0.2.5-alpha.zip
 If you only have the source archive, build `MCLauncherRevival.jar` on Windows 7 or newer, then copy
 the jar into the XP launcher folder.
 
+### Java runtime not found
+
+If XP mode cannot find Java, use the XP bundled-Java release package if one is available, or place a
+verified XP-compatible runtime at:
+
+```text
+tools\java7\bin\java.exe
+```
+
+XP mode also checks `tools\jdk8`, `JAVA_HOME`, and `java.exe` on `PATH`, but `tools\java7` is the
+preferred location for an XP bundled-Java release.
+
 ### XP script says `choice` is not recognized
 
 Some Windows XP installs do not include `choice.exe`. The XP offline launcher path is designed to
@@ -84,6 +112,8 @@ Use one of these options instead:
 
 - Install Java 7 on the XP machine.
 - Install an XP-compatible Java 8 runtime if you already have one.
+- Use the XP bundled-Java release package if one is available.
+- Manually extract a compatible runtime to `tools\java7`.
 - Manually extract a compatible runtime to `tools\jdk8`.
 
 ### Release package should run the included jar
@@ -97,7 +127,9 @@ Only source builds require `javac.exe` and `jar.exe`. Running the packaged jar o
 If Java is not found, the script should print:
 
 ```text
-Windows XP offline/classic mode needs Java 7 or an XP-compatible Java 8 runtime already installed or extracted at tools\jdk8.
+Windows XP offline/classic mode needs Java 7 or an XP-compatible Java 8 runtime.
+Use the XP bundled-Java release package, or place Java at tools\java7.
+Expected runtime path: tools\java7\bin\java.exe
 ```
 
 Modern Microsoft login and fresh HTTPS downloads are not reliable on XP. Use Offline Play with

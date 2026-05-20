@@ -30,3 +30,14 @@ with their respective owners.
 
 Users are responsible for owning or otherwise having the right to use Minecraft Java Edition and any
 downloaded game files.
+
+## Optional bundled Java runtime
+
+Some XP offline/classic release packages may include a maintainer-provided Java runtime under
+`tools\java7`.
+
+That runtime is third-party software and remains under its own license/readme files from its
+distributor. MCLauncherRevival does not claim ownership of Java runtime files.
+
+Old Java runtimes are not secure for general browsing, plugin use, or production workloads. They are
+included only to support this offline/classic launcher scenario on legacy Windows systems.

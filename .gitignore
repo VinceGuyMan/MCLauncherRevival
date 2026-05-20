@@ -8,6 +8,7 @@
 *.jar
 
 # Local downloaded dependencies
+/tools/java7/
 /tools/jdk8/
 /tools/temurin8-jdk.zip
 *.zip

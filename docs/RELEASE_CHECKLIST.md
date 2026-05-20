@@ -1,6 +1,6 @@
 # Release Checklist
 
-For `v0.3.0`:
+For `v0.3.5`:
 
 - Confirm the project builds from a clean clone.
 - Confirm the jar launches.
@@ -70,7 +70,7 @@ Expected project files include:
 Recommended release tag and artifact names:
 
 ```text
-v0.3.0
-MCLauncherRevival-v0.3.0-alpha.zip
+v0.3.5
+MCLauncherRevival-v0.3.5-alpha.zip
 MCLauncherRevival.jar
 ```

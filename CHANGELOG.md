@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.3.0-alpha
+## v0.3.5-alpha
 
 - Confirmed XP Offline mode launches successfully on real Windows XP hardware with an XP-compatible
   Java runtime. Performance is hardware-dependent; one test system ran around 15 FPS on lowest

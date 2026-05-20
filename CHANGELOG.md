@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.2.0-alpha
+
+### Release packaging and Windows 7 testing
+
+- Prepared a cleaner alpha release package based on the tested GitHub Releases ZIP workflow.
+- Clarified that users should download the attached release ZIP, not GitHub's green
+  **Code -> Download ZIP** source archive.
+- Documented Windows 7 field-test results for Microsoft login, redirect paste fallback behavior,
+  and XSTS account setup issues.
+- Added troubleshooting steps for `XErr: 2148916233`, which usually means the Microsoft account
+  still needs an Xbox profile before the Xbox Live/XSTS/Minecraft services chain can continue.
+- Reconfirmed that Offline Play remains available when online authentication fails.
+- Kept account-safety wording clear: the launcher should never ask for a raw Microsoft password
+  inside the app.
+
 ## v0.1.1-alpha patch notes
 
 ### Windows 7 field test notes
@@ -31,7 +46,7 @@ post-login redirect URL to `removed=true` shortly after login. The launcher shou
 raw Microsoft password inside the app. Offline Play remains available when online authentication
 fails.
 
-## Unreleased / v0.1.0-alpha prep
+## Earlier alpha changes
 
 - Fixed Windows 7 Java dependency setup by forcing TLS 1.2 before downloading Temurin 8 from
   Adoptium.

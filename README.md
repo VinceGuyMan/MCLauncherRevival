@@ -49,22 +49,26 @@ More screenshots and annotated UI guides are available in
 | Windows 7-11 support | Primary target | Java 8 is recommended, especially for old Minecraft/LWJGL behavior. |
 | Windows XP / older Windows behavior | Offline/classic only | Online login and fresh downloads are best-effort due to TLS, certificate, and browser limitations. |
 | macOS/Linux behavior | Needs testing | The Java UI may run, but scripts and old LWJGL natives are Windows-focused. |
-| Release packaging | In progress | No public release has been published yet. Build from source for now. |
+| Release packaging | Alpha packages available | Use the attached GitHub Releases ZIP, not the source-code ZIP. |
 
 ## Installation / running
 
-No public release has been published yet. Build from source for now.
+Use the attached ZIP from the GitHub Releases page. Do not use GitHub's green
+**Code -> Download ZIP** source archive as the launcher package.
 
-When release artifacts are available, they will be attached to GitHub Releases and clearly marked as
-alpha.
+The current alpha package is:
 
-For a source checkout on Windows, use:
+```text
+MCLauncherRevival-v0.2.0-alpha.zip
+```
+
+After extracting the release ZIP on Windows, run:
 
 ```bat
 Start MCLauncherRevival.cmd
 ```
 
-That friendly shortcut calls `run-win7.cmd`, which builds the jar if needed and then launches it.
+That friendly shortcut calls `run-win7.cmd`, which launches the packaged jar or builds it if needed.
 
 For Windows XP offline/classic mode, use:
 
@@ -127,8 +131,7 @@ See [SECURITY.md](SECURITY.md) and [Trust and Safety](docs/TRUST_AND_SAFETY.md) 
 
 ## Roadmap
 
-- Publish the first `v0.1.0-alpha` release.
-- Add more real screenshots from tested systems.
+- Continue polishing alpha packaging and release notes.
 - Improve release zip packaging.
 - Add smoke-test/build verification around clean clones.
 - Continue compatibility testing across Windows versions.

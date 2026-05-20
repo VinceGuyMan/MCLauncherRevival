@@ -1,11 +1,15 @@
 # Release Checklist
 
-For `v0.1.0-alpha`:
+For `v0.2.0-alpha`:
 
 - Confirm the project builds from a clean clone.
 - Confirm the jar launches.
 - Confirm offline mode behavior.
 - Confirm Microsoft sign-in flow does not request passwords inside the app.
+- Confirm the release ZIP is used for user testing, not GitHub's source-code ZIP.
+- Confirm Windows 7 dependency setup can reuse `tools\jdk8` or `tools\temurin8-jdk.zip`.
+- Confirm the Microsoft login prompt opens before the browser and supports redirect paste fallback.
+- Confirm the XErr `2148916233` troubleshooting note points users to Xbox profile setup.
 - Confirm saved tokens/settings can be removed if implemented.
 - Confirm no secrets, tokens, client secrets, or personal credentials are committed.
 - Confirm README instructions match the actual release files.
@@ -49,12 +53,12 @@ Expected project files include:
 - OAuth tokens, auth caches, local settings, or secrets.
 - Packed/obfuscated binaries.
 
-## First alpha release name
+## Current alpha release name
 
 Recommended release tag and artifact names:
 
 ```text
-v0.1.0-alpha
-MCLauncherRevival-v0.1.0-alpha.zip
+v0.2.0-alpha
+MCLauncherRevival-v0.2.0-alpha.zip
 MCLauncherRevival.jar
 ```

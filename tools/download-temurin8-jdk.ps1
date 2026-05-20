@@ -4,58 +4,105 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-try {
-    [Net.ServicePointManager]::SecurityProtocol = [Enum]::ToObject([Net.SecurityProtocolType], 3072)
-} catch {
-}
+function Find-JdkRoot {
+    param([string]$Root)
 
-$toolsDir = Split-Path -Parent $Destination
-$zipPath = Join-Path $toolsDir "temurin8-jdk.zip"
-$apiUrl = "https://api.adoptium.net/v3/binary/latest/8/ga/windows/x64/jdk/hotspot/normal/eclipse"
+    if (!(Test-Path $Root)) {
+        return $null
+    }
 
-if (!(Test-Path $toolsDir)) {
-    New-Item -ItemType Directory -Force -Path $toolsDir | Out-Null
-}
+    if ((Test-Path (Join-Path $Root "bin\java.exe")) -and
+        (Test-Path (Join-Path $Root "bin\javac.exe")) -and
+        (Test-Path (Join-Path $Root "bin\jar.exe"))) {
+        return $Root
+    }
 
-Write-Host "Downloading Eclipse Temurin 8 JDK from Adoptium..."
-Write-Host $apiUrl
-
-$client = New-Object Net.WebClient
-$client.Headers.Add("User-Agent", "MCLauncherRevival dependency downloader")
-$client.DownloadFile($apiUrl, $zipPath)
-
-if (Test-Path $Destination) {
-    Remove-Item -Recurse -Force $Destination
-}
-New-Item -ItemType Directory -Force -Path $Destination | Out-Null
-
-Write-Host "Extracting JDK..."
-$shell = New-Object -ComObject Shell.Application
-$zip = $shell.NameSpace($zipPath)
-$dest = $shell.NameSpace($Destination)
-
-if ($zip -eq $null -or $dest -eq $null) {
-    throw "Windows could not open the downloaded JDK zip file."
-}
-
-$dest.CopyHere($zip.Items(), 20)
-
-for ($i = 0; $i -lt 180; $i++) {
-    $java = Get-ChildItem -Path $Destination -Recurse -Filter java.exe -ErrorAction SilentlyContinue |
+    $java = Get-ChildItem -Path $Root -Recurse -Filter java.exe -ErrorAction SilentlyContinue |
         Where-Object { $_.FullName -match "\\bin\\java\.exe$" } |
         Select-Object -First 1
 
-    $javac = Get-ChildItem -Path $Destination -Recurse -Filter javac.exe -ErrorAction SilentlyContinue |
-        Where-Object { $_.FullName -match "\\bin\\javac\.exe$" } |
-        Select-Object -First 1
-
-    if ($java -and $javac) {
-        Write-Host "Portable JDK is ready:"
-        Write-Host (Split-Path -Parent (Split-Path -Parent $java.FullName))
-        exit 0
+    if ($java) {
+        $candidate = Split-Path -Parent (Split-Path -Parent $java.FullName)
+        if ((Test-Path (Join-Path $candidate "bin\javac.exe")) -and
+            (Test-Path (Join-Path $candidate "bin\jar.exe"))) {
+            return $candidate
+        }
     }
-    Start-Sleep -Seconds 1
+
+    return $null
 }
 
-throw "The JDK zip was downloaded, but extraction did not produce java.exe and javac.exe."
+function Extract-JdkZip {
+    param(
+        [string]$ZipPath,
+        [string]$Destination
+    )
 
+    if (Test-Path $Destination) {
+        Remove-Item -Recurse -Force $Destination
+    }
+    New-Item -ItemType Directory -Force -Path $Destination | Out-Null
+
+    Write-Host "Found local tools/temurin8-jdk.zip, extracting"
+    $shell = New-Object -ComObject Shell.Application
+    $zip = $shell.NameSpace($ZipPath)
+    $dest = $shell.NameSpace($Destination)
+
+    if ($zip -eq $null -or $dest -eq $null) {
+        throw "Windows could not open the JDK zip file."
+    }
+
+    $dest.CopyHere($zip.Items(), 20)
+
+    for ($i = 0; $i -lt 180; $i++) {
+        $jdkRoot = Find-JdkRoot $Destination
+        if ($jdkRoot) {
+            Write-Host "Java JDK 8 ready"
+            Write-Host $jdkRoot
+            exit 0
+        }
+        Start-Sleep -Seconds 1
+    }
+
+    throw "The JDK zip was extracted, but java.exe, javac.exe, and jar.exe were not found."
+}
+
+try {
+    $toolsDir = Split-Path -Parent $Destination
+    $zipPath = Join-Path $toolsDir "temurin8-jdk.zip"
+    $apiUrl = "https://api.adoptium.net/v3/binary/latest/8/ga/windows/x64/jdk/hotspot/normal/eclipse"
+
+    if (!(Test-Path $toolsDir)) {
+        New-Item -ItemType Directory -Force -Path $toolsDir | Out-Null
+    }
+
+    $existingJdk = Find-JdkRoot $Destination
+    if ($existingJdk) {
+        Write-Host "Found existing tools/jdk8"
+        Write-Host "Java JDK 8 ready"
+        Write-Host $existingJdk
+        exit 0
+    }
+
+    if (Test-Path $zipPath) {
+        Extract-JdkZip $zipPath $Destination
+    }
+
+    try {
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    } catch {
+        [Net.ServicePointManager]::SecurityProtocol = 3072
+    }
+
+    Write-Host "Downloading Temurin 8 from Adoptium"
+    Write-Host $apiUrl
+
+    $client = New-Object Net.WebClient
+    $client.Headers.Add("User-Agent", "MCLauncherRevival dependency downloader")
+    $client.DownloadFile($apiUrl, $zipPath)
+
+    Extract-JdkZip $zipPath $Destination
+} catch {
+    Write-Host ("Failed with reason: " + $_.Exception.Message)
+    exit 1
+}

@@ -51,8 +51,8 @@ if errorlevel 2 (
 if not exist "%~dp0tools" mkdir "%~dp0tools"
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0tools\download-temurin8-jdk.ps1" -Destination "%~dp0tools\jdk8"
 if errorlevel 1 (
-  echo Java download failed.
-  echo You can manually install Java 8 on Windows 7 or newer, or Java 7 / XP-compatible Java 8 on Windows XP, and rerun this file.
+  echo Java JDK 8 still was not found after dependency setup.
+  echo Install Java JDK 8 manually, or place/extract it at tools\jdk8.
   pause
   exit /b 1
 )
@@ -70,8 +70,8 @@ for /d %%D in ("%~dp0tools\jdk8\*") do (
 :HAVE_JAVA
 where java >nul 2>nul
 if errorlevel 1 (
-  echo Java still was not found after dependency setup.
-  echo Install Java manually, or check tools\jdk8.
+  echo Java JDK 8 still was not found after dependency setup.
+  echo Install Java JDK 8 manually, or place/extract it at tools\jdk8.
   pause
   exit /b 1
 )

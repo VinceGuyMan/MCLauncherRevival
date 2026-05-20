@@ -40,6 +40,40 @@ XP mode keeps the classic launcher usable while avoiding fragile Microsoft login
 The launcher is built to avoid collecting raw Microsoft passwords, so it will not add old
 password-based login as a workaround.
 
+## Real hardware field test
+
+Real Windows XP laptop testing confirmed that XP Offline mode can work on physical XP hardware when
+the correct pieces are in place.
+
+Observed result:
+
+- The launcher starts in XP Offline mode.
+- Classic/offline Minecraft can launch.
+- One tested XP laptop ran Minecraft Beta 1.7.3 at around 15 FPS on the lowest settings.
+
+This confirms basic XP offline/classic compatibility, but it does not mean XP support is perfect.
+Performance depends heavily on the laptop hardware, graphics driver, Java version, and selected
+Minecraft version.
+
+Requirements and caveats:
+
+- Java 7 or an XP-compatible Java 8 runtime must already be installed or extracted.
+- Use the attached GitHub Releases ZIP, not GitHub's source-code ZIP or tag/source ZIP.
+- Modern Microsoft login remains unsupported/best-effort on XP.
+- Fresh HTTPS downloads may fail on XP.
+- Performance may be low on period-correct laptops.
+
+Recommended XP in-game settings:
+
+- Graphics: Fast
+- Render Distance: Tiny or Short
+- Smooth Lighting: Off
+- Particles: Minimal
+- Lower resolution if the laptop struggles.
+- Limit background programs.
+- Use already-downloaded versions where possible.
+- Try Beta 1.7.3 or nearby versions if one build performs poorly.
+
 ## Java runtime
 
 The launcher jar is compiled as Java 7 bytecode.

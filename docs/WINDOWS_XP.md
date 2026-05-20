@@ -78,6 +78,47 @@ The normal `Start MCLauncherRevival.cmd` path can still be used on Windows 7 thr
 
 ## Troubleshooting
 
+## Preparing Minecraft versions for XP
+
+XP mode is offline/classic. Offline launch still needs the selected Minecraft version files to
+already exist locally.
+
+If XP/Java 7 cannot load Mojang's modern HTTPS version manifest, `b1.7.3` may be the only version
+shown in the version selector. You can still type a version manually if the matching files already
+exist in `.minecraft`.
+
+Recommended workflow:
+
+1. On Windows 7 or newer, run the official launcher or MCLauncherRevival.
+2. Launch/download the Minecraft version you want to use on XP.
+3. Close Minecraft.
+4. Copy these folders from the newer Windows PC:
+
+   ```text
+   %APPDATA%\.minecraft\versions
+   %APPDATA%\.minecraft\libraries
+   %APPDATA%\.minecraft\assets
+   ```
+
+5. Paste them into the XP user's `.minecraft` folder:
+
+   ```text
+   C:\Documents and Settings\<User>\Application Data\.minecraft\versions
+   C:\Documents and Settings\<User>\Application Data\.minecraft\libraries
+   C:\Documents and Settings\<User>\Application Data\.minecraft\assets
+   ```
+
+6. Start:
+
+   ```bat
+   Start MCLauncherRevival XP Offline.cmd
+   ```
+
+7. Select or type the prepared version and use `Play Offline`.
+
+Do not bundle Minecraft client jars, libraries, assets, or Mojang game files in MCLauncherRevival
+release packages. Users must own Minecraft Java Edition and prepare/copy their own local files.
+
 ### MCLauncherRevival.jar was not found
 
 This usually means you downloaded GitHub's source-code ZIP or auto-generated tag/source ZIP instead
@@ -93,7 +134,7 @@ source archive and not the tag/source ZIP.
 The correct release asset should be named like:
 
 ```text
-MCLauncherRevival-v0.2.5-alpha.zip
+MCLauncherRevival-v0.3.0-alpha.zip
 ```
 
 If you only have the source archive, build `MCLauncherRevival.jar` on Windows 7 or newer, then copy

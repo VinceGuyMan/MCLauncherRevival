@@ -190,6 +190,14 @@ See [SECURITY.md](SECURITY.md) and [Trust and Safety](docs/TRUST_AND_SAFETY.md) 
 - Linux behavior has preliminary scripts/docs, but still needs native distro field testing.
 - macOS behavior has preliminary scripts/docs, but still needs native macOS field testing.
 
+## Troubleshooting
+
+On XP, `handshake_failure` usually means the machine could not download modern HTTPS Minecraft
+metadata/files. Prepare the selected Minecraft version on Windows 7 or newer, then copy your
+`.minecraft` `versions`, `libraries`, and `assets` folders to the XP machine.
+
+See [Windows XP Offline/Classic Guide](docs/WINDOWS_XP.md) for the full copy-path checklist.
+
 ## Roadmap
 
 - Continue polishing alpha packaging and release notes.

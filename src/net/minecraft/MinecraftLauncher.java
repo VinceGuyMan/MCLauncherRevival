@@ -133,8 +133,8 @@ public final class MinecraftLauncher extends JFrame {
         });
         refreshActiveTab();
         if (xpCompatibilityMode()) {
-            status("XP offline mode: use a version already downloaded, then Play Offline.");
-            appendLog("Windows XP compatibility mode is active. Microsoft login and fresh online downloads may not work on XP-era TLS/browser stacks.");
+            status("XP mode: online version list unavailable. Type a version manually or copy prepared version files from a newer PC.");
+            appendLog("Windows XP compatibility mode is active. Microsoft login is disabled/best-effort. Fresh downloads may fail. Offline play works best with pre-cached .minecraft files.");
         } else {
             loadVersionsAsync();
         }
@@ -1096,10 +1096,17 @@ public final class MinecraftLauncher extends JFrame {
     }
 
     private void showError(Exception ex) {
-        String message = ex.getMessage() == null ? ex.toString() : ex.getMessage();
+        String message = friendlyErrorMessage(ex);
         status("Launcher error");
         appendLog("ERROR: " + message);
         setNewsHtml(errorNews(message));
+    }
+
+    private String friendlyErrorMessage(Exception ex) {
+        if (xpCompatibilityMode() && BetaLauncher.isXpHttpsFailure(ex)) {
+            return BetaLauncher.xpVersionFilesMessage();
+        }
+        return ex.getMessage() == null ? ex.toString() : ex.getMessage();
     }
 
     private void setNewsHtml(String html) {
@@ -1194,6 +1201,7 @@ public final class MinecraftLauncher extends JFrame {
         return "<html><body text='#e8e8e8' link='#aaaaff' vlink='#aaaaff' style='font-family:Verdana,Arial,sans-serif;font-size:11px;margin:24px;background-color:transparent'>"
                 + "<font size='+3'><b>Launcher Log</b></font><br><br>"
                 + "<p><font color='#999999'>Current launcher session messages. Game output is also written to disk after Minecraft starts.</font></p>"
+                + xpModeNoteHtml()
                 + "<p><b>Selected version:</b> " + escape(selectedVersion()) + "<br>"
                 + "<b>Java runtime:</b> " + escape(javaRuntimeSummary()) + "<br>"
                 + "<b>Java safety:</b> " + escape(javaSafetySummary()) + "<br>"
@@ -1224,6 +1232,7 @@ public final class MinecraftLauncher extends JFrame {
         return "<html><body text='#e8e8e8' link='#aaaaff' vlink='#aaaaff' style='font-family:Verdana,Arial,sans-serif;font-size:11px;margin:24px;background-color:transparent'>"
                 + "<font size='+3'><b>Profile Editor</b></font><br><br>"
                 + "<p><font color='#999999'>Classic launcher-style profile controls, focused on the settings this revived launcher actually uses.</font></p>"
+                + xpModeNoteHtml()
                 + "<table cellpadding='6' cellspacing='0' bgcolor='#0d0d0d' style='border:1px solid #444444'>"
                 + "<tr><td><b>Offline name</b></td><td>" + escape(offlineName.getText()) + "</td></tr>"
                 + "<tr><td><b>Selected version</b></td><td>" + escape(selectedVersion()) + "</td></tr>"
@@ -1262,6 +1271,18 @@ public final class MinecraftLauncher extends JFrame {
                 + "+ Use Forget Login to clear cached OAuth tokens.</p>"
                 + "<p><font color='#888888'>This keeps the old Profile Editor tab feeling, but keeps unsupported complex profile features out of scope for this revival.</font></p>"
                 + "</body></html>";
+    }
+
+    private static String xpModeNoteHtml() {
+        if (!xpCompatibilityMode()) {
+            return "";
+        }
+        return "<table width='100%' cellpadding='8' cellspacing='0' bgcolor='#1b1408' style='border:1px solid #5a4a22'><tr><td>"
+                + "<b>Windows XP offline/classic note:</b><br>"
+                + "+ Microsoft login is disabled/best-effort on XP.<br>"
+                + "+ Fresh downloads may fail because XP/Java 7 cannot reliably connect to modern HTTPS services.<br>"
+                + "+ Offline play works best with pre-cached .minecraft versions, libraries, and assets copied from a newer PC."
+                + "</td></tr></table><br>";
     }
 
     private static String errorNews(String message) {

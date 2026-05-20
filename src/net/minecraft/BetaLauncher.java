@@ -18,6 +18,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import javax.net.ssl.SSLHandshakeException;
 
 final class BetaLauncher {
     static final String DEFAULT_VERSION = "b1.7.3";
@@ -85,6 +86,43 @@ final class BetaLauncher {
         return downloadString(url);
     }
 
+    static String xpVersionFilesMessage() {
+        return "Windows XP offline mode needs the selected Minecraft version files to already be present. "
+                + "This PC could not download them because XP/Java 7 cannot reliably connect to modern HTTPS services. "
+                + "Launch this version once on Windows 7 or newer, then copy your .minecraft versions, libraries, "
+                + "and assets folders to this XP machine.\n\n"
+                + "Newer Windows source:\n"
+                + "%APPDATA%\\.minecraft\\versions\n"
+                + "%APPDATA%\\.minecraft\\libraries\n"
+                + "%APPDATA%\\.minecraft\\assets\n\n"
+                + "Windows XP destination:\n"
+                + "C:\\Documents and Settings\\<User>\\Application Data\\.minecraft\\versions\n"
+                + "C:\\Documents and Settings\\<User>\\Application Data\\.minecraft\\libraries\n"
+                + "C:\\Documents and Settings\\<User>\\Application Data\\.minecraft\\assets\n\n"
+                + "Use only Minecraft files you own or otherwise have the right to use.";
+    }
+
+    static boolean isXpHttpsFailure(Throwable error) {
+        Throwable current = error;
+        while (current != null) {
+            if (current instanceof SSLHandshakeException) {
+                return true;
+            }
+            String message = current.getMessage();
+            if (message != null) {
+                String lower = message.toLowerCase(Locale.ENGLISH);
+                if (lower.indexOf("handshake_failure") >= 0
+                        || lower.indexOf("received fatal alert") >= 0
+                        || lower.indexOf("pkix") >= 0
+                        || lower.indexOf("unable to find valid certification path") >= 0) {
+                    return true;
+                }
+            }
+            current = current.getCause();
+        }
+        return false;
+    }
+
     static String memoryPreview(String value) {
         return normalizeMemory(value);
     }
@@ -101,7 +139,9 @@ final class BetaLauncher {
         }
 
         status.status("Preparing " + version + " files...");
-        Map<String, Object> versionJson = loadVersionJson(versionDir);
+        Map<String, Object> versionJson = xpCompatibilityMode()
+                ? loadLocalVersionJsonForXp(versionDir, librariesDir)
+                : loadVersionJson(versionDir);
         String mainClass = Json.string(versionJson, "mainClass");
         if (mainClass == null || mainClass.length() == 0) {
             mainClass = "net.minecraft.client.Minecraft";
@@ -143,6 +183,9 @@ final class BetaLauncher {
     private Map<String, Object> loadVersionJson(File versionDir) throws IOException {
         File jsonFile = new File(versionDir, version + ".json");
         if (!jsonFile.exists()) {
+            if (xpCompatibilityMode()) {
+                throw new IOException(xpVersionFilesMessage());
+            }
             if (!versionDir.exists() && !versionDir.mkdirs()) {
                 throw new IOException("Could not create " + versionDir.getAbsolutePath());
             }
@@ -169,6 +212,56 @@ final class BetaLauncher {
         return Json.object(Json.parse(readString(jsonFile)));
     }
 
+    private Map<String, Object> loadLocalVersionJsonForXp(File versionDir, File librariesDir) throws IOException {
+        File jarFile = new File(versionDir, version + ".jar");
+        File jsonFile = new File(versionDir, version + ".json");
+        if (!jarFile.exists() || !jsonFile.exists()) {
+            throw new IOException(xpVersionFilesMessage());
+        }
+        Map<String, Object> versionJson = Json.object(Json.parse(readString(jsonFile)));
+        ensureXpLibrariesPresent(versionJson, librariesDir);
+        return versionJson;
+    }
+
+    private void ensureXpLibrariesPresent(Map<String, Object> versionJson, File librariesDir) throws IOException {
+        List<Object> libraries = Json.array(versionJson.get("libraries"));
+        if (libraries == null) {
+            return;
+        }
+        for (Object value : libraries) {
+            Map<String, Object> library = Json.object(value);
+            if (!allowed(library)) {
+                continue;
+            }
+            Map<String, Object> downloads = Json.object(library.get("downloads"));
+            Map<String, Object> artifact = Json.object(downloads == null ? null : downloads.get("artifact"));
+            if (artifact != null) {
+                requireXpFile(libraryFile(librariesDir, artifact, Json.string(library, "name"), null));
+            } else if (Json.object(library.get("natives")) == null && Json.string(library, "name") != null) {
+                requireXpFile(libraryFile(librariesDir, null, Json.string(library, "name"), null));
+            }
+
+            Map<String, Object> natives = Json.object(library.get("natives"));
+            if (natives != null) {
+                String classifier = Json.string(natives, osName());
+                if (classifier != null) {
+                    classifier = classifier.replace("${arch}", is64Bit() ? "64" : "32");
+                    Map<String, Object> classifiers =
+                            Json.object(downloads == null ? null : downloads.get("classifiers"));
+                    Map<String, Object> nativeArtifact =
+                            Json.object(classifiers == null ? null : classifiers.get(classifier));
+                    requireXpFile(libraryFile(librariesDir, nativeArtifact, Json.string(library, "name"), classifier));
+                }
+            }
+        }
+    }
+
+    private static void requireXpFile(File file) throws IOException {
+        if (file == null || !file.exists()) {
+            throw new IOException(xpVersionFilesMessage());
+        }
+    }
+
     private File downloadClientJar(Map<String, Object> versionJson, File versionDir) throws IOException {
         File jar = new File(versionDir, version + ".jar");
         Map<String, Object> downloads = Json.object(versionJson.get("downloads"));
@@ -176,6 +269,9 @@ final class BetaLauncher {
         String url = Json.string(client, "url");
         String sha1 = Json.string(client, "sha1");
         if (url == null) {
+            if (xpCompatibilityMode() && jar.exists()) {
+                return jar;
+            }
             throw new IOException("Version metadata did not include a client jar URL.");
         }
         downloadFile(url, jar, sha1);
@@ -375,6 +471,9 @@ final class BetaLauncher {
         if (file.exists() && (sha1 == null || sha1.length() == 0 || sha1(file).equalsIgnoreCase(sha1))) {
             return;
         }
+        if (xpCompatibilityMode()) {
+            throw new IOException(xpVersionFilesMessage());
+        }
         if (url == null || url.length() == 0) {
             throw new IOException("Missing download URL for " + file.getName());
         }
@@ -383,21 +482,29 @@ final class BetaLauncher {
             parent.mkdirs();
         }
         File temp = new File(file.getAbsolutePath() + ".tmp");
-        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-        connection.setConnectTimeout(30000);
-        connection.setReadTimeout(30000);
-        connection.setRequestProperty("User-Agent", "MCLauncherRevival/0.1-alpha");
-        InputStream in = connection.getInputStream();
-        FileOutputStream out = new FileOutputStream(temp);
         try {
-            byte[] buffer = new byte[8192];
-            int read;
-            while ((read = in.read(buffer)) != -1) {
-                out.write(buffer, 0, read);
+            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+            connection.setConnectTimeout(30000);
+            connection.setReadTimeout(30000);
+            connection.setRequestProperty("User-Agent", "MCLauncherRevival/0.1-alpha");
+            InputStream in = connection.getInputStream();
+            FileOutputStream out = new FileOutputStream(temp);
+            try {
+                byte[] buffer = new byte[8192];
+                int read;
+                while ((read = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, read);
+                }
+            } finally {
+                out.close();
+                in.close();
             }
-        } finally {
-            out.close();
-            in.close();
+        } catch (IOException e) {
+            temp.delete();
+            if (xpCompatibilityMode() && isXpHttpsFailure(e)) {
+                throw new IOException(xpVersionFilesMessage(), e);
+            }
+            throw e;
         }
         if (sha1 != null && sha1.length() > 0 && !sha1(temp).equalsIgnoreCase(sha1)) {
             temp.delete();
@@ -412,11 +519,18 @@ final class BetaLauncher {
     }
 
     private static String downloadString(String url) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-        connection.setConnectTimeout(30000);
-        connection.setReadTimeout(30000);
-        connection.setRequestProperty("User-Agent", "MCLauncherRevival/0.1-alpha");
-        return readAll(connection.getInputStream());
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+            connection.setConnectTimeout(30000);
+            connection.setReadTimeout(30000);
+            connection.setRequestProperty("User-Agent", "MCLauncherRevival/0.1-alpha");
+            return readAll(connection.getInputStream());
+        } catch (IOException e) {
+            if (xpCompatibilityMode() && isXpHttpsFailure(e)) {
+                throw new IOException(xpVersionFilesMessage(), e);
+            }
+            throw e;
+        }
     }
 
     private static String readAll(InputStream in) throws IOException {
@@ -521,6 +635,10 @@ final class BetaLauncher {
     private static boolean is64Bit() {
         String arch = System.getProperty("os.arch", "").toLowerCase(Locale.ENGLISH);
         return arch.contains("64");
+    }
+
+    private static boolean xpCompatibilityMode() {
+        return Boolean.getBoolean("mclauncher.xpMode");
     }
 
     private static String normalizeVersion(String value) {

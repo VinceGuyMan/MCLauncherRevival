@@ -1,70 +1,60 @@
-# GitHub Release Checklist
+# Release Checklist
 
-Use this before posting the project to GitHub.
+For `v0.1.0-alpha`:
 
-## Include in source repository
+- Confirm the project builds from a clean clone.
+- Confirm the jar launches.
+- Confirm offline mode behavior.
+- Confirm Microsoft sign-in flow does not request passwords inside the app.
+- Confirm saved tokens/settings can be removed if implemented.
+- Confirm no secrets, tokens, client secrets, or personal credentials are committed.
+- Confirm README instructions match the actual release files.
+- Confirm release zip contains only expected files.
+- Confirm antivirus false-positive risk is minimized by avoiding packed/obfuscated binaries.
+- Attach release zip to GitHub Releases manually.
+- Mark the release clearly as alpha.
+
+## Expected source files
+
+Keep source history focused on readable source, scripts, docs, and lightweight launcher resources.
+
+Expected project files include:
 
 - `src/`
-- `resources/net/minecraft/dirt.png`
-- `resources/net/minecraft/logo.png`
-- `resources/net/minecraft/favicon.png`
-- `resources/net/minecraft/Block.png`
-- `resources/net/minecraft/scrolls.png`
-- `resources/net/minecraft/cobalt.png`
-- `resources/net/minecraft/StevePlaceholder.jpg`
-- `build-win7.cmd`
-- `run-win7.cmd`
+- `resources/`
+- `docs/`
+- `.github/workflows/build.yml`
 - `Start MCLauncherRevival.cmd`
 - `Start MCLauncherRevival XP Offline.cmd`
+- `run-win7.cmd`
+- `build-win7.cmd`
 - `tools/download-temurin8-jdk.ps1`
 - `README.md`
-- `MODERNIZATION.md`
-- `SECURITY.md`
-- `NOTICE.md`
-- `LICENSE`
 - `CHANGELOG.md`
 - `CONTRIBUTING.md`
-- `.gitignore`
-- `.gitattributes`
-- `.github/workflows/build.yml`
-- `docs/WINDOWS_7.md`
-- `docs/WINDOWS_XP.md`
+- `SECURITY.md`
+- `NOTICE.md`
+- `docs/TRUST_AND_SAFETY.md`
+- `docs/DISCLAIMER.md`
 - `docs/AUTH_FLOW.md`
 - `docs/RELEASES.md`
-- `docs/DISCLAIMER.md`
-- `docs/PROJECT_STRUCTURE.md`
-- `docs/screenshots/frontpage.png`
-- `docs/screenshots/social-preview.png`
+- `LICENSE`
 
-## Do not include in source repository
+## Do not commit
 
-- `tools/jdk8/`
-- `tools/temurin8-jdk.zip`
-- `build/`
-- `.svn/`
-- `%APPDATA%\.minecraft\launcher_revive\auth.properties`
-- Any downloaded `.minecraft` versions/libraries.
+- Build output jars.
+- Release zip files.
+- Downloaded JDKs.
+- `.minecraft` folders.
+- OAuth tokens, auth caches, local settings, or secrets.
+- Packed/obfuscated binaries.
 
-## Release artifact
+## First alpha release name
 
-Build locally or through GitHub Actions:
-
-```bat
-build-win7.cmd
-```
-
-Attach this file to a GitHub Release:
+Recommended release tag and artifact names:
 
 ```text
-MCLauncherRevive-modern.jar
-```
-
-Do not commit the jar to the source repository unless you intentionally want to track binary releases in git.
-
-## Release description starter
-
-```text
-MCLauncherRevive modernizes a classic February 2011-style Minecraft launcher with Microsoft OAuth, Xbox Live/XSTS/Minecraft services authentication, offline mode, and Beta/Alpha version launching while preserving the old dirt-background launcher vibe.
-
-MCLauncherRevive supports Windows XP for offline/classic play and Windows 7 through Windows 11 for the full modern-auth launcher experience. Java 7 or an XP-compatible Java 8 build is recommended for XP; Java 8 is recommended on Windows 7 and newer.
+v0.1.0-alpha
+MCLauncherRevival-v0.1.0-alpha.zip
+MCLauncherRevival.jar
 ```

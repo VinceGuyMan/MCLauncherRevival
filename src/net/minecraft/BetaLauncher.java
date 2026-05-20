@@ -367,7 +367,7 @@ final class BetaLauncher {
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.setConnectTimeout(30000);
         connection.setReadTimeout(30000);
-        connection.setRequestProperty("User-Agent", "MCLauncherRevive/1.0 Java8");
+        connection.setRequestProperty("User-Agent", "MCLauncherRevival/0.1-alpha");
         InputStream in = connection.getInputStream();
         FileOutputStream out = new FileOutputStream(temp);
         try {
@@ -396,7 +396,7 @@ final class BetaLauncher {
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.setConnectTimeout(30000);
         connection.setReadTimeout(30000);
-        connection.setRequestProperty("User-Agent", "MCLauncherRevive/1.0 Java8");
+        connection.setRequestProperty("User-Agent", "MCLauncherRevival/0.1-alpha");
         return readAll(connection.getInputStream());
     }
 
@@ -530,3 +530,4 @@ final class BetaLauncher {
         }
     }
 }
+

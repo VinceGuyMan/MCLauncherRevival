@@ -1,10 +1,10 @@
 # Notices
 
-MCLauncherRevive is an unofficial launcher revival and modernization project.
+MCLauncherRevival is an unofficial launcher revival and modernization project.
 
 ## Not affiliated
 
-This project is not affiliated with, endorsed by, sponsored by, or approved by Mojang, Microsoft, Xbox, Minecraft, Scrolls/Caller's Bane, Cobalt, or any related rights holders.
+This project is not affiliated with, endorsed by, sponsored by, or approved by Mojang, Microsoft, Xbox, Minecraft, or any related rights holders.
 
 ## Third-party services
 
@@ -14,9 +14,9 @@ The launcher can contact Mojang/Minecraft version metadata and library download 
 
 ## Local token cache
 
-The launcher stores OAuth tokens in the user's local `.minecraft` folder so the user does not have to log in every time.
+The launcher may store OAuth tokens in the user's local `.minecraft` folder so the user does not have to log in every time.
 
-It does not ask for or store raw Microsoft passwords.
+It should not ask for or store raw Microsoft passwords.
 
 ## Historical assets and artifacts
 

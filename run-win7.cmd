@@ -16,7 +16,7 @@ if not exist "%~dp0tools\jdk8\bin\java.exe" (
   )
 )
 
-if not exist MCLauncherRevive-modern.jar (
+if not exist MCLauncherRevival.jar (
   call build-win7.cmd
   if errorlevel 1 exit /b 1
   if exist "%~dp0tools\jdk8\bin\java.exe" (
@@ -76,8 +76,9 @@ if errorlevel 1 (
   exit /b 1
 )
 
-java %MCLAUNCHER_JAVA_OPTS% -jar MCLauncherRevive-modern.jar
+java %MCLAUNCHER_JAVA_OPTS% -jar MCLauncherRevival.jar
 if errorlevel 1 (
   echo Launcher exited with an error.
   pause
 )
+

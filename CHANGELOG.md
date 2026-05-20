@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## Unreleased / v0.1.0-alpha prep
 
 - Rebuilt the February 2011-style launcher as a small Java launcher compiled as Java 7 bytecode.
 - Added Windows XP offline/classic mode support.
@@ -13,3 +13,4 @@
 - Added launcher log and profile editor utility pages.
 - Added save backup, texture pack import, folder shortcuts, Java warning, and version install status.
 - Preserved the dirt-background news panel and classic compact launcher layout.
+

@@ -49,7 +49,7 @@ final class LauncherSettings {
         File temp = new File(dir, "launcher.properties.tmp");
         FileOutputStream out = new FileOutputStream(temp);
         try {
-            values.store(out, "MCLauncherRevive launcher settings.");
+            values.store(out, "MCLauncherRevival launcher settings.");
         } finally {
             out.close();
         }
@@ -84,3 +84,4 @@ final class LauncherSettings {
         }
     }
 }
+

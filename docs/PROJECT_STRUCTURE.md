@@ -52,9 +52,10 @@ These should not be committed:
 
 ```text
 build/
-MCLauncherRevive-modern.jar
+MCLauncherRevival.jar
 tools/jdk8/
 tools/temurin8-jdk.zip
 ```
 
 The jar should be attached to a GitHub Release rather than committed to normal source history.
+

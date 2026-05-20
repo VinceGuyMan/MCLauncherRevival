@@ -1,20 +1,18 @@
 # Security Policy
 
-## Supported versions
+MCLauncherRevival is unofficial and alpha-quality. Authentication-related issues are still treated seriously, but this hobby project cannot promise professional security response times.
 
-The current maintained branch is the GitHub `main` branch after the modernization work.
+## Account safety
 
-## Authentication safety
+The launcher should never ask users to type a Microsoft password directly into the app.
 
-MCLauncherRevive must not ask for or store raw Microsoft passwords.
+Expected online login path where available:
 
-Expected login flow:
-
-1. Microsoft browser OAuth
-2. Xbox Live authentication
-3. XSTS authorization
-4. Minecraft services login
-5. Minecraft profile lookup
+1. Browser-based Microsoft OAuth.
+2. Xbox Live authentication.
+3. XSTS authorization.
+4. Minecraft services login.
+5. Minecraft profile lookup.
 
 Cached OAuth tokens are stored locally at:
 
@@ -22,15 +20,27 @@ Cached OAuth tokens are stored locally at:
 %APPDATA%\.minecraft\launcher_revive\auth.properties
 ```
 
-Use `Forget Login` in the launcher to delete cached tokens.
+Use `Forget Login` in the launcher to remove cached login data.
 
-## Reporting issues
+## Reporting security issues
 
-Please open a GitHub issue for:
+Please report vulnerabilities through a GitHub issue if the information is safe to discuss publicly.
 
-- Login flow failures.
-- Accidental token/password exposure.
-- Unsafe storage behavior.
-- Download or launch paths that write outside `.minecraft`.
+Do not post access tokens, refresh tokens, authorization codes, Microsoft account details, or private credentials in public issues.
 
-Do not paste access tokens, refresh tokens, authorization codes, or Microsoft account details into public issues.
+Good reports include:
+
+- What happened.
+- What you expected to happen.
+- Windows and Java version.
+- Whether the issue involved online login, offline launch, token storage, downloads, or local files.
+
+## Scope
+
+Security-sensitive areas include:
+
+- Password handling.
+- OAuth/token storage.
+- Download paths and file writes.
+- Launch arguments.
+- Scripts that run local commands.

@@ -13,7 +13,7 @@ final class SplashText {
             "LWJGL goblins pacified!",
             "Classic vibes, modern tokens!",
             "No hunger? No problem!",
-            "Codex #1 Vibe-Coder!",
+            "Unofficial alpha build!",
             "Now in block-o-vision!",
             "Do not feed the creepers!",
             "OAuth backstage!",

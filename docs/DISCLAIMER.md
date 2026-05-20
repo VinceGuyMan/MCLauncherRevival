@@ -1,10 +1,10 @@
 # Disclaimer
 
-MCLauncherRevive / MCLauncherRevival is an unofficial nostalgia and preservation-style launcher project.
+MCLauncherRevival is an unofficial nostalgia and preservation-style launcher project.
 
 ## No affiliation
 
-This project is not affiliated with, endorsed by, sponsored by, or approved by Mojang, Microsoft, Xbox, Minecraft, Scrolls/Caller's Bane, Cobalt, or any related rights holders.
+This project is not affiliated with, endorsed by, sponsored by, or approved by Mojang, Microsoft, Xbox, Minecraft, or any related rights holders.
 
 ## Trademarks and assets
 
@@ -18,7 +18,7 @@ This project does not grant access to Minecraft. Users are responsible for ownin
 
 ## Authentication
 
-The launcher uses browser-based Microsoft OAuth for online login and does not ask for or store raw Microsoft passwords.
+The launcher uses browser-based Microsoft OAuth for online login where available and should not ask for or store raw Microsoft passwords.
 
 Windows XP support is focused on offline/classic play. The project will not reintroduce old password-based Mojang login as an XP workaround.
 

@@ -410,7 +410,7 @@ final class ModernAuth {
         connection.setReadTimeout(30000);
         connection.setRequestMethod(method);
         connection.setRequestProperty("Accept", "application/json");
-        connection.setRequestProperty("User-Agent", "MCLauncherRevive/1.0 Java8");
+        connection.setRequestProperty("User-Agent", "MCLauncherRevival/0.1-alpha");
         if (contentType != null) {
             connection.setRequestProperty("Content-Type", contentType);
         }
@@ -488,3 +488,4 @@ final class ModernAuth {
         }
     }
 }
+

@@ -1,14 +1,16 @@
 # Build output
 /build/
-/MCLauncherRevive-modern.jar
+/out/
+/dist/
+/target/
+/.gradle/
+*.class
+*.jar
 
 # Local downloaded dependencies
 /tools/jdk8/
 /tools/temurin8-jdk.zip
-
-# Never commit local credential scratch files
-*token*
-*credentials*
+*.zip
 
 # Local legacy VCS metadata from the recovered launcher archive
 /.svn/
@@ -18,6 +20,18 @@
 *.tmp
 hs_err_pid*.log
 replay_pid*.log
+
+# Local settings, secrets, and auth caches
+.env
+.env.*
+*.secret
+*.secrets
+*.credentials
+*.local
+.auth.properties
+auth.properties
+launcher.properties
+launcher.properties.tmp
 
 # IDE/editor metadata
 /.idea/

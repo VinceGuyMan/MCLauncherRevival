@@ -106,7 +106,7 @@ final class TokenCache {
         File temp = new File(dir, target.getName() + ".tmp");
         FileOutputStream out = new FileOutputStream(temp);
         try {
-            values.store(out, plain ? "MCLauncherRevive launcher settings." : "MCLauncherRevive token cache. Contains OAuth refresh/access tokens, never raw passwords.");
+            values.store(out, plain ? "MCLauncherRevival launcher settings." : "MCLauncherRevival token cache. Contains OAuth refresh/access tokens, never raw passwords.");
         } finally {
             out.close();
         }
@@ -168,3 +168,4 @@ final class TokenCache {
         }
     }
 }
+

@@ -1,8 +1,10 @@
-# Download and Release Guide
+# Alpha Release Guide
 
-## For players
+## Current status
 
-Download the latest release zip from GitHub, extract it, then double-click:
+No public release has been published yet. Build from source for now.
+
+When an alpha release is available, download the release zip from GitHub Releases, extract it, then double-click:
 
 ```bat
 Start MCLauncherRevival.cmd
@@ -24,7 +26,7 @@ MCLauncherRevival/
   Start MCLauncherRevival XP Offline.cmd
   run-win7.cmd
   build-win7.cmd
-  MCLauncherRevive-modern.jar
+  MCLauncherRevival.jar
   resources/
   tools/
   docs/
@@ -43,3 +45,4 @@ build-win7.cmd
 - Windows XP is supported for offline/classic play with Java 7 or an XP-compatible Java 8 build.
 - The launcher never asks for a raw Microsoft password.
 - If the jar is missing, `run-win7.cmd` will attempt to build it.
+

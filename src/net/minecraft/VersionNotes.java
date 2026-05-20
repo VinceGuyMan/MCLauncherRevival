@@ -25,7 +25,7 @@ final class VersionNotes {
                 + "<p><font color='#b8b8ff'><b>Selected version:</b> " + escape(clean(version)) + "</font><br>"
                 + "<font color='#999999'>Timeline family: " + escape(note.family) + "</font></p>"
                 + (compact ? compactSection(note, version, patchMode) : (patchMode ? patchSection(note, version) : updateSection(note, version)))
-                + (patchMode ? "" : "<br><p><a href='https://www.minecraft.net/'><b>MCLauncherRevive Modern Released</b></a></p>"
+                + (patchMode ? "" : "<br><p><a href='https://www.minecraft.net/'><b>MCLauncherRevival Alpha Released</b></a></p>"
                 + "<p>The old launcher window learned modern Microsoft auth while keeping the big dark update notes, tiny bottom bar, and blocky nostalgia intact.</p>"
                 + "<p>+ Browser-based Microsoft login<br>"
                 + "+ Local token caching with Forget Login<br>"
@@ -34,7 +34,7 @@ final class VersionNotes {
                 + "<hr color='#333333'>"
                 + "<p><font color='#888888'>Version summaries are compact, launcher-friendly notes based on Minecraft Timeline data. "
                 + "Read more at <a href='https://minecraft-timeline.github.io/'>minecraft-timeline.github.io</a>. "
-                + "MCLauncherRevive Modern. Vibe-Coded with Codex.</font></p>"
+                + "MCLauncherRevival Alpha.</font></p>"
                 + "</body></html>";
     }
 
@@ -50,7 +50,7 @@ final class VersionNotes {
         return "<p><font color='#999999'>Posted in the style of the old launcher update feed.</font></p>"
                 + "<p>" + escape(note.summary) + "</p>"
                 + "<p><b>Why players remember this era:</b><br>" + sentenceLines(note.mainFeatures) + "</p>"
-                + "<p><b>Tiny fake newsroom aside:</b> " + escape(note.launcherNote) + "</p>"
+                + "<p><b>Launcher note:</b> " + escape(note.launcherNote) + "</p>"
                 + "<br><p><font color='#999999'>For today's selected build, <b>" + escape(clean(version)) + "</b>, the launcher has pulled together a small era summary instead of a giant wiki dump. "
                 + "Think of this as the old news page telling you why this version matters before you press Play.</font></p>";
     }
@@ -236,3 +236,4 @@ final class VersionNotes {
         }
     }
 }
+

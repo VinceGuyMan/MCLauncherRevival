@@ -89,12 +89,13 @@ if exist resources\net\minecraft\*.jpg copy /y resources\net\minecraft\*.jpg bui
 >> build\manifest.mf echo Main-Class: net.minecraft.MinecraftLauncher
 >> build\manifest.mf echo.
 
-jar cfm MCLauncherRevive-modern.jar build\manifest.mf -C build\classes .
+jar cfm MCLauncherRevival.jar build\manifest.mf -C build\classes .
 if errorlevel 1 (
   echo Jar packaging failed.
   pause
   exit /b 1
 )
 
-echo Built MCLauncherRevive-modern.jar
+echo Built MCLauncherRevival.jar
 pause
+

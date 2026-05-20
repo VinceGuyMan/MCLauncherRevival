@@ -755,7 +755,7 @@ public final class MinecraftLauncher extends JFrame {
         }
         switchTab("notes");
         setNewsHtml("<html><body text='#e8e8e8' link='#aaaaff' vlink='#aaaaff' style='font-family:Verdana,Arial,sans-serif;font-size:11px;margin:24px;background-color:transparent'>"
-                + "<font size='+3'><b>Welcome to MCLauncherRevive</b></font><br><br>"
+                + "<font size='+3'><b>Welcome to MCLauncherRevival</b></font><br><br>"
                 + "<p>This is a 2011-flavored launcher shell with modern Minecraft auth behind the curtain.</p>"
                 + "<p><b>Quick start:</b><br>"
                 + "+ Use <b>Microsoft Login</b> for online profile auth.<br>"
@@ -763,7 +763,7 @@ public final class MinecraftLauncher extends JFrame {
                 + "+ Pick old versions from Beta 1.8.x down through Alpha, Infdev, Classic, and Pre-Classic.<br>"
                 + "+ Press <b>Random</b> when you want the launcher to choose chaos.<br>"
                 + "+ Use <b>Patch Notes Mode!</b>, <b>Launcher Log</b>, and <b>Profile Editor</b> for useful details.</p>"
-                + "<p><font color='#ffff55'><b>Vibe-Coded with Codex.</b></font></p>"
+                + "<p><font color='#ffff55'><b>Alpha build. Review source before use.</b></font></p>"
                 + "</body></html>");
         settings.putBoolean("firstRunSeen", true);
         try {
@@ -1131,7 +1131,7 @@ public final class MinecraftLauncher extends JFrame {
                 + "</tr></table>"
                 + "<br><br>"
 
-                + "<p><a href='https://www.minecraft.net/'><b>MCLauncherRevive Modern Released</b></a></p>"
+                + "<p><a href='https://www.minecraft.net/'><b>MCLauncherRevival Alpha Released</b></a></p>"
                 + "<p>Surprise! The old launcher window has stumbled out of a 2011 hard drive and learned a new trick: "
                 + "Microsoft OAuth, Xbox Live, XSTS, Minecraft services, and profile lookup, all without asking for a raw password.</p>"
                 + "<p>+ Added browser-based Microsoft login<br>"
@@ -1139,14 +1139,14 @@ public final class MinecraftLauncher extends JFrame {
                 + "+ Added offline singleplayer for rainy afternoons<br>"
                 + "+ Changed the news panel to look like it still believes Tumblr is powering half the internet</p>"
                 + "<p>The update is available in this folder, enjoy!</p>"
-                + "<p>Happy mining from the MCLauncherRevive team.</p>"
+                + "<p>Happy mining from the MCLauncherRevival team.</p>"
 
                 + "<br><p><a href='https://www.minecraft.net/'><b>Minecraft Beta 1.8 and older - The Archive Update</b></a></p>"
                 + "<p>New mobs and new places to put your precious items:</p>"
                 + "<p>+ Added old-school terrain vibes<br>"
                 + "+ Added a version selector for Beta 1.8.x down through the earliest classic builds<br>"
                 + "+ Added official Mojang client download metadata<br>"
-                + "+ Added LWJGL natives that do not pretend to be normal jars<br>"
+                + "+ Added LWJGL natives handled as platform files<br>"
                 + "+ Added the sacred pre-hunger gameplay loop<br>"
                 + "+ Removed Herobrine from the OAuth redirect, probably</p>"
 
@@ -1154,12 +1154,12 @@ public final class MinecraftLauncher extends JFrame {
                 + "<table cellpadding='6' cellspacing='0' bgcolor='#0f0f0f' style='border:1px solid #555555'><tr>"
                 + "<td><img src='" + blockImageUrl() + "' width='72' height='72'></td>"
                 + "<td><font color='#eeeeee'><b>HUMBLE BLOCKJAM BUNDLE</b><br>"
-                + "Get 5 pretend indie games, 12 fake capes, and one emotionally important launcher window.</font></td>"
+                + "A nostalgic launcher panel for classic offline tinkering and careful testing.</font></td>"
                 + "</tr></table>"
 
                 + "<br><hr color='#333333'>"
-                + "<p><font color='#888888'>MCLauncherRevive Modern. Vibe-Coded with Codex. "
-                + "Not affiliated with Mojang or Microsoft. Fake articles, real nostalgia.</font></p>"
+                + "<p><font color='#888888'>MCLauncherRevival Alpha. "
+                + "Unofficial project. Not affiliated with Mojang or Microsoft.</font></p>"
                 + "</body></html>";
     }
 
@@ -1260,7 +1260,7 @@ public final class MinecraftLauncher extends JFrame {
                 + "+ Toggle Patch Notes Mode! to switch the news feed into concise patch-style notes.<br>"
                 + "+ Use Microsoft Login to refresh the online profile.<br>"
                 + "+ Use Forget Login to clear cached OAuth tokens.</p>"
-                + "<p><font color='#888888'>This keeps the old Profile Editor tab feeling, but avoids pretending to support complex profile features that the revived launcher does not need.</font></p>"
+                + "<p><font color='#888888'>This keeps the old Profile Editor tab feeling, but keeps unsupported complex profile features out of scope for this revival.</font></p>"
                 + "</body></html>";
     }
 
@@ -1270,7 +1270,7 @@ public final class MinecraftLauncher extends JFrame {
                 + "<p><font color='#ff9999'>" + escape(message) + "</font></p>"
                 + "<p>Offline singleplayer mode is still available from the bottom bar.</p>"
                 + "<hr color='#333333'>"
-                + "<p><font color='#888888'>Tip from the fake newsroom: if online login gets weird, Forget Login and try again.</font></p>"
+                + "<p><font color='#888888'>Tip: if online login gets weird, use Forget Login and try again.</font></p>"
                 + "</body></html>";
     }
 
@@ -1431,4 +1431,5 @@ public final class MinecraftLauncher extends JFrame {
         }
     }
 }
+
 

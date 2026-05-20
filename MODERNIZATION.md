@@ -1,4 +1,4 @@
-# MCLauncherRevive modernization notes
+# MCLauncherRevival modernization notes
 
 This project originally contains the February 2011 launcher unpacked as class files and resources. The legacy login code posts a username and password to `https://login.minecraft.net/` and can remember a password in `lastlogin`.
 
@@ -69,13 +69,13 @@ It does not install Java system-wide.
 The build creates:
 
 ```text
-MCLauncherRevive-modern.jar
+MCLauncherRevival.jar
 ```
 
 You can also run it directly:
 
 ```bat
-java -jar MCLauncherRevive-modern.jar
+java -jar MCLauncherRevival.jar
 ```
 
 ## How to use
@@ -128,3 +128,4 @@ Launch logs are written to:
 - `src/net/minecraft/StatusSink.java`
 - `build-win7.cmd`
 - `run-win7.cmd`
+

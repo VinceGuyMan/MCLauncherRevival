@@ -21,7 +21,7 @@ Write-Host "Downloading Eclipse Temurin 8 JDK from Adoptium..."
 Write-Host $apiUrl
 
 $client = New-Object Net.WebClient
-$client.Headers.Add("User-Agent", "MCLauncherRevive dependency downloader")
+$client.Headers.Add("User-Agent", "MCLauncherRevival dependency downloader")
 $client.DownloadFile($apiUrl, $zipPath)
 
 if (Test-Path $Destination) {
@@ -58,3 +58,4 @@ for ($i = 0; $i -lt 180; $i++) {
 }
 
 throw "The JDK zip was downloaded, but extraction did not produce java.exe and javac.exe."
+

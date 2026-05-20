@@ -50,10 +50,15 @@ Observed result:
 - The launcher starts in XP Offline mode.
 - Classic/offline Minecraft can launch.
 - One tested XP laptop ran Minecraft Beta 1.7.3 at around 15 FPS on the lowest settings.
+- Beta 1.4 also launched during testing, but on the test laptop it ran around 2-5 FPS.
 
 This confirms basic XP offline/classic compatibility, but it does not mean XP support is perfect.
 Performance depends heavily on the laptop hardware, graphics driver, Java version, and selected
 Minecraft version.
+
+Example field-test machine:
+
+![Windows XP test machine specs](screenshots/xp-test-specs.png)
 
 Requirements and caveats:
 
@@ -134,6 +139,10 @@ Recommended workflow:
    %APPDATA%\.minecraft\assets
    ```
 
+   Example: copying prepared folders from a newer PC to removable media:
+
+   ![Copying prepared .minecraft folders from a newer PC to removable media](screenshots/xp-files-to-removable-media.png)
+
 5. Paste them into the XP user's `.minecraft` folder:
 
    ```text
@@ -141,6 +150,10 @@ Recommended workflow:
    C:\Documents and Settings\<User>\Application Data\.minecraft\libraries
    C:\Documents and Settings\<User>\Application Data\.minecraft\assets
    ```
+
+   Example: copied folders on the Windows XP machine:
+
+   ![Prepared .minecraft folders copied from removable media to Windows XP](screenshots/xp-files-copied-to-xp.png)
 
 6. Start:
 

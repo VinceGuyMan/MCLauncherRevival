@@ -60,6 +60,10 @@ version needs.
    %APPDATA%\.minecraft\assets
    ```
 
+   Example: copying prepared folders from a newer PC to removable media:
+
+   ![Copying prepared .minecraft folders from a newer PC to removable media](screenshots/xp-files-to-removable-media.png)
+
 6. Paste them on Windows XP at:
 
    ```text
@@ -68,6 +72,10 @@ version needs.
    C:\Documents and Settings\<User>\Application Data\.minecraft\assets
    ```
 
+   Example: prepared folders copied from removable media to Windows XP:
+
+   ![Prepared .minecraft folders copied from removable media to Windows XP](screenshots/xp-files-copied-to-xp.png)
+
 7. Start MCLauncherRevival on XP:
 
    ```bat
@@ -75,6 +83,10 @@ version needs.
    ```
 
 8. Select or type the prepared version and click `Play Offline`.
+
+Example real XP test machine:
+
+![Windows XP test machine specs](screenshots/xp-test-specs.png)
 
 ## Optional manual jar method with MCVersions.net
 

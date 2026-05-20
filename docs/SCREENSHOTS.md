@@ -35,3 +35,13 @@ app.
 ## Repository/social preview
 
 ![MCLauncherRevival social preview artwork](screenshots/social-preview.png)
+
+## Windows XP field testing
+
+These images document the real Windows XP offline/classic testing workflow and file-transfer setup.
+
+![Windows XP test machine specs](screenshots/xp-test-specs.png)
+
+![Copying prepared .minecraft folders from a newer PC to removable media](screenshots/xp-files-to-removable-media.png)
+
+![Prepared .minecraft folders copied from removable media to Windows XP](screenshots/xp-files-copied-to-xp.png)

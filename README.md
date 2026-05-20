@@ -54,13 +54,20 @@ More screenshots and annotated UI guides are available in
 
 ## Installation / running
 
-Use the attached ZIP from the GitHub Releases page. Do not use GitHub's green
-**Code -> Download ZIP** source archive as the launcher package.
+Use the attached ZIP asset from the GitHub Releases page.
+
+Do not use these files for normal play:
+
+- GitHub's green **Code -> Download ZIP** button.
+- GitHub's auto-generated tag/source ZIP files.
+
+Those source archives are useful for reading or building the code, but they may not include
+`MCLauncherRevival.jar`. The attached release asset is the runnable package.
 
 The current alpha package is:
 
 ```text
-MCLauncherRevival-v0.2.5.zip
+MCLauncherRevival-v0.2.5-alpha.zip
 ```
 
 After extracting the release ZIP on Windows, run:

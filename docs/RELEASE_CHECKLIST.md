@@ -18,6 +18,9 @@ For `v0.2.5`:
 - Confirm no secrets, tokens, client secrets, or personal credentials are committed.
 - Confirm README instructions match the actual release files.
 - Confirm release zip contains only expected files.
+- Confirm `package-release.cmd` fails if `MCLauncherRevival.jar` is missing.
+- Confirm `package-release.cmd` prints the final ZIP contents.
+- Confirm the final ZIP includes `MCLauncherRevival.jar`.
 - Confirm antivirus false-positive risk is minimized by avoiding packed/obfuscated binaries.
 - Attach release zip to GitHub Releases manually.
 - Mark the release clearly as alpha.
@@ -40,6 +43,7 @@ Expected project files include:
 - `build-linux.sh`
 - `run-macos.sh`
 - `build-macos.sh`
+- `package-release.cmd`
 - `tools/download-temurin8-jdk.ps1`
 - `README.md`
 - `CHANGELOG.md`
@@ -67,6 +71,6 @@ Recommended release tag and artifact names:
 
 ```text
 v0.2.5
-MCLauncherRevival-v0.2.5.zip
+MCLauncherRevival-v0.2.5-alpha.zip
 MCLauncherRevival.jar
 ```

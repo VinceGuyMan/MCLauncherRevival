@@ -51,6 +51,27 @@ The normal `Start MCLauncherRevival.cmd` path can still be used on Windows 7 thr
 
 ## Troubleshooting
 
+### MCLauncherRevival.jar was not found
+
+This usually means you downloaded GitHub's source-code ZIP or auto-generated tag/source ZIP instead
+of the attached release package.
+
+XP mode expects `MCLauncherRevival.jar` to already be included in the extracted release folder. XP
+mode does not build from source automatically, and it does not try to download modern Java from
+Adoptium by default.
+
+Download the attached release ZIP from GitHub Releases, not the green **Code -> Download ZIP**
+source archive and not the tag/source ZIP.
+
+The correct release asset should be named like:
+
+```text
+MCLauncherRevival-v0.2.5-alpha.zip
+```
+
+If you only have the source archive, build `MCLauncherRevival.jar` on Windows 7 or newer, then copy
+the jar into the XP launcher folder.
+
 ### XP script says `choice` is not recognized
 
 Some Windows XP installs do not include `choice.exe`. The XP offline launcher path is designed to

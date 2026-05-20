@@ -4,13 +4,20 @@
 
 Alpha releases are distributed as attached ZIP files on GitHub Releases.
 
-Use the attached release ZIP, not GitHub's green **Code -> Download ZIP** source archive. The source
-archive is useful for code review, but it is not the same as the runnable release package.
+Use the attached release ZIP asset from GitHub Releases.
+
+Do not use these files for normal play:
+
+- GitHub's green **Code -> Download ZIP** button.
+- GitHub's auto-generated tag/source ZIP files.
+
+Those source archives are useful for reading or building the code, but they may not include
+`MCLauncherRevival.jar`. The attached release asset is the runnable package.
 
 For `v0.2.5`, download:
 
 ```text
-MCLauncherRevival-v0.2.5.zip
+MCLauncherRevival-v0.2.5-alpha.zip
 ```
 
 Extract it, then double-click:
@@ -30,7 +37,7 @@ Start MCLauncherRevival XP Offline.cmd
 Recommended release zip layout:
 
 ```text
-MCLauncherRevival-v0.2.5/
+MCLauncherRevival-v0.2.5-alpha/
   Start MCLauncherRevival.cmd
   Start MCLauncherRevival XP Offline.cmd
   run-win7.cmd
@@ -66,5 +73,7 @@ build-win7.cmd
 - macOS shell wrappers are included for preliminary testing, but native macOS field testing is still
   needed.
 - The launcher never asks for a raw Microsoft password.
-- If the jar is missing, `run-win7.cmd` will attempt to build it.
+- If the jar is missing on Windows 7 or newer, `run-win7.cmd` will attempt to build it.
+- If the jar is missing in XP offline mode, download the attached release ZIP instead of the
+  source-code or tag ZIP.
 

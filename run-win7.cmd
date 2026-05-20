@@ -13,8 +13,12 @@ if exist MCLauncherRevival.jar (
   if /I "%MCLAUNCHER_XP_MODE%"=="1" echo Using existing MCLauncherRevival.jar.
 ) else (
   if /I "%MCLAUNCHER_XP_MODE%"=="1" (
-    echo MCLauncherRevival.jar was not found, so a local build is required.
-    echo XP mode will not try to download Java automatically.
+    echo MCLauncherRevival.jar was not found.
+    echo You may have downloaded GitHub's source-code ZIP instead of the release package.
+    echo Download the attached release ZIP from GitHub Releases, or build the jar on Windows 7+ and copy it here.
+    echo XP offline mode runs the existing jar and does not build/download Java automatically.
+    pause
+    exit /b 1
   )
   call build-win7.cmd
   if errorlevel 1 exit /b 1

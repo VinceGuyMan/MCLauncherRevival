@@ -2,6 +2,11 @@
 
 ## v0.2.5
 
+- Clarified release-package docs so users do not accidentally use GitHub source-code or tag ZIPs
+  instead of the attached release asset.
+- Added `package-release.cmd` to build, stage, zip, list, and verify alpha release packages.
+- Improved XP-mode missing-jar output so it explains source ZIP vs release asset confusion and
+  stops cleanly instead of trying to build or download Java.
 - Added preliminary Linux `run-linux.sh` and `build-linux.sh` wrappers.
 - Added Linux compatibility documentation with honest testing limits and runtime requirements.
 - Added preliminary macOS `run-macos.sh` and `build-macos.sh` wrappers.

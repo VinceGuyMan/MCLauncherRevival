@@ -18,7 +18,7 @@ This is still alpha / experimental software.
 Use the attached GitHub Releases ZIP:
 
 ```text
-MCLauncherRevival-v0.2.5.zip
+MCLauncherRevival-v0.2.5-alpha.zip
 ```
 
 Do not use GitHub's green **Code -> Download ZIP** source archive as the runnable package. The source

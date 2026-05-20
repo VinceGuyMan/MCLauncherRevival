@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.2.5
+## v0.3.0-alpha
 
 - Clarified release-package docs so users do not accidentally use GitHub source-code or tag ZIPs
   instead of the attached release asset.
@@ -14,6 +14,9 @@
 - Added a manual XP Java setup guide for releases that cannot redistribute Java files publicly.
 - Improved XP-mode missing-jar output so it explains source ZIP vs release asset confusion and
   stops cleanly instead of trying to build or download Java.
+
+## v0.2.5
+
 - Added preliminary Linux `run-linux.sh` and `build-linux.sh` wrappers.
 - Added Linux compatibility documentation with honest testing limits and runtime requirements.
 - Added preliminary macOS `run-macos.sh` and `build-macos.sh` wrappers.

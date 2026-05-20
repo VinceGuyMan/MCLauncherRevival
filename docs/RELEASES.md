@@ -14,16 +14,16 @@ Do not use these files for normal play:
 Those source archives are useful for reading or building the code, but they may not include
 `MCLauncherRevival.jar`. The attached release asset is the runnable package.
 
-For `v0.2.5`, download:
+For `v0.3.0`, download:
 
 ```text
-MCLauncherRevival-v0.2.5-alpha.zip
+MCLauncherRevival-v0.3.0-alpha.zip
 ```
 
 If an XP bundled-Java package is published, it should be named:
 
 ```text
-MCLauncherRevival-v0.2.5-alpha-xp-bundled-java.zip
+MCLauncherRevival-v0.3.0-alpha-xp-bundled-java.zip
 ```
 
 That package is only for XP offline/classic use. It may include a maintainer-provided Java runtime
@@ -50,7 +50,7 @@ Start MCLauncherRevival XP Offline.cmd
 Recommended release zip layout:
 
 ```text
-MCLauncherRevival-v0.2.5-alpha/
+MCLauncherRevival-v0.3.0-alpha/
   Start MCLauncherRevival.cmd
   Start MCLauncherRevival XP Offline.cmd
   run-win7.cmd
@@ -69,7 +69,7 @@ MCLauncherRevival-v0.2.5-alpha/
 Recommended XP bundled-Java release zip layout:
 
 ```text
-MCLauncherRevival-v0.2.5-alpha-xp-bundled-java/
+MCLauncherRevival-v0.3.0-alpha-xp-bundled-java/
   Start MCLauncherRevival XP Offline.cmd
   Start MCLauncherRevival.cmd
   run-win7.cmd

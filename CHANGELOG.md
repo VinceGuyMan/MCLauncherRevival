@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added preliminary Linux `run-linux.sh` and `build-linux.sh` wrappers.
+- Added Linux compatibility documentation with honest testing limits and runtime requirements.
 - Fixed XP offline startup scripts so XP mode no longer depends on `choice.exe`.
 - XP mode now avoids the Temurin/Adoptium auto-download path by default and asks users to install or
   extract Java 7 or an XP-compatible Java 8 runtime manually.

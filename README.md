@@ -48,7 +48,8 @@ More screenshots and annotated UI guides are available in
 | Version selection | Working / needs broader testing | Classic versions are listed from Mojang metadata where available. |
 | Windows 7-11 support | Primary target | Java 8 is recommended, especially for old Minecraft/LWJGL behavior. |
 | Windows XP / older Windows behavior | Offline/classic only | Online login and fresh downloads are best-effort due to TLS, certificate, and browser limitations. |
-| macOS/Linux behavior | Needs testing | The Java UI may run, but scripts and old LWJGL natives are Windows-focused. |
+| Linux behavior | Preliminary | Shell wrappers are included, but real distro testing is still needed. |
+| macOS behavior | Needs testing | The Java UI may run, but packaging/scripts are not macOS-focused yet. |
 | Release packaging | Alpha packages available | Use the attached GitHub Releases ZIP, not the source-code ZIP. |
 
 ## Installation / running
@@ -79,6 +80,15 @@ Start MCLauncherRevival XP Offline.cmd
 The XP shortcut starts the launcher with XP/offline compatibility flags. It does not make modern
 Microsoft login reliable on XP.
 
+For preliminary Linux testing, use:
+
+```sh
+chmod +x run-linux.sh build-linux.sh
+./run-linux.sh
+```
+
+See [docs/LINUX.md](docs/LINUX.md) before relying on Linux behavior.
+
 ## Building from source
 
 1. Install a Java JDK 8.
@@ -89,10 +99,16 @@ Microsoft login reliable on XP.
    cd MCLauncherRevival
    ```
 
-3. Run the build script:
+3. Run the build script on Windows:
 
    ```bat
    build-win7.cmd
+   ```
+
+   Or on Linux:
+
+   ```sh
+   ./build-linux.sh
    ```
 
 4. The build output is:
@@ -108,8 +124,8 @@ compatibility.
 
 - The launcher should never ask users to type their Microsoft password directly into the app.
 - Sign-in should happen through the browser/OAuth flow where implemented.
-- OAuth tokens/settings are stored locally under `%APPDATA%\.minecraft\launcher_revive` when
-  login/config data is saved.
+- OAuth tokens/settings are stored locally under the user's `.minecraft\launcher_revive` or
+  `.minecraft/launcher_revive` folder when login/config data is saved.
 - The `Forget Login` button is intended to remove saved login data.
 - This project is unofficial and alpha-quality. Review the source before trusting it with an
   account.
@@ -126,8 +142,8 @@ See [SECURITY.md](SECURITY.md) and [Trust and Safety](docs/TRUST_AND_SAFETY.md) 
 - Older operating systems may have limited online login support due to TLS/root certificate/browser
   limits.
 - Some Minecraft versions may require specific Java/LWJGL combinations.
-- Packaging and GitHub releases are still in progress.
-- macOS and Linux behavior is not a primary target yet.
+- Linux behavior has preliminary scripts/docs, but still needs native distro field testing.
+- macOS behavior is not a primary target yet.
 
 ## Roadmap
 

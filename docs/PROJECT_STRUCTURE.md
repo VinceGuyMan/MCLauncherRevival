@@ -17,6 +17,8 @@ Start MCLauncherRevival.cmd              Friendly Windows entrypoint
 Start MCLauncherRevival XP Offline.cmd   XP offline/classic entrypoint
 run-win7.cmd                             Runtime helper
 build-win7.cmd                           Java build helper
+run-linux.sh                             Preliminary Linux runtime helper
+build-linux.sh                           Preliminary Linux build helper
 README.md                                Main GitHub project page
 MODERNIZATION.md                         Technical modernization notes
 SECURITY.md                              Auth/token safety notes

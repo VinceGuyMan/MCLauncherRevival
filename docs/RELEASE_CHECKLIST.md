@@ -10,6 +10,8 @@ For `v0.2.0-alpha`:
 - Confirm Windows 7 dependency setup can reuse `tools\jdk8` or `tools\temurin8-jdk.zip`.
 - Confirm the Microsoft login prompt opens before the browser and supports redirect paste fallback.
 - Confirm the XErr `2148916233` troubleshooting note points users to Xbox profile setup.
+- Confirm Linux shell scripts pass syntax checks and are clearly marked as preliminary until tested
+  on a real distro.
 - Confirm saved tokens/settings can be removed if implemented.
 - Confirm no secrets, tokens, client secrets, or personal credentials are committed.
 - Confirm README instructions match the actual release files.
@@ -32,6 +34,8 @@ Expected project files include:
 - `Start MCLauncherRevival XP Offline.cmd`
 - `run-win7.cmd`
 - `build-win7.cmd`
+- `run-linux.sh`
+- `build-linux.sh`
 - `tools/download-temurin8-jdk.ps1`
 - `README.md`
 - `CHANGELOG.md`

@@ -6,6 +6,10 @@
 /tools/jdk8/
 /tools/temurin8-jdk.zip
 
+# Never commit local credential scratch files
+*token*
+*credentials*
+
 # Local legacy VCS metadata from the recovered launcher archive
 /.svn/
 

@@ -27,7 +27,14 @@ Use this before posting the project to GitHub.
 - `.gitignore`
 - `.gitattributes`
 - `.github/workflows/build.yml`
+- `docs/WINDOWS_7.md`
 - `docs/WINDOWS_XP.md`
+- `docs/AUTH_FLOW.md`
+- `docs/RELEASES.md`
+- `docs/DISCLAIMER.md`
+- `docs/PROJECT_STRUCTURE.md`
+- `docs/screenshots/frontpage.png`
+- `docs/screenshots/social-preview.png`
 
 ## Do not include in source repository
 

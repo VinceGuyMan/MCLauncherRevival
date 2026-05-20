@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+- Fixed XP offline startup scripts so XP mode no longer depends on `choice.exe`.
+- XP mode now avoids the Temurin/Adoptium auto-download path by default and asks users to install or
+  extract Java 7 or an XP-compatible Java 8 runtime manually.
+- XP release packages now run an existing `MCLauncherRevival.jar` with `java.exe` without requiring
+  `javac.exe` or `jar.exe` unless a source build is actually needed.
+- Added Windows XP troubleshooting notes for missing `choice.exe`, Java runtime setup, and the
+  limits of modern login/downloads on XP.
+
 ## v0.2.0-alpha
 
 ### Release packaging and Windows 7 testing

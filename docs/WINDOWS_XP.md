@@ -49,6 +49,39 @@ Recommended:
 
 The normal `Start MCLauncherRevival.cmd` path can still be used on Windows 7 through Windows 11.
 
+## Troubleshooting
+
+### XP script says `choice` is not recognized
+
+Some Windows XP installs do not include `choice.exe`. The XP offline launcher path is designed to
+avoid `choice.exe` and should use plain command-prompt behavior instead.
+
+If Java is missing, XP mode does not try to download Eclipse Temurin from Adoptium by default.
+XP-era TLS, root certificates, and modern Java support are unreliable for that path.
+
+Use one of these options instead:
+
+- Install Java 7 on the XP machine.
+- Install an XP-compatible Java 8 runtime if you already have one.
+- Manually extract a compatible runtime to `tools\jdk8`.
+
+### Release package should run the included jar
+
+When using the GitHub Releases ZIP, XP offline/classic mode should run the included
+`MCLauncherRevival.jar` and avoid rebuilding when possible.
+
+Only source builds require `javac.exe` and `jar.exe`. Running the packaged jar only requires
+`java.exe`.
+
+If Java is not found, the script should print:
+
+```text
+Windows XP offline/classic mode needs Java 7 or an XP-compatible Java 8 runtime already installed or extracted at tools\jdk8.
+```
+
+Modern Microsoft login and fresh HTTPS downloads are not reliable on XP. Use Offline Play with
+versions that are already downloaded whenever possible.
+
 ## Download versions on another PC if needed
 
 If XP cannot download version files because HTTPS fails, launch the desired version once on a newer

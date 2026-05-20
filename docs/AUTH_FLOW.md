@@ -50,6 +50,12 @@ The launcher does not ask for or store raw Microsoft passwords.
 
 Use `Forget Login` to clear cached OAuth tokens.
 
+## Xbox profile requirement
+
+The Microsoft account must have an Xbox profile before the Xbox Live/XSTS step can succeed. If XSTS
+fails with `XErr: 2148916233`, open <https://start.ui.xboxlive.com/>, finish Xbox profile setup,
+then use `Forget Login` and try `Microsoft Login` again.
+
 ## Windows XP note
 
 Windows XP is supported for offline/classic play. Modern Microsoft login and fresh HTTPS downloads

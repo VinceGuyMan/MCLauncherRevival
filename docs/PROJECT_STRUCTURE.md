@@ -47,6 +47,15 @@ resources/net/minecraft/
 These files are copied into the jar under `/net/minecraft/` at build time so existing resource
 lookups remain simple.
 
+## Screenshots
+
+```text
+docs/screenshots/
+```
+
+Contains README screenshots, annotated UI guides, tab captures, login-flow captures, and social
+preview artwork.
+
 ## Generated/local files
 
 These should not be committed:

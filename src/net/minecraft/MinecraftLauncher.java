@@ -131,9 +131,14 @@ public final class MinecraftLauncher extends JFrame {
                 refreshActiveTab();
             }
         });
+        int localVersions = loadLocalVersions();
         refreshActiveTab();
         if (xpCompatibilityMode()) {
-            status("XP mode: online version list unavailable. Type a version manually or copy prepared version files from a newer PC.");
+            if (localVersions > 1) {
+                status("XP mode: loaded " + localVersions + " local version(s). Use Play Offline.");
+            } else {
+                status("XP mode: online version list unavailable. Type a version manually or copy prepared version files from a newer PC.");
+            }
             appendLog("Windows XP compatibility mode is active. Microsoft login is disabled/best-effort. Fresh downloads may fail. Offline play works best with pre-cached .minecraft files.");
         } else {
             loadVersionsAsync();
@@ -1071,6 +1076,47 @@ public final class MinecraftLauncher extends JFrame {
         Object value = memoryBox.getSelectedItem();
         String text = value == null ? "" : value.toString();
         return BetaLauncher.memoryPreview(text);
+    }
+
+    private int loadLocalVersions() {
+        java.io.File versionsDir = new java.io.File(TokenCache.minecraftDir(), "versions");
+        if (!versionsDir.exists() || !versionsDir.isDirectory()) {
+            return 0;
+        }
+        java.io.File[] folders = versionsDir.listFiles();
+        if (folders == null) {
+            return 0;
+        }
+        java.util.ArrayList<String> found = new java.util.ArrayList<String>();
+        for (int i = 0; i < folders.length; i++) {
+            java.io.File folder = folders[i];
+            if (folder == null || !folder.isDirectory()) {
+                continue;
+            }
+            String id = folder.getName();
+            java.io.File jar = new java.io.File(folder, id + ".jar");
+            java.io.File json = new java.io.File(folder, id + ".json");
+            if (jar.exists() && json.exists()) {
+                found.add(id);
+            }
+        }
+        if (found.size() == 0) {
+            return 0;
+        }
+        java.util.Collections.sort(found);
+        String selected = settings.get("version", selectedVersion());
+        versionBox.removeAllItems();
+        for (int i = 0; i < found.size(); i++) {
+            versionBox.addItem(found.get(i));
+        }
+        if (!found.contains(BetaLauncher.DEFAULT_VERSION)) {
+            versionBox.addItem(BetaLauncher.DEFAULT_VERSION);
+        }
+        versionBox.setSelectedItem(selected);
+        allVersions = found;
+        appendLog("Loaded " + found.size() + " local version(s) from " + versionsDir.getAbsolutePath() + ".");
+        updateRedownloadVisibility();
+        return found.size();
     }
 
     private void loadVersionsAsync() {

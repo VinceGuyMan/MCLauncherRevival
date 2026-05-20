@@ -2,6 +2,8 @@
 
 ## v0.3.0-alpha
 
+- The launcher now scans `.minecraft\versions` on startup and adds locally prepared versions to
+  the dropdown, which helps XP show versions that were copied from a newer PC.
 - Added a macOS compatibility warning before launching old Beta/Alpha clients.
 - Added macOS Launcher Log/Profile notes explaining blank-window LWJGL/OpenGL/native compatibility
   risks and where to inspect `last-launch.log`.

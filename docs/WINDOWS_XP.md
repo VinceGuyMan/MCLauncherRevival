@@ -181,6 +181,10 @@ If XP/Java 7 cannot load Mojang's modern HTTPS version manifest, `b1.7.3` may be
 shown in the version selector. You can still type a version manually if the matching files already
 exist locally.
 
+MCLauncherRevival also scans `.minecraft\versions` on startup. Any local version folder that already
+contains both `<version>.jar` and `<version>.json` should appear in the version dropdown, even when
+XP cannot load Mojang's online version manifest.
+
 For a dedicated checklist, see [XP Version Setup](XP_VERSION_SETUP.md).
 
 Do not bundle Minecraft client jars, libraries, assets, or Mojang game files in MCLauncherRevival

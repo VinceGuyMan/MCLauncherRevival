@@ -6,6 +6,8 @@
   Adoptium.
 - Improved JDK setup fallback behavior so an existing `tools\jdk8` install or local
   `tools\temurin8-jdk.zip` is used before downloading again.
+- Changed Microsoft login opening to use the user's default browser instead of the old Internet
+  Explorer COM browser helper.
 - Rebuilt the February 2011-style launcher as a small Java launcher compiled as Java 7 bytecode.
 - Added Windows XP offline/classic mode support.
 - Replaced legacy Mojang username/password login with Microsoft browser OAuth.

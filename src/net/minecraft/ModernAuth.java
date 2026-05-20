@@ -57,12 +57,6 @@ final class ModernAuth {
     }
 
     private MicrosoftToken browserLogin() throws IOException {
-        try {
-            return windowsDesktopBrowserLogin();
-        } catch (IOException e) {
-            status.status("Windows browser helper did not capture login; falling back to pasted URL.");
-        }
-
         String loginUrl = AUTHORIZE_URL
                 + "?client_id=" + encode(CLIENT_ID)
                 + "&redirect_uri=" + encode(REDIRECT_URI)
@@ -71,10 +65,10 @@ final class ModernAuth {
                 + "&prompt=select_account"
                 + "&lw=1&fl=dob,easi2&xsup=1&nopa=2";
 
-        status.status("Opening Microsoft browser login...");
+        status.status("Opening Microsoft login in your default browser...");
         openBrowser(loginUrl);
         String redirected = status.ask("Microsoft Login",
-                "Sign in in the browser window that opened.\n\n"
+                "Sign in using your default browser.\n\n"
                         + "When it redirects to a mostly blank page, copy the full address "
                         + "from the browser bar and paste it here.\n"
                         + "If it changes to removed=true, try again and copy it as soon as the blank page appears.\n\n"
@@ -97,83 +91,6 @@ final class ModernAuth {
                     + (error == null ? "." : ": " + error));
         }
 
-        return exchangeAuthorizationCode(code, REDIRECT_URI);
-    }
-
-    private MicrosoftToken windowsDesktopBrowserLogin() throws IOException {
-        String os = System.getProperty("os.name", "").toLowerCase();
-        if (os.indexOf("win") < 0) {
-            throw new IOException("Windows browser helper is only available on Windows.");
-        }
-
-        File outFile = File.createTempFile("mclauncher-oauth-", ".txt");
-        File scriptFile = File.createTempFile("mclauncher-oauth-", ".ps1");
-        outFile.delete();
-
-            String loginUrl = AUTHORIZE_URL
-                    + "?client_id=" + encode(CLIENT_ID)
-                    + "&redirect_uri=" + encode(REDIRECT_URI)
-                    + "&response_type=token"
-                    + "&scope=" + encode(SCOPE)
-                    + "&prompt=select_account"
-                    + "&lw=1&fl=dob,easi2&xsup=1&nopa=2";
-
-        String script = "$ErrorActionPreference = 'Stop'\r\n"
-                + "$url = " + psQuote(loginUrl) + "\r\n"
-                + "$out = " + psQuote(outFile.getAbsolutePath()) + "\r\n"
-                + "$ie = New-Object -ComObject InternetExplorer.Application\r\n"
-                + "$ie.Visible = $true\r\n"
-                + "$ie.Navigate2($url)\r\n"
-                + "$deadline = (Get-Date).AddMinutes(5)\r\n"
-                + "while ((Get-Date) -lt $deadline) {\r\n"
-                + "  Start-Sleep -Milliseconds 100\r\n"
-                + "  try { $loc = $ie.LocationURL } catch { $loc = '' }\r\n"
-                + "  if ($loc -like 'https://login.live.com/oauth20_desktop.srf*' "
-                + "-and ($loc -match 'code=' -or $loc -match 'access_token=')) {\r\n"
-                + "    [IO.File]::WriteAllText($out, $loc, [Text.Encoding]::UTF8)\r\n"
-                + "    Start-Sleep -Milliseconds 300\r\n"
-                + "    try { $ie.Quit() } catch {}\r\n"
-                + "    exit 0\r\n"
-                + "  }\r\n"
-                + "}\r\n"
-                + "try { $ie.Quit() } catch {}\r\n"
-                + "exit 2\r\n";
-        writeText(scriptFile, script);
-
-        status.status("Opening Microsoft login in a Windows browser helper...");
-        Process process;
-        try {
-            process = new ProcessBuilder("powershell", "-NoProfile", "-ExecutionPolicy", "Bypass",
-                    "-File", scriptFile.getAbsolutePath()).start();
-        } catch (IOException e) {
-            throw new IOException("Could not start PowerShell browser helper.", e);
-        }
-
-        int exit;
-        try {
-            exit = process.waitFor();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new IOException("Microsoft login was interrupted.");
-        } finally {
-            scriptFile.delete();
-        }
-
-        if (exit != 0 || !outFile.exists()) {
-            outFile.delete();
-            throw new IOException("Browser helper did not capture the OAuth redirect.");
-        }
-
-        String redirected = readAll(new java.io.FileInputStream(outFile)).trim();
-        outFile.delete();
-        String accessToken = queryValue(redirected, "access_token");
-        if (accessToken != null && accessToken.length() > 0) {
-            return new MicrosoftToken(accessToken);
-        }
-        String code = queryValue(redirected, "code");
-        if (code == null || code.length() == 0) {
-            throw new IOException("Browser helper captured the redirect, but no code was present.");
-        }
         return exchangeAuthorizationCode(code, REDIRECT_URI);
     }
 
@@ -334,8 +251,21 @@ final class ModernAuth {
         try {
             if (Desktop.isDesktopSupported()) {
                 Desktop.getDesktop().browse(new URI(uri));
+                return;
             }
         } catch (Throwable ignored) {
+        }
+        String os = System.getProperty("os.name", "").toLowerCase();
+        if (os.indexOf("win") >= 0) {
+            try {
+                new ProcessBuilder("rundll32", "url.dll,FileProtocolHandler", uri).start();
+                return;
+            } catch (Throwable ignored) {
+            }
+            try {
+                new ProcessBuilder("cmd", "/c", "start", "", uri).start();
+            } catch (Throwable ignored) {
+            }
         }
     }
 

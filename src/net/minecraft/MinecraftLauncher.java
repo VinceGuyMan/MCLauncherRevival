@@ -1340,8 +1340,8 @@ public final class MinecraftLauncher extends JFrame {
                         setNewsHtml("<html><body text='#e8e8e8' link='#aaaaff' style='font-family:Verdana,Arial,sans-serif;font-size:11px;margin:24px;background-color:transparent'>"
                                 + "<font size='+3'><b>Microsoft Login</b></font><br><br>"
                                 + "<p>" + escape(message) + "</p>"
-                                + "<p>The launcher uses a Windows browser helper to catch the OAuth URL before Microsoft changes it to <b>removed=true</b>. "
-                                + "If that helper cannot capture it, the launcher falls back to a paste-url prompt.</p>"
+                                + "<p>The launcher opens Microsoft OAuth in your default browser. "
+                                + "After login, paste the final redirect URL back into the launcher when prompted.</p>"
                                 + "</body></html>");
                     }
                 }

@@ -1,0 +1,26 @@
+# Build output
+/build/
+/MCLauncherRevive-modern.jar
+
+# Local downloaded dependencies
+/tools/jdk8/
+/tools/temurin8-jdk.zip
+
+# Local legacy VCS metadata from the recovered launcher archive
+/.svn/
+
+# Runtime/cache/log leftovers
+*.log
+*.tmp
+hs_err_pid*.log
+replay_pid*.log
+
+# IDE/editor metadata
+/.idea/
+/.vscode/
+*.iml
+
+# OS noise
+.DS_Store
+Thumbs.db
+desktop.ini

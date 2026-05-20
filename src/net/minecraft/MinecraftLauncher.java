@@ -1353,7 +1353,16 @@ public final class MinecraftLauncher extends JFrame {
             try {
                 SwingUtilities.invokeAndWait(new Runnable() {
                     public void run() {
-                        result[0] = JOptionPane.showInputDialog(MinecraftLauncher.this, message, title, JOptionPane.PLAIN_MESSAGE);
+                        JOptionPane pane = new JOptionPane(message, JOptionPane.PLAIN_MESSAGE,
+                                JOptionPane.OK_CANCEL_OPTION);
+                        pane.setWantsInput(true);
+                        javax.swing.JDialog dialog = pane.createDialog(MinecraftLauncher.this, title);
+                        dialog.setAlwaysOnTop(true);
+                        dialog.setVisible(true);
+                        Object value = pane.getInputValue();
+                        if (value != null && value != JOptionPane.UNINITIALIZED_VALUE) {
+                            result[0] = String.valueOf(value);
+                        }
                     }
                 });
             } catch (Exception e) {

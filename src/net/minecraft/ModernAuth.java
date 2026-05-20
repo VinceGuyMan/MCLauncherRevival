@@ -1,6 +1,9 @@
 package net.minecraft;
 
 import java.awt.Desktop;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -65,15 +68,39 @@ final class ModernAuth {
                 + "&prompt=select_account"
                 + "&lw=1&fl=dob,easi2&xsup=1&nopa=2";
 
-        status.status("Opening Microsoft login in your default browser...");
-        openBrowser(loginUrl);
+        final String urlToOpen = loginUrl;
+        final String clipboardBefore = clipboardText();
+        status.status("Opening Microsoft login in your default browser. Paste the final redirect URL when prompted.");
+        Thread opener = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(500L);
+                } catch (InterruptedException ignored) {
+                }
+                openBrowser(urlToOpen);
+            }
+        }, "MCLauncherRevival Microsoft login opener");
+        opener.setDaemon(true);
+        opener.start();
+
         String redirected = status.ask("Microsoft Login",
-                "Sign in using your default browser.\n\n"
+                "A Microsoft login page is opening in your default browser.\n\n"
+                        + "Keep this box open while you sign in.\n"
                         + "When it redirects to a mostly blank page, copy the full address "
                         + "from the browser bar and paste it here.\n"
+                        + "If you copy the address but cannot paste it here, close this box; "
+                        + "the launcher will also check your clipboard.\n\n"
                         + "If it changes to removed=true, try again and copy it as soon as the blank page appears.\n\n"
                         + "It should start with:\n"
                         + REDIRECT_URI + "#access_token=");
+
+        String clipboardAfter = clipboardText();
+        if (!hasLoginResult(redirected) && clipboardAfter != null
+                && !clipboardAfter.equals(clipboardBefore) && hasLoginResult(clipboardAfter)) {
+            status.status("Using Microsoft login redirect URL from clipboard.");
+            redirected = clipboardAfter;
+        }
+
         if (redirected == null || redirected.trim().length() == 0) {
             throw new IOException("Microsoft login was cancelled.");
         }
@@ -313,6 +340,28 @@ final class ModernAuth {
 
     private static String encode(String value) throws IOException {
         return URLEncoder.encode(value, "UTF-8");
+    }
+
+    private static boolean hasLoginResult(String value) throws IOException {
+        if (value == null || value.trim().length() == 0) {
+            return false;
+        }
+        String trimmed = value.trim();
+        return trimmed.indexOf(REDIRECT_URI) >= 0
+                && (queryValue(trimmed, "access_token") != null
+                || queryValue(trimmed, "code") != null
+                || queryValue(trimmed, "error") != null
+                || queryValue(trimmed, "error_description") != null);
+    }
+
+    private static String clipboardText() {
+        try {
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            Object value = clipboard.getData(DataFlavor.stringFlavor);
+            return value == null ? null : String.valueOf(value);
+        } catch (Throwable ignored) {
+            return null;
+        }
     }
 
     private static String psQuote(String value) {

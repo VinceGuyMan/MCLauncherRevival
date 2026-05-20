@@ -36,6 +36,40 @@ not include `MCLauncherRevival.jar`.
 XP remains offline/classic only. Modern Microsoft login and fresh HTTPS downloads are best-effort on
 XP because of old TLS, certificate, browser, and Java limitations.
 
+## Windows XP offline version preparation
+
+Windows XP / Java 7 can fail modern HTTPS downloads with errors such as `handshake_failure`,
+`Received fatal alert`, `PKIX`, or `unable to find valid certification path`.
+
+New behavior:
+
+- XP mode checks local selected-version files before trying modern HTTPS downloads.
+- If selected version files are missing, the launcher shows a friendly copy-files message instead of
+  surfacing the raw TLS error first.
+- If Mojang's online version manifest cannot load on XP, the launcher keeps `b1.7.3` as a fallback
+  and tells users they can type a version manually if the files already exist locally.
+- Launcher Log and Profile Editor now explain that offline play works best with pre-cached
+  `.minecraft` `versions`, `libraries`, and `assets`.
+
+XP users should launch/download the desired version once on Windows 7 or newer, then copy:
+
+```text
+%APPDATA%\.minecraft\versions
+%APPDATA%\.minecraft\libraries
+%APPDATA%\.minecraft\assets
+```
+
+to the XP user's `.minecraft` folder:
+
+```text
+C:\Documents and Settings\<User>\Application Data\.minecraft\versions
+C:\Documents and Settings\<User>\Application Data\.minecraft\libraries
+C:\Documents and Settings\<User>\Application Data\.minecraft\assets
+```
+
+Minecraft client jars, libraries, assets, and Mojang game files are not bundled with
+MCLauncherRevival. Users must own Minecraft Java Edition and prepare/copy their own local files.
+
 New XP Java support:
 
 - XP mode prefers `tools\java7\bin\java.exe` when present.

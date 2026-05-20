@@ -44,7 +44,7 @@ echo   %~dp0tools\jdk8
 echo.
 choice /C YN /M "Download Java JDK 8 now"
 if errorlevel 2 (
-  echo Launch cancelled. Install Java 8 manually, then run this again.
+  echo Launch cancelled. Install Java 8 manually on Windows 7 or newer, or Java 7 / XP-compatible Java 8 on Windows XP, then run this again.
   pause
   exit /b 1
 )
@@ -52,7 +52,7 @@ if not exist "%~dp0tools" mkdir "%~dp0tools"
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0tools\download-temurin8-jdk.ps1" -Destination "%~dp0tools\jdk8"
 if errorlevel 1 (
   echo Java download failed.
-  echo You can manually install Java 8 and rerun this file.
+  echo You can manually install Java 8 on Windows 7 or newer, or Java 7 / XP-compatible Java 8 on Windows XP, and rerun this file.
   pause
   exit /b 1
 )
@@ -71,12 +71,12 @@ for /d %%D in ("%~dp0tools\jdk8\*") do (
 where java >nul 2>nul
 if errorlevel 1 (
   echo Java still was not found after dependency setup.
-  echo Install Java 8 manually, or check tools\jdk8.
+  echo Install Java manually, or check tools\jdk8.
   pause
   exit /b 1
 )
 
-java -jar MCLauncherRevive-modern.jar
+java %MCLAUNCHER_JAVA_OPTS% -jar MCLauncherRevive-modern.jar
 if errorlevel 1 (
   echo Launcher exited with an error.
   pause

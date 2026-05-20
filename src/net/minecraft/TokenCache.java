@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -155,8 +154,16 @@ final class TokenCache {
             target.setWritable(true, true);
         } catch (Throwable ignored) {
         }
+        hideOnWindows(target);
+    }
+
+    private static void hideOnWindows(File target) {
+        String os = System.getProperty("os.name", "").toLowerCase(Locale.ENGLISH);
+        if (!os.contains("win")) {
+            return;
+        }
         try {
-            Files.setAttribute(target.toPath(), "dos:hidden", Boolean.TRUE);
+            new ProcessBuilder("attrib", "+H", target.getAbsolutePath()).start().waitFor();
         } catch (Throwable ignored) {
         }
     }

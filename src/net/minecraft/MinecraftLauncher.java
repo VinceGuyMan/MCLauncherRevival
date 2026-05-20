@@ -40,7 +40,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -77,6 +76,7 @@ public final class MinecraftLauncher extends JFrame {
     private String activeTab = "notes";
 
     public static void main(String[] args) {
+        configureCompatibilityProperties();
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         } catch (Exception ignored) {
@@ -86,6 +86,12 @@ public final class MinecraftLauncher extends JFrame {
                 new MinecraftLauncher().setVisible(true);
             }
         });
+    }
+
+    private static void configureCompatibilityProperties() {
+        if (System.getProperty("https.protocols") == null) {
+            System.setProperty("https.protocols", "TLSv1.2,TLSv1.1,TLSv1");
+        }
     }
 
     private MinecraftLauncher() {
@@ -109,6 +115,10 @@ public final class MinecraftLauncher extends JFrame {
         root.add(buildBottomBar(), BorderLayout.SOUTH);
 
         playOnlineButton.setEnabled(false);
+        if (xpCompatibilityMode()) {
+            loginButton.setEnabled(false);
+            signOutButton.setEnabled(false);
+        }
         loadSavedSettings();
         updateJavaStatusLabel();
         warnIfJavaUnusual();
@@ -122,9 +132,14 @@ public final class MinecraftLauncher extends JFrame {
             }
         });
         refreshActiveTab();
-        loadVersionsAsync();
+        if (xpCompatibilityMode()) {
+            status("XP offline mode: use a version already downloaded, then Play Offline.");
+            appendLog("Windows XP compatibility mode is active. Microsoft login and fresh online downloads may not work on XP-era TLS/browser stacks.");
+        } else {
+            loadVersionsAsync();
+        }
         AuthProfile cached = tokenCache.cachedProfile();
-        if (cached != null) {
+        if (cached != null && !xpCompatibilityMode()) {
             currentProfile = cached;
             offlineName.setText(cached.name);
             playOnlineButton.setEnabled(true);
@@ -480,6 +495,11 @@ public final class MinecraftLauncher extends JFrame {
     }
 
     private void doMicrosoftLogin(final boolean launchAfterLogin) {
+        if (xpCompatibilityMode()) {
+            status("Microsoft Login is disabled in XP offline mode.");
+            setNewsHtml(errorNews("Windows XP offline mode is enabled. Use Play Offline with versions that are already downloaded. Modern Microsoft login usually needs newer TLS/browser support than XP provides."));
+            return;
+        }
         setBusy(true);
         status("Starting Microsoft browser login...");
         Thread worker = new Thread(new Runnable() {
@@ -542,13 +562,14 @@ public final class MinecraftLauncher extends JFrame {
     }
 
     private void setBusy(boolean busy) {
+        boolean xp = xpCompatibilityMode();
         setCursor(Cursor.getPredefinedCursor(busy ? Cursor.WAIT_CURSOR : Cursor.DEFAULT_CURSOR));
-        loginButton.setEnabled(!busy);
+        loginButton.setEnabled(!busy && !xp);
         playOfflineButton.setEnabled(!busy);
         randomVersionButton.setEnabled(!busy);
         redownloadButton.setEnabled(!busy);
-        playOnlineButton.setEnabled(!busy && currentProfile != null);
-        signOutButton.setEnabled(!busy);
+        playOnlineButton.setEnabled(!busy && currentProfile != null && !xp);
+        signOutButton.setEnabled(!busy && !xp);
     }
 
     private void status(String message) {
@@ -563,7 +584,7 @@ public final class MinecraftLauncher extends JFrame {
             javaStatusLabel.setText("Java: " + javaRuntimeShort() + " ready");
             javaStatusLabel.setForeground(new Color(45, 95, 45));
         } else {
-            javaStatusLabel.setText("Java: " + javaRuntimeShort() + " - Java 8 recommended");
+            javaStatusLabel.setText("Java: " + javaRuntimeShort() + (xpCompatibilityMode() ? " - XP offline mode" : " - Java 8 recommended"));
             javaStatusLabel.setForeground(new Color(135, 80, 20));
         }
         javaStatusLabel.setToolTipText(warning.length() == 0 ? "Java runtime looks good for the revived launcher." : warning);
@@ -588,6 +609,15 @@ public final class MinecraftLauncher extends JFrame {
 
     private static String javaWarningText() {
         int major = javaMajorVersion();
+        if (xpCompatibilityMode()) {
+            if (major == 0) {
+                return "Windows XP compatibility mode is active. Java version could not be detected; Java 7 or an XP-compatible Java 8 build is recommended.";
+            }
+            if (major < 7) {
+                return "Windows XP compatibility mode needs Java 7 or an XP-compatible Java 8 build.";
+            }
+            return "Windows XP compatibility mode is active. Offline play can work, but Microsoft login and fresh downloads may fail because XP-era TLS/browser support is limited.";
+        }
         if (major == 0) {
             return "Could not detect Java version. If old Minecraft refuses to start, try Java 8.";
         }
@@ -598,6 +628,22 @@ public final class MinecraftLauncher extends JFrame {
             return "Old Beta/Alpha Minecraft is happiest on Java 8. If launch fails or the window closes, run this launcher with Java 8.";
         }
         return "";
+    }
+
+    private static String javaSafetySummary() {
+        String warning = javaWarningText();
+        if (warning.length() > 0) {
+            return warning;
+        }
+        return xpCompatibilityMode() ? "XP compatibility mode active." : "Looks good. Java 8 detected.";
+    }
+
+    private static boolean xpCompatibilityMode() {
+        if (Boolean.getBoolean("mclauncher.xpMode")) {
+            return true;
+        }
+        String os = System.getProperty("os.name", "").toLowerCase();
+        return os.indexOf("windows xp") >= 0;
     }
 
     private static int javaMajorVersion() {
@@ -909,7 +955,7 @@ public final class MinecraftLauncher extends JFrame {
             if (encoded == null) {
                 continue;
             }
-            String decoded = new String(Base64.getDecoder().decode(encoded), "UTF-8");
+            String decoded = new String(decodeBase64(encoded), "UTF-8");
             Map<String, Object> texturesRoot = Json.object(Json.parse(decoded));
             Map<String, Object> textures = Json.object(texturesRoot.get("textures"));
             Map<String, Object> skin = Json.object(textures == null ? null : textures.get("SKIN"));
@@ -936,6 +982,72 @@ public final class MinecraftLauncher extends JFrame {
         return null;
     }
 
+    private static byte[] decodeBase64(String value) throws IOException {
+        String compact = value.replaceAll("\\s", "");
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        int[] quad = new int[4];
+        int count = 0;
+        for (int i = 0; i < compact.length(); i++) {
+            char c = compact.charAt(i);
+            int decoded = c == '=' ? -2 : base64Value(c);
+            if (decoded < -2) {
+                throw new IOException("Invalid Base64 character in skin texture data.");
+            }
+            quad[count++] = decoded;
+            if (count == 4) {
+                writeBase64Quad(quad, out);
+                count = 0;
+            }
+        }
+        if (count > 0) {
+            while (count < 4) {
+                quad[count++] = -2;
+            }
+            writeBase64Quad(quad, out);
+        }
+        return out.toByteArray();
+    }
+
+    private static int base64Value(char c) {
+        if (c >= 'A' && c <= 'Z') {
+            return c - 'A';
+        }
+        if (c >= 'a' && c <= 'z') {
+            return c - 'a' + 26;
+        }
+        if (c >= '0' && c <= '9') {
+            return c - '0' + 52;
+        }
+        if (c == '+' || c == '-') {
+            return 62;
+        }
+        if (c == '/' || c == '_') {
+            return 63;
+        }
+        return -3;
+    }
+
+    private static void writeBase64Quad(int[] quad, java.io.ByteArrayOutputStream out) throws IOException {
+        if (quad[0] < 0 || quad[1] < 0) {
+            throw new IOException("Invalid Base64 padding in skin texture data.");
+        }
+        out.write((quad[0] << 2) | (quad[1] >> 4));
+        if (quad[2] == -2) {
+            return;
+        }
+        if (quad[2] < 0) {
+            throw new IOException("Invalid Base64 padding in skin texture data.");
+        }
+        out.write(((quad[1] & 15) << 4) | (quad[2] >> 2));
+        if (quad[3] == -2) {
+            return;
+        }
+        if (quad[3] < 0) {
+            throw new IOException("Invalid Base64 padding in skin texture data.");
+        }
+        out.write(((quad[2] & 3) << 6) | quad[3]);
+    }
+
     private String selectedVersion() {
         Object value = versionBox.isEditable() ? versionBox.getEditor().getItem() : versionBox.getSelectedItem();
         String text = value == null ? "" : value.toString().trim();
@@ -945,13 +1057,7 @@ public final class MinecraftLauncher extends JFrame {
     private String selectedMemoryMegabytes() {
         Object value = memoryBox.getSelectedItem();
         String text = value == null ? "" : value.toString();
-        if (text.indexOf("512") >= 0) {
-            return "512";
-        }
-        if (text.indexOf("2048") >= 0) {
-            return "2048";
-        }
-        return "1024";
+        return BetaLauncher.memoryPreview(text);
     }
 
     private void loadVersionsAsync() {
@@ -1090,7 +1196,7 @@ public final class MinecraftLauncher extends JFrame {
                 + "<p><font color='#999999'>Current launcher session messages. Game output is also written to disk after Minecraft starts.</font></p>"
                 + "<p><b>Selected version:</b> " + escape(selectedVersion()) + "<br>"
                 + "<b>Java runtime:</b> " + escape(javaRuntimeSummary()) + "<br>"
-                + "<b>Java safety:</b> " + escape(javaWarningText().length() == 0 ? "Looks good. Java 8 detected." : javaWarningText()) + "<br>"
+                + "<b>Java safety:</b> " + escape(javaSafetySummary()) + "<br>"
                 + "<b>Minecraft folder:</b> " + escape(TokenCache.minecraftDir().getAbsolutePath()) + "<br>"
                 + "<b>Auth cache:</b> " + escape(tokenCache.configFile().getAbsolutePath()) + "<br>"
                 + "<b>Game launch log:</b> " + escape(launchLog.getAbsolutePath()) + "</p>"
@@ -1115,7 +1221,6 @@ public final class MinecraftLauncher extends JFrame {
         String backupsDir = new java.io.File(new java.io.File(TokenCache.minecraftDir(), "launcher_revive"), "backups").getAbsolutePath();
         String selectedVersionDir = new java.io.File(new java.io.File(TokenCache.minecraftDir(), "versions"), selectedVersion()).getAbsolutePath();
         String lastPlayed = settings.get("last.version", "(never)") + " as " + settings.get("last.name", "(nobody)");
-        String javaWarning = javaWarningText();
         return "<html><body text='#e8e8e8' link='#aaaaff' vlink='#aaaaff' style='font-family:Verdana,Arial,sans-serif;font-size:11px;margin:24px;background-color:transparent'>"
                 + "<font size='+3'><b>Profile Editor</b></font><br><br>"
                 + "<p><font color='#999999'>Classic launcher-style profile controls, focused on the settings this revived launcher actually uses.</font></p>"
@@ -1124,7 +1229,7 @@ public final class MinecraftLauncher extends JFrame {
                 + "<tr><td><b>Selected version</b></td><td>" + escape(selectedVersion()) + "</td></tr>"
                 + "<tr><td><b>Memory preset</b></td><td>" + escape(String.valueOf(memoryBox.getSelectedItem())) + "</td></tr>"
                 + "<tr><td><b>Java runtime</b></td><td>" + escape(javaRuntimeSummary()) + "</td></tr>"
-                + "<tr><td><b>Java safety</b></td><td>" + escape(javaWarning.length() == 0 ? "Looks good. Java 8 detected." : javaWarning) + "</td></tr>"
+                + "<tr><td><b>Java safety</b></td><td>" + escape(javaSafetySummary()) + "</td></tr>"
                 + "<tr><td><b>Era</b></td><td>" + escape(eraName(selectedVersion())) + "</td></tr>"
                 + "<tr><td><b>Last played</b></td><td>" + escape(lastPlayed) + "</td></tr>"
                 + "<tr><td><b>Microsoft profile</b></td><td>" + escape(mode) + "</td></tr>"

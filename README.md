@@ -17,11 +17,11 @@ The goal is intentionally weird and cozy: keep the dirt-texture news panel, tiny
 - Offline singleplayer fallback.
 - Selectable classic versions from Beta 1.8.x down through old Alpha/Classic versions.
 - Version download status and redownload control.
-- Java 8 compatibility warnings.
+- Java runtime compatibility warnings.
 - Local profile/settings page with useful folder shortcuts.
 - Save backup helper.
 - Texture pack `.zip` import helper.
-- Lightweight Java 8-compatible source, no external build system required.
+- Lightweight Java source compiled as Java 7 bytecode, no external build system required.
 
 ## Quick start on Windows
 
@@ -32,6 +32,12 @@ Start MCLauncherRevival.cmd
 ```
 
 This friendly shortcut calls `run-win7.cmd`, which handles the actual Java setup/build/run flow.
+
+For Windows XP offline/classic mode, use:
+
+```bat
+Start MCLauncherRevival XP Offline.cmd
+```
 
 If Java is missing, the script offers to download a portable Eclipse Temurin 8 JDK into:
 
@@ -64,7 +70,7 @@ java -jar MCLauncherRevive-modern.jar
 ## Project layout
 
 ```text
-src/                         Java 8 launcher source
+src/                         Java launcher source
 resources/net/minecraft/     Images bundled into the launcher jar
 docs/                        Windows/release documentation
 tools/                       Optional helper scripts
@@ -73,17 +79,22 @@ tools/                       Optional helper scripts
 
 ## Supported operating systems
 
-Primary target:
+Supported:
 
+- Windows XP offline/classic mode
 - Windows 7 SP1 through Windows 11
-- Java 8 recommended
+
+Recommended Java:
+
+- Windows XP: Java 7 or an XP-compatible Java 8 build
+- Windows 7 through Windows 11: Java 8 recommended
 
 Experimental/manual:
 
 - Linux
 - macOS
 
-The `.cmd` helper scripts are Windows-specific. The Java source itself is intentionally lightweight, but old Minecraft Beta/Alpha LWJGL natives can be picky outside Windows.
+The `.cmd` helper scripts are Windows-specific. The jar is compiled as Java 7 bytecode for XP-era compatibility. Windows XP is supported for offline/classic play, but modern Microsoft login and fresh downloads may not work there because of old TLS/browser/root-certificate limits. See [Windows XP notes](docs/WINDOWS_XP.md).
 
 ## Where data is stored
 
@@ -116,6 +127,7 @@ For a GitHub Release, attach the generated `MCLauncherRevive-modern.jar` as a re
 See:
 
 - [Windows 7 guide](docs/WINDOWS_7.md)
+- [Windows XP guide](docs/WINDOWS_XP.md)
 - [Release checklist](docs/RELEASE_CHECKLIST.md)
 - [Modernization notes](MODERNIZATION.md)
 - [Security notes](SECURITY.md)

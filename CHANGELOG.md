@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-- Rebuilt the February 2011-style launcher as a small Java 8 launcher.
+- Rebuilt the February 2011-style launcher as a small Java launcher compiled as Java 7 bytecode.
+- Added Windows XP offline/classic mode support.
 - Replaced legacy Mojang username/password login with Microsoft browser OAuth.
 - Added Xbox Live, XSTS, Minecraft services login, and profile lookup.
 - Added local token cache with `Forget Login`.

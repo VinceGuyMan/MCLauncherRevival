@@ -21,7 +21,8 @@ if errorlevel 1 goto NEED_JDK
 goto HAVE_JDK
 
 :NEED_JDK
-echo Java JDK 8 is required to build this launcher.
+echo Java JDK 8 is recommended to build this launcher.
+echo The jar is compiled as Java 7 bytecode for Windows XP-era compatibility.
 echo.
 echo I can download a portable Eclipse Temurin 8 JDK from Adoptium now.
 echo It will be stored locally in:
@@ -73,7 +74,7 @@ if exist build\classes rmdir /s /q build\classes
 mkdir build\classes
 
 dir /s /b src\*.java > build\sources.txt
-javac -source 1.8 -target 1.8 -encoding UTF-8 -d build\classes @build\sources.txt
+javac -source 1.7 -target 1.7 -encoding UTF-8 -d build\classes @build\sources.txt
 if errorlevel 1 (
   echo Build failed.
   pause

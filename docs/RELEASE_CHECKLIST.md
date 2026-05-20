@@ -15,6 +15,7 @@ Use this before posting the project to GitHub.
 - `build-win7.cmd`
 - `run-win7.cmd`
 - `Start MCLauncherRevival.cmd`
+- `Start MCLauncherRevival XP Offline.cmd`
 - `tools/download-temurin8-jdk.ps1`
 - `README.md`
 - `MODERNIZATION.md`
@@ -26,6 +27,7 @@ Use this before posting the project to GitHub.
 - `.gitignore`
 - `.gitattributes`
 - `.github/workflows/build.yml`
+- `docs/WINDOWS_XP.md`
 
 ## Do not include in source repository
 
@@ -57,5 +59,5 @@ Do not commit the jar to the source repository unless you intentionally want to 
 ```text
 MCLauncherRevive modernizes a classic February 2011-style Minecraft launcher with Microsoft OAuth, Xbox Live/XSTS/Minecraft services authentication, offline mode, and Beta/Alpha version launching while preserving the old dirt-background launcher vibe.
 
-Windows 7 through Windows 11 are the primary targets. Java 8 is recommended.
+MCLauncherRevive supports Windows XP for offline/classic play and Windows 7 through Windows 11 for the full modern-auth launcher experience. Java 7 or an XP-compatible Java 8 build is recommended for XP; Java 8 is recommended on Windows 7 and newer.
 ```

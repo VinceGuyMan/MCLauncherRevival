@@ -8,7 +8,7 @@ final class SplashText {
             "Removed Herobrine from OAuth!",
             "Try Scrol- I mean, Caller's Bane for free!",
             "Made of dirt and TLS!",
-            "Java 8 compatible-ish!",
+            "Java 7 bytecode-ish!",
             "Ask your parents before going online!",
             "LWJGL goblins pacified!",
             "Classic vibes, modern tokens!",

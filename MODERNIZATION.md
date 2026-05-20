@@ -2,7 +2,7 @@
 
 This project originally contains the February 2011 launcher unpacked as class files and resources. The legacy login code posts a username and password to `https://login.minecraft.net/` and can remember a password in `lastlogin`.
 
-The modernized path does not edit the old bytecode. Instead, it adds Java 8 source under `src/net/minecraft` and builds a new jar that keeps the classic dirt background, logo, compact login panel, news panel, and old launcher window proportions.
+The modernized path does not edit the old bytecode. Instead, it adds Java source under `src/net/minecraft` and builds a new jar that keeps the classic dirt background, logo, compact login panel, news panel, and old launcher window proportions.
 
 ## What changed
 
@@ -26,18 +26,19 @@ The token cache is written to:
 %APPDATA%\.minecraft\launcher_revive\auth.properties
 ```
 
-It stores OAuth refresh/access tokens and the latest Minecraft profile name/UUID. The launcher marks the file user-readable/user-writable where Java exposes those permissions and hides it on Windows. This is intentionally lightweight and Java 8 compatible; it does not store Microsoft passwords.
+It stores OAuth refresh/access tokens and the latest Minecraft profile name/UUID. The launcher marks the file user-readable/user-writable where Java exposes those permissions and hides it on Windows. This is intentionally lightweight and does not store Microsoft passwords.
 
 Use the launcher button `Forget Login` to delete the cached tokens.
 
-## Windows 7 build steps
+## Windows build steps
 
 Prerequisites:
 
-- Windows 7 SP1 or newer.
-- Java JDK 8 installed, or allow the `.cmd` scripts to download a portable Eclipse Temurin 8 JDK.
+- Windows XP for offline/classic play, or Windows 7 SP1 or newer for the full modern-auth flow.
+- Java JDK 8 installed for building, or allow the `.cmd` scripts to download a portable Eclipse Temurin 8 JDK on supported systems.
 - `javac.exe`, `jar.exe`, and `java.exe` available on `PATH`, or available from the local `tools\jdk8` folder created by the scripts.
-- Java 8 update level new enough for TLS 1.2 HTTPS connections to Microsoft and Mojang.
+- Java 8 update level new enough for TLS 1.2 HTTPS connections to Microsoft and Mojang when using online login/downloads.
+- Java 7 or an XP-compatible Java 8 runtime for XP offline/classic mode.
 
 Build:
 

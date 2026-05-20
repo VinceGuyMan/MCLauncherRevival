@@ -49,6 +49,10 @@ Recommended:
 - Java 7 on Windows XP, or
 - an XP-compatible Java 8 build if you already have one.
 
+If the release package does not include Java, follow the full manual guide:
+
+- [XP Java setup](XP_JAVA_SETUP.md)
+
 If a bundled-Java XP release is published, it may include a maintainer-provided runtime at:
 
 ```text
@@ -106,6 +110,8 @@ tools\java7\bin\java.exe
 
 XP mode checks `tools\java7`, `tools\jdk8`, `JAVA_HOME`, and `java.exe` on `PATH`, but
 `tools\java7` is the preferred location for an already-extracted XP bundled-Java runtime.
+
+Detailed download/install instructions are in [XP Java setup](XP_JAVA_SETUP.md).
 
 ### XP script says `choice` is not recognized
 

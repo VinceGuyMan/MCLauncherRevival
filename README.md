@@ -82,6 +82,10 @@ XP-compatible Java runtime under `tools\java7` or local Java installer EXEs unde
 Bundled Java is third-party software under its own license/readme files, and old Java runtimes are
 not secure for general browsing or production use.
 
+If a bundled-Java package is not available, follow the manual XP Java setup guide:
+
+- [Windows XP Java setup](docs/XP_JAVA_SETUP.md)
+
 After extracting the release ZIP on Windows, run:
 
 ```bat
@@ -100,6 +104,8 @@ The XP shortcut starts the launcher with XP/offline compatibility flags. It does
 Microsoft login reliable on XP. If Java is missing on XP, use the XP bundled-Java release package,
 run one of the bundled Java installers when prompted, or manually place a verified XP-compatible
 runtime at `tools\java7` so `tools\java7\bin\java.exe` exists.
+
+For manual Java setup, see [docs/XP_JAVA_SETUP.md](docs/XP_JAVA_SETUP.md).
 
 For preliminary Linux testing, use:
 

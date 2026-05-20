@@ -39,5 +39,9 @@ Some XP offline/classic release packages may include a maintainer-provided Java 
 Those Java files are third-party software and remain under their own license/readme files from their
 distributor. MCLauncherRevival does not claim ownership of Java runtime or installer files.
 
+If Java files are not included in a release package, users must obtain Java from an official source
+or another source they are legally allowed to use, then install it normally or place an extracted
+runtime at `tools\java7`.
+
 Old Java runtimes are not secure for general browsing, plugin use, or production workloads. They are
 included only to support this offline/classic launcher scenario on legacy Windows systems.

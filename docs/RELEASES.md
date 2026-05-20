@@ -30,6 +30,9 @@ That package is only for XP offline/classic use. It may include a maintainer-pro
 from `tools\java7`, or local installer EXEs from `tools\java-installers`. The project does not
 choose, download, or fetch Java from third-party mirrors during packaging.
 
+If Java cannot be redistributed in a public release asset, publish the normal release ZIP and point
+XP users to [XP Java setup](XP_JAVA_SETUP.md).
+
 Extract it, then double-click:
 
 ```bat
@@ -104,6 +107,8 @@ build-win7.cmd
   `tools\java-installers`.
 - If Java is missing and `tools\java-installers` exists, the XP launcher asks before running a
   bundled installer.
+- If Java installers cannot be included publicly, use the normal release package and document
+  [XP Java setup](XP_JAVA_SETUP.md) instead.
 - Bundled Java is third-party software under its own license/readme files. Old Java runtimes are not
   secure for general browsing or production use.
 - Linux shell wrappers are included for preliminary testing, but native Linux field testing is still

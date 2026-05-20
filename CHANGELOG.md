@@ -11,6 +11,7 @@
   to the XP bundled-Java package or a manual `tools\java7` runtime.
 - XP bundled-Java packages can now include local maintainer-supplied installer EXEs under
   `tools\java-installers`, and XP startup asks before running one if Java is missing.
+- Added a manual XP Java setup guide for releases that cannot redistribute Java files publicly.
 - Improved XP-mode missing-jar output so it explains source ZIP vs release asset confusion and
   stops cleanly instead of trying to build or download Java.
 - Added preliminary Linux `run-linux.sh` and `build-linux.sh` wrappers.

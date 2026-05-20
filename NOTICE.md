@@ -34,10 +34,10 @@ downloaded game files.
 ## Optional bundled Java runtime
 
 Some XP offline/classic release packages may include a maintainer-provided Java runtime under
-`tools\java7`.
+`tools\java7` or local Java installer EXEs under `tools\java-installers`.
 
-That runtime is third-party software and remains under its own license/readme files from its
-distributor. MCLauncherRevival does not claim ownership of Java runtime files.
+Those Java files are third-party software and remain under their own license/readme files from their
+distributor. MCLauncherRevival does not claim ownership of Java runtime or installer files.
 
 Old Java runtimes are not secure for general browsing, plugin use, or production workloads. They are
 included only to support this offline/classic launcher scenario on legacy Windows systems.

@@ -26,9 +26,9 @@ If an XP bundled-Java package is published, it should be named:
 MCLauncherRevival-v0.2.5-alpha-xp-bundled-java.zip
 ```
 
-That package is only for XP offline/classic use. It includes a maintainer-provided Java runtime from
-`tools\java7`; the project does not choose, download, or fetch Java from third-party mirrors during
-packaging.
+That package is only for XP offline/classic use. It may include a maintainer-provided Java runtime
+from `tools\java7`, or local installer EXEs from `tools\java-installers`. The project does not
+choose, download, or fetch Java from third-party mirrors during packaging.
 
 Extract it, then double-click:
 
@@ -73,10 +73,11 @@ MCLauncherRevival-v0.2.5-alpha-xp-bundled-java/
   MCLauncherRevival.jar
   resources/
   tools/
-    java7/
+    java7/                    optional extracted runtime
       bin/
         java.exe
       license/readme files from the Java distributor
+    java-installers/          optional local installer EXEs
   docs/
   README.md
   LICENSE
@@ -99,7 +100,10 @@ build-win7.cmd
 - Microsoft accounts need an Xbox profile before XSTS/Minecraft services login can succeed.
 - Windows XP is supported for offline/classic play with Java 7 or an XP-compatible Java 8 build.
 - XP bundled-Java packages must be created with `package-xp-release.cmd` after manually placing a
-  verified redistributable runtime at `tools\java7`.
+  verified redistributable runtime at `tools\java7` or verified installer EXEs at
+  `tools\java-installers`.
+- If Java is missing and `tools\java-installers` exists, the XP launcher asks before running a
+  bundled installer.
 - Bundled Java is third-party software under its own license/readme files. Old Java runtimes are not
   secure for general browsing or production use.
 - Linux shell wrappers are included for preliminary testing, but native Linux field testing is still

@@ -49,15 +49,22 @@ Recommended:
 - Java 7 on Windows XP, or
 - an XP-compatible Java 8 build if you already have one.
 
-If a bundled-Java XP release is published, it should include a maintainer-provided runtime at:
+If a bundled-Java XP release is published, it may include a maintainer-provided runtime at:
 
 ```text
 tools\java7\bin\java.exe
 ```
 
-The launcher does not choose or download this runtime automatically. The maintainer must manually
-place a verified redistributable Java 7 or XP-compatible Java 8 runtime at `tools\java7` before
-creating the XP bundled-Java package.
+It may also include local installer EXEs under:
+
+```text
+tools\java-installers
+```
+
+The launcher does not choose, download, or silently install Java automatically. The maintainer must
+manually place a verified redistributable Java 7 or XP-compatible Java 8 runtime at `tools\java7`,
+or verified Java installer EXEs at `tools\java-installers`, before creating the XP bundled-Java
+package. If Java is missing and installers are present, the XP script asks before running one.
 
 Bundled Java is third-party software under its own license/readme files. Old Java runtimes are not
 secure for general browsing or production use; use them only for this offline/classic launcher
@@ -90,15 +97,15 @@ the jar into the XP launcher folder.
 
 ### Java runtime not found
 
-If XP mode cannot find Java, use the XP bundled-Java release package if one is available, or place a
-verified XP-compatible runtime at:
+If XP mode cannot find Java, use the XP bundled-Java release package if one is available, run a
+bundled Java installer when prompted, or place a verified XP-compatible runtime at:
 
 ```text
 tools\java7\bin\java.exe
 ```
 
-XP mode also checks `tools\jdk8`, `JAVA_HOME`, and `java.exe` on `PATH`, but `tools\java7` is the
-preferred location for an XP bundled-Java release.
+XP mode checks `tools\java7`, `tools\jdk8`, `JAVA_HOME`, and `java.exe` on `PATH`, but
+`tools\java7` is the preferred location for an already-extracted XP bundled-Java runtime.
 
 ### XP script says `choice` is not recognized
 
@@ -113,6 +120,7 @@ Use one of these options instead:
 - Install Java 7 on the XP machine.
 - Install an XP-compatible Java 8 runtime if you already have one.
 - Use the XP bundled-Java release package if one is available.
+- Run one of the bundled Java installers if the package includes `tools\java-installers`.
 - Manually extract a compatible runtime to `tools\java7`.
 - Manually extract a compatible runtime to `tools\jdk8`.
 
@@ -128,7 +136,7 @@ If Java is not found, the script should print:
 
 ```text
 Windows XP offline/classic mode needs Java 7 or an XP-compatible Java 8 runtime.
-Use the XP bundled-Java release package, or place Java at tools\java7.
+Use the XP bundled-Java release package, run a bundled Java installer, or place Java at tools\java7.
 Expected runtime path: tools\java7\bin\java.exe
 ```
 

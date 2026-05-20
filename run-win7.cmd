@@ -40,8 +40,21 @@ exit /b 0
 echo Java runtime not found.
 if /I "%MCLAUNCHER_XP_MODE%"=="1" (
   echo Windows XP offline/classic mode needs Java 7 or an XP-compatible Java 8 runtime.
-  echo Use the XP bundled-Java release package, or place Java at tools\java7.
+  echo Use the XP bundled-Java release package, run a bundled Java installer, or place Java at tools\java7.
   echo Expected runtime path: tools\java7\bin\java.exe
+  call :OfferJavaInstaller
+  call :FindJava
+  if defined JAVA_EXE (
+    if /I "%JAVA_SOURCE%"=="java7" echo Using bundled Java runtime: tools\java7
+    echo Java runtime found: %JAVA_EXE%
+    "%JAVA_EXE%" %MCLAUNCHER_JAVA_OPTS% -jar MCLauncherRevival.jar
+    if errorlevel 1 (
+      echo Launcher exited with an error.
+      pause
+    )
+    exit /b 0
+  )
+  echo Java runtime not found after installer prompt.
   pause
   exit /b 1
 )
@@ -81,6 +94,45 @@ if errorlevel 1 (
   echo Launcher exited with an error.
   pause
 )
+exit /b 0
+
+:OfferJavaInstaller
+if not exist "%~dp0tools\java-installers" exit /b 0
+echo.
+echo Bundled Java installers are available.
+echo Choose one only if you trust this release package and accept the Java distributor's license.
+echo.
+echo   1. jre-7u1-windows-i586.exe  ^(32-bit XP JRE^)
+echo   2. jre-7u1-windows-x64.exe   ^(64-bit XP JRE^)
+echo   3. jdk-7-windows-i586.exe    ^(32-bit XP JDK^)
+echo   4. jdk-7-windows-x64.exe     ^(64-bit XP JDK^)
+echo   5. jre-8u151-windows-i586.exe ^(32-bit XP-compatible Java 8 JRE^)
+echo   6. jre-8u151-windows-x64.exe  ^(64-bit XP-compatible Java 8 JRE^)
+echo.
+set "JAVA_INSTALL_CHOICE="
+set /p "JAVA_INSTALL_CHOICE=Run a bundled Java installer now? [1-6/N] "
+if "%JAVA_INSTALL_CHOICE%"=="" exit /b 0
+if /I "%JAVA_INSTALL_CHOICE%"=="N" exit /b 0
+set "JAVA_INSTALLER="
+if "%JAVA_INSTALL_CHOICE%"=="1" set "JAVA_INSTALLER=%~dp0tools\java-installers\jre-7u1-windows-i586.exe"
+if "%JAVA_INSTALL_CHOICE%"=="2" set "JAVA_INSTALLER=%~dp0tools\java-installers\jre-7u1-windows-x64.exe"
+if "%JAVA_INSTALL_CHOICE%"=="3" set "JAVA_INSTALLER=%~dp0tools\java-installers\jdk-7-windows-i586.exe"
+if "%JAVA_INSTALL_CHOICE%"=="4" set "JAVA_INSTALLER=%~dp0tools\java-installers\jdk-7-windows-x64.exe"
+if "%JAVA_INSTALL_CHOICE%"=="5" set "JAVA_INSTALLER=%~dp0tools\java-installers\jre-8u151-windows-i586.exe"
+if "%JAVA_INSTALL_CHOICE%"=="6" set "JAVA_INSTALLER=%~dp0tools\java-installers\jre-8u151-windows-x64.exe"
+if not defined JAVA_INSTALLER (
+  echo No bundled Java installer selected.
+  exit /b 0
+)
+if not exist "%JAVA_INSTALLER%" (
+  echo Selected bundled Java installer was not found:
+  echo   %JAVA_INSTALLER%
+  exit /b 0
+)
+echo Starting bundled Java installer:
+echo   %JAVA_INSTALLER%
+echo Finish the installer, then return to this window.
+start /wait "" "%JAVA_INSTALLER%"
 exit /b 0
 
 :FindJava

@@ -1,7 +1,8 @@
 # MCLauncherRevival
 
-A nostalgic 2011-style Minecraft launcher revival, modernized for 2026.
+![MCLauncherRevival social preview artwork](docs/screenshots/social-preview.png)
 
+A nostalgic 2011-style Minecraft launcher revival, modernized for 2026.
 ## Status
 
 | Item | Status |

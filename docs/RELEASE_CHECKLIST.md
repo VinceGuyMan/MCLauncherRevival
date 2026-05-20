@@ -5,15 +5,16 @@ Use this before posting the project to GitHub.
 ## Include in source repository
 
 - `src/`
-- `net/minecraft/dirt.png`
-- `net/minecraft/logo.png`
-- `net/minecraft/favicon.png`
-- `Block.png`
-- `scrolls.png`
-- `cobalt.png`
-- `StevePlaceholder.jpg`
+- `resources/net/minecraft/dirt.png`
+- `resources/net/minecraft/logo.png`
+- `resources/net/minecraft/favicon.png`
+- `resources/net/minecraft/Block.png`
+- `resources/net/minecraft/scrolls.png`
+- `resources/net/minecraft/cobalt.png`
+- `resources/net/minecraft/StevePlaceholder.jpg`
 - `build-win7.cmd`
 - `run-win7.cmd`
+- `Start MCLauncherRevival.cmd`
 - `tools/download-temurin8-jdk.ps1`
 - `README.md`
 - `MODERNIZATION.md`

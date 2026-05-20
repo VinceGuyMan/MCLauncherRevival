@@ -28,8 +28,10 @@ The goal is intentionally weird and cozy: keep the dirt-texture news panel, tiny
 Double-click:
 
 ```bat
-run-win7.cmd
+Start MCLauncherRevival.cmd
 ```
+
+This friendly shortcut calls `run-win7.cmd`, which handles the actual Java setup/build/run flow.
 
 If Java is missing, the script offers to download a portable Eclipse Temurin 8 JDK into:
 
@@ -57,6 +59,16 @@ Run it directly with:
 
 ```bat
 java -jar MCLauncherRevive-modern.jar
+```
+
+## Project layout
+
+```text
+src/                         Java 8 launcher source
+resources/net/minecraft/     Images bundled into the launcher jar
+docs/                        Windows/release documentation
+tools/                       Optional helper scripts
+.github/workflows/           GitHub Actions build workflow
 ```
 
 ## Supported operating systems
@@ -97,7 +109,7 @@ The launcher caches OAuth tokens, profile name, and UUID. It does not store Micr
 
 ## GitHub release notes
 
-For source control, commit the source, scripts, docs, and lightweight bundled artwork needed by the launcher. Do not commit downloaded Java runtimes, build output folders, or local caches.
+For source control, commit the source, scripts, docs, and lightweight bundled artwork in `resources/`. Do not commit downloaded Java runtimes, build output folders, or local caches.
 
 For a GitHub Release, attach the generated `MCLauncherRevive-modern.jar` as a release asset after building it locally or from CI.
 

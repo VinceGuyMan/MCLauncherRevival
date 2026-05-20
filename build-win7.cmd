@@ -81,13 +81,8 @@ if errorlevel 1 (
 )
 
 if not exist build\classes\net\minecraft mkdir build\classes\net\minecraft
-copy /y net\minecraft\dirt.png build\classes\net\minecraft\ >nul
-copy /y net\minecraft\logo.png build\classes\net\minecraft\ >nul
-copy /y net\minecraft\favicon.png build\classes\net\minecraft\ >nul
-if exist Block.png copy /y Block.png build\classes\net\minecraft\ >nul
-if exist scrolls.png copy /y scrolls.png build\classes\net\minecraft\ >nul
-if exist cobalt.png copy /y cobalt.png build\classes\net\minecraft\ >nul
-if exist StevePlaceholder.jpg copy /y StevePlaceholder.jpg build\classes\net\minecraft\ >nul
+if exist resources\net\minecraft\*.png copy /y resources\net\minecraft\*.png build\classes\net\minecraft\ >nul
+if exist resources\net\minecraft\*.jpg copy /y resources\net\minecraft\*.jpg build\classes\net\minecraft\ >nul
 
 > build\manifest.mf echo Manifest-Version: 1.0
 >> build\manifest.mf echo Main-Class: net.minecraft.MinecraftLauncher

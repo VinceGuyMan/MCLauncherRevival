@@ -12,6 +12,8 @@ For `v0.2.0-alpha`:
 - Confirm the XErr `2148916233` troubleshooting note points users to Xbox profile setup.
 - Confirm Linux shell scripts pass syntax checks and are clearly marked as preliminary until tested
   on a real distro.
+- Confirm macOS shell scripts pass syntax checks and are clearly marked as preliminary until tested
+  on a real Mac.
 - Confirm saved tokens/settings can be removed if implemented.
 - Confirm no secrets, tokens, client secrets, or personal credentials are committed.
 - Confirm README instructions match the actual release files.
@@ -36,6 +38,8 @@ Expected project files include:
 - `build-win7.cmd`
 - `run-linux.sh`
 - `build-linux.sh`
+- `run-macos.sh`
+- `build-macos.sh`
 - `tools/download-temurin8-jdk.ps1`
 - `README.md`
 - `CHANGELOG.md`

@@ -37,6 +37,8 @@ MCLauncherRevival-v0.2.0-alpha/
   build-win7.cmd
   run-linux.sh
   build-linux.sh
+  run-macos.sh
+  build-macos.sh
   MCLauncherRevival.jar
   resources/
   tools/
@@ -60,6 +62,8 @@ build-win7.cmd
 - Microsoft accounts need an Xbox profile before XSTS/Minecraft services login can succeed.
 - Windows XP is supported for offline/classic play with Java 7 or an XP-compatible Java 8 build.
 - Linux shell wrappers are included for preliminary testing, but native Linux field testing is still
+  needed.
+- macOS shell wrappers are included for preliminary testing, but native macOS field testing is still
   needed.
 - The launcher never asks for a raw Microsoft password.
 - If the jar is missing, `run-win7.cmd` will attempt to build it.

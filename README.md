@@ -49,7 +49,7 @@ More screenshots and annotated UI guides are available in
 | Windows 7-11 support | Primary target | Java 8 is recommended, especially for old Minecraft/LWJGL behavior. |
 | Windows XP / older Windows behavior | Offline/classic only | Online login and fresh downloads are best-effort due to TLS, certificate, and browser limitations. |
 | Linux behavior | Preliminary | Shell wrappers are included, but real distro testing is still needed. |
-| macOS behavior | Needs testing | The Java UI may run, but packaging/scripts are not macOS-focused yet. |
+| macOS behavior | Preliminary | Shell wrappers are included, but native macOS testing is still needed. |
 | Release packaging | Alpha packages available | Use the attached GitHub Releases ZIP, not the source-code ZIP. |
 
 ## Installation / running
@@ -89,6 +89,15 @@ chmod +x run-linux.sh build-linux.sh
 
 See [docs/LINUX.md](docs/LINUX.md) before relying on Linux behavior.
 
+For preliminary macOS testing, use:
+
+```sh
+chmod +x run-macos.sh build-macos.sh
+./run-macos.sh
+```
+
+See [docs/MACOS.md](docs/MACOS.md) before relying on macOS behavior.
+
 ## Building from source
 
 1. Install a Java JDK 8.
@@ -109,6 +118,12 @@ See [docs/LINUX.md](docs/LINUX.md) before relying on Linux behavior.
 
    ```sh
    ./build-linux.sh
+   ```
+
+   Or on macOS:
+
+   ```sh
+   ./build-macos.sh
    ```
 
 4. The build output is:
@@ -143,7 +158,7 @@ See [SECURITY.md](SECURITY.md) and [Trust and Safety](docs/TRUST_AND_SAFETY.md) 
   limits.
 - Some Minecraft versions may require specific Java/LWJGL combinations.
 - Linux behavior has preliminary scripts/docs, but still needs native distro field testing.
-- macOS behavior is not a primary target yet.
+- macOS behavior has preliminary scripts/docs, but still needs native macOS field testing.
 
 ## Roadmap
 

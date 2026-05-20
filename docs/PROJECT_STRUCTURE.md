@@ -19,6 +19,8 @@ run-win7.cmd                             Runtime helper
 build-win7.cmd                           Java build helper
 run-linux.sh                             Preliminary Linux runtime helper
 build-linux.sh                           Preliminary Linux build helper
+run-macos.sh                             Preliminary macOS runtime helper
+build-macos.sh                           Preliminary macOS build helper
 README.md                                Main GitHub project page
 MODERNIZATION.md                         Technical modernization notes
 SECURITY.md                              Auth/token safety notes

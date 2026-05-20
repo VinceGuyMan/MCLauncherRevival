@@ -2,6 +2,10 @@
 
 ## v0.3.0-alpha
 
+- Added a macOS compatibility warning before launching old Beta/Alpha clients.
+- Added macOS Launcher Log/Profile notes explaining blank-window LWJGL/OpenGL/native compatibility
+  risks and where to inspect `last-launch.log`.
+- Updated macOS docs to mark game launch as experimental even when the launcher UI opens.
 - Added XP/OpenGL troubleshooting for `Pixel format not accelerated` and missing accelerated
   OpenGL mode errors.
 - Launcher Log now explains detected LWJGL OpenGL acceleration failures as XP graphics driver

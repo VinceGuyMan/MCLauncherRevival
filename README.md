@@ -48,8 +48,8 @@ More screenshots and annotated UI guides are available in
 | Version selection | Working / needs broader testing | Classic versions are listed from Mojang metadata where available. |
 | Windows 7-11 support | Primary target | Java 8 is recommended, especially for old Minecraft/LWJGL behavior. |
 | Windows XP / older Windows behavior | Offline/classic only | Online login and fresh downloads are best-effort due to TLS, certificate, and browser limitations. |
-| Linux behavior | Preliminary | Shell wrappers are included, but real distro testing is still needed. |
-| macOS behavior | Preliminary | Shell wrappers are included, but native macOS testing is still needed. |
+| Linux behavior | Preliminary | Launcher UI may run, but old Minecraft/LWJGL game launch is experimental. See docs/LINUX.md. |
+| macOS behavior | Experimental | Launcher UI may run, but old Minecraft/LWJGL game launch is experimental. Blank game windows may occur. See docs/MACOS.md. |
 | Release packaging | Alpha packages available | Use the attached GitHub Releases ZIP, not the source-code ZIP. |
 
 ## Installation / running
@@ -187,8 +187,9 @@ See [SECURITY.md](SECURITY.md) and [Trust and Safety](docs/TRUST_AND_SAFETY.md) 
   be used for this offline/classic launcher scenario. Some packages may include installer EXEs
   instead of an already-extracted runtime.
 - Some Minecraft versions may require specific Java/LWJGL combinations.
-- Linux behavior has preliminary scripts/docs, but still needs native distro field testing.
-- macOS behavior has preliminary scripts/docs, but still needs native macOS field testing.
+- Linux behavior has preliminary scripts/docs, but old Minecraft/LWJGL game launch is experimental.
+- macOS behavior has preliminary scripts/docs, but old Minecraft/LWJGL game launch is experimental
+  and blank game windows may occur.
 
 ## Troubleshooting
 

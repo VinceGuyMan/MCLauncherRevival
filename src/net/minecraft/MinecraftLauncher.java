@@ -536,6 +536,14 @@ public final class MinecraftLauncher extends JFrame {
     }
 
     private void launch(final AuthProfile profile) {
+        if (macOs() && !confirmMacLaunch()) {
+            status("macOS launch cancelled.");
+            appendLog("User cancelled launch after macOS compatibility warning.");
+            return;
+        }
+        if (macOs()) {
+            appendLog("macOS experimental launch: old LWJGL clients may open blank or fail to render.");
+        }
         setBusy(true);
         saveLastPlayed(profile);
         Thread worker = new Thread(new Runnable() {
@@ -644,6 +652,11 @@ public final class MinecraftLauncher extends JFrame {
         }
         String os = System.getProperty("os.name", "").toLowerCase();
         return os.indexOf("windows xp") >= 0;
+    }
+
+    private static boolean macOs() {
+        String os = System.getProperty("os.name", "").toLowerCase(java.util.Locale.ENGLISH);
+        return os.indexOf("mac") >= 0;
     }
 
     private static int javaMajorVersion() {
@@ -1202,6 +1215,7 @@ public final class MinecraftLauncher extends JFrame {
                 + "<font size='+3'><b>Launcher Log</b></font><br><br>"
                 + "<p><font color='#999999'>Current launcher session messages. Game output is also written to disk after Minecraft starts.</font></p>"
                 + xpModeNoteHtml()
+                + macOsNoteHtml()
                 + openGlFailureNoteHtml(launchLog)
                 + "<p><b>Selected version:</b> " + escape(selectedVersion()) + "<br>"
                 + "<b>Java runtime:</b> " + escape(javaRuntimeSummary()) + "<br>"
@@ -1277,6 +1291,7 @@ public final class MinecraftLauncher extends JFrame {
                 + "<font size='+3'><b>Profile Editor</b></font><br><br>"
                 + "<p><font color='#999999'>Classic launcher-style profile controls, focused on the settings this revived launcher actually uses.</font></p>"
                 + xpModeNoteHtml()
+                + macOsNoteHtml()
                 + "<table cellpadding='6' cellspacing='0' bgcolor='#0d0d0d' style='border:1px solid #444444'>"
                 + "<tr><td><b>Offline name</b></td><td>" + escape(offlineName.getText()) + "</td></tr>"
                 + "<tr><td><b>Selected version</b></td><td>" + escape(selectedVersion()) + "</td></tr>"
@@ -1327,6 +1342,34 @@ public final class MinecraftLauncher extends JFrame {
                 + "+ Fresh downloads may fail because XP/Java 7 cannot reliably connect to modern HTTPS services.<br>"
                 + "+ Offline play works best with pre-cached .minecraft versions, libraries, and assets copied from a newer PC."
                 + "</td></tr></table><br>";
+    }
+
+    private static String macOsNoteHtml() {
+        if (!macOs()) {
+            return "";
+        }
+        return "<table width='100%' cellpadding='8' cellspacing='0' bgcolor='#101826' style='border:1px solid #33506d'><tr><td>"
+                + "<b>macOS experimental note:</b><br>"
+                + "macOS support is experimental. If Minecraft opens as a blank window, the launcher likely started "
+                + "the process successfully but the old client may be failing in LWJGL/OpenGL/native loading. "
+                + "Check last-launch.log."
+                + "</td></tr></table><br>";
+    }
+
+    private boolean confirmMacLaunch() {
+        int choice = JOptionPane.showOptionDialog(
+                this,
+                "MCLauncherRevival can open on macOS, but launching old Beta/Alpha Minecraft clients is experimental. "
+                        + "Some versions may open a blank window, fail to render, or hang because of old "
+                        + "LWJGL/OpenGL/Java native compatibility. If the game does not load, check the Launcher Log "
+                        + "tab and the last-launch.log file.",
+                "macOS compatibility warning",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE,
+                null,
+                new Object[] { "Continue", "Cancel" },
+                "Cancel");
+        return choice == JOptionPane.YES_OPTION;
     }
 
     private static String errorNews(String message) {

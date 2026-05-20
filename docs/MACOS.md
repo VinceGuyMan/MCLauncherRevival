@@ -1,9 +1,11 @@
 # macOS Compatibility Notes
 
-macOS support is preliminary. The Java launcher has platform handling for macOS paths and native
-libraries, but real macOS testing still needs to be performed on Apple hardware or a macOS VM.
+macOS support is experimental. The launcher UI may open, but launching old Beta/Alpha Minecraft
+clients is not considered supported yet.
 
 This is not yet a notarized `.app` bundle. It is a plain Java jar plus helper shell scripts.
+
+Windows remains the primary supported target.
 
 ## What should work
 
@@ -21,13 +23,15 @@ This is not yet a notarized `.app` bundle. It is a plain Java jar plus helper sh
   ```
 
 - The launcher selects `osx` native libraries from Mojang version metadata when available.
-- Offline Play should work for already-downloaded classic versions if Java/LWJGL compatibility is
-  satisfied.
+- Offline mode and UI testing may work even when old game rendering does not.
+- Offline Play may work for already-downloaded classic versions if Java/LWJGL/OpenGL/native
+  compatibility is satisfied.
 
 ## Requirements
 
 - A macOS desktop session.
-- Java 8 is recommended for old Beta/Alpha Minecraft behavior.
+- Java 8 is the best first test for old Beta/Alpha Minecraft behavior.
+- Modern Java may be unreliable for old clients.
 - A full JDK is required only when building from source.
 - On newer macOS versions, Gatekeeper may warn about downloaded scripts or jars from an unsigned
   project.
@@ -60,12 +64,36 @@ MCLauncherRevival.jar
 
 ## Known macOS limitations
 
-- Native macOS testing is still needed.
+- The launcher UI may open while the game client opens a blank white window titled `Minecraft`.
+- Old Beta/Alpha Minecraft clients may fail to render or hang because of LWJGL/OpenGL/Java native
+  compatibility.
+- Apple Silicon may be more problematic because old native libraries were not built for that
+  platform.
 - There is no signed or notarized `.app` bundle yet.
 - Microsoft login depends on the desktop/browser environment and may need manual redirect paste
   fallback.
 - Old Minecraft versions may be sensitive to Java and LWJGL native-library combinations.
 - Fresh downloads require Java HTTPS/TLS support that works with current Mojang/Minecraft endpoints.
+
+## Blank Minecraft window
+
+If Minecraft opens as a blank white window, the launcher may have started the client process
+successfully, but the old client may be stuck in LWJGL/OpenGL/native initialization.
+
+Check the Launcher Log tab and this file:
+
+```text
+~/Library/Application Support/minecraft/launcher_revive/logs/last-launch.log
+```
+
+The launcher status may still correctly say:
+
+```text
+Minecraft started. Launch log: <path>
+```
+
+That means the process was started; it does not guarantee that the old Minecraft client rendered
+successfully on macOS.
 
 ## Account safety
 

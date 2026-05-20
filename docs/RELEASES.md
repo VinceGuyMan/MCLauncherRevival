@@ -111,10 +111,10 @@ build-win7.cmd
   [XP Java setup](XP_JAVA_SETUP.md) instead.
 - Bundled Java is third-party software under its own license/readme files. Old Java runtimes are not
   secure for general browsing or production use.
-- Linux shell wrappers are included for preliminary testing, but native Linux field testing is still
-  needed.
-- macOS shell wrappers are included for preliminary testing, but native macOS field testing is still
-  needed.
+- Linux shell wrappers are included for preliminary testing, but old Minecraft/LWJGL game launch is
+  experimental.
+- macOS testing can open the launcher, but old client launch may hang on a blank Minecraft window
+  due to LWJGL/OpenGL/native compatibility.
 - The launcher never asks for a raw Microsoft password.
 - If the jar is missing on Windows 7 or newer, `run-win7.cmd` will attempt to build it.
 - If the jar is missing in XP offline mode, download the attached release ZIP instead of the

@@ -89,6 +89,20 @@ use browser/OAuth flow where available.
 
 Offline Play remains available when online authentication fails.
 
+## macOS compatibility warning
+
+macOS can open the launcher UI in testing, but old Beta/Alpha Minecraft client launch is still
+experimental. Some versions may open a blank Minecraft window, fail to render, or hang because of
+old LWJGL/OpenGL/Java native compatibility.
+
+The launcher now warns before launching Minecraft on macOS and points users to:
+
+```text
+~/Library/Application Support/minecraft/launcher_revive/logs/last-launch.log
+```
+
+Windows remains the primary supported target.
+
 ## Run
 
 After extracting the release ZIP on Windows, run:

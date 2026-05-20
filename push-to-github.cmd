@@ -35,14 +35,19 @@ if errorlevel 1 goto FAIL
 git add .
 if errorlevel 1 goto FAIL
 
-git commit -m "Initial MCLauncherRevival upload"
+git diff --cached --quiet
 if errorlevel 1 (
-  echo Commit may have failed because there are no changes, or Git user.name/user.email is not configured.
-  echo If Git asks who you are, run:
-  echo   git config --global user.name "VinceGuyMan"
-  echo   git config --global user.email "YOUR_EMAIL@example.com"
-  pause
-  exit /b 1
+  git commit -m "Initial MCLauncherRevival upload"
+  if errorlevel 1 (
+    echo Commit failed. Git should have printed the reason above.
+    echo If Git asks who you are, run:
+    echo   git config --global user.name "VinceGuyMan"
+    echo   git config --global user.email "YOUR_EMAIL@example.com"
+    pause
+    exit /b 1
+  )
+) else (
+  echo Nothing new to commit; continuing to push existing commit.
 )
 
 git push -u origin main
@@ -63,3 +68,4 @@ echo - Make sure the repo exists and you have write access.
 echo - If GitHub rejects password auth, use a browser sign-in or personal access token.
 pause
 exit /b 1
+

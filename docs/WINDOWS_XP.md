@@ -2,7 +2,8 @@
 
 Windows XP is supported for classic/offline play.
 
-Modern Microsoft login and fresh online downloads are best-effort on XP because XP-era TLS, root certificates, Internet Explorer, and Java networking are the limiting pieces.
+Modern Microsoft login and fresh online downloads are best-effort on XP because XP-era TLS, root
+certificates, Internet Explorer, and Java networking are the limiting pieces.
 
 ## Recommended XP flow
 
@@ -34,7 +35,8 @@ XP mode keeps the classic launcher usable while avoiding fragile Microsoft login
 - GitHub/Adoptium Java downloads.
 - Modern HTTPS endpoints that require newer TLS/root certificates.
 
-The launcher is built to avoid collecting raw Microsoft passwords, so it will not add old password-based login as a workaround.
+The launcher is built to avoid collecting raw Microsoft passwords, so it will not add old
+password-based login as a workaround.
 
 ## Java runtime
 
@@ -49,7 +51,8 @@ The normal `Start MCLauncherRevival.cmd` path can still be used on Windows 7 thr
 
 ## Download versions on another PC if needed
 
-If XP cannot download version files because HTTPS fails, launch the desired version once on a newer Windows PC first, then copy the relevant `.minecraft` folders to the XP machine:
+If XP cannot download version files because HTTPS fails, launch the desired version once on a newer
+Windows PC first, then copy the relevant `.minecraft` folders to the XP machine:
 
 ```text
 %APPDATA%\.minecraft\versions

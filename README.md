@@ -16,14 +16,17 @@ A nostalgic 2011-style Minecraft launcher revival, modernized for 2026.
 
 ![MCLauncherRevival launcher preview](docs/screenshots/frontpage.png)
 
-Additional repository/social preview artwork is available at [docs/screenshots/social-preview.png](docs/screenshots/social-preview.png).
+Additional repository/social preview artwork is available at
+[docs/screenshots/social-preview.png](docs/screenshots/social-preview.png).
 
 ## What it does
 
-- Presents a classic launcher-inspired Swing UI with a dirt-texture news panel and compact bottom controls.
+- Presents a classic launcher-inspired Swing UI with a dirt-texture news panel and compact bottom
+  controls.
 - Uses a modern browser/OAuth account flow where available.
 - Keeps offline singleplayer fallback behavior available.
-- Supports selecting and launching classic Minecraft Java versions from Beta 1.8.x downward where version metadata is available.
+- Supports selecting and launching classic Minecraft Java versions from Beta 1.8.x downward where
+  version metadata is available.
 - Stores launcher settings and local token/config data under the user's `.minecraft` folder.
 - Includes convenience shortcuts for saves backups, texture pack import, logs, and local folders.
 
@@ -44,7 +47,8 @@ Additional repository/social preview artwork is available at [docs/screenshots/s
 
 No public release has been published yet. Build from source for now.
 
-When release artifacts are available, they will be attached to GitHub Releases and clearly marked as alpha.
+When release artifacts are available, they will be attached to GitHub Releases and clearly marked as
+alpha.
 
 For a source checkout on Windows, use:
 
@@ -60,7 +64,8 @@ For Windows XP offline/classic mode, use:
 Start MCLauncherRevival XP Offline.cmd
 ```
 
-The XP shortcut starts the launcher with XP/offline compatibility flags. It does not make modern Microsoft login reliable on XP.
+The XP shortcut starts the launcher with XP/offline compatibility flags. It does not make modern
+Microsoft login reliable on XP.
 
 ## Building from source
 
@@ -84,17 +89,21 @@ The XP shortcut starts the launcher with XP/offline compatibility flags. It does
    MCLauncherRevival.jar
    ```
 
-The project is built with a JDK 8 toolchain while targeting Java 7 bytecode for older Windows compatibility.
+The project is built with a JDK 8 toolchain while targeting Java 7 bytecode for older Windows
+compatibility.
 
 ## Security / account safety
 
 - The launcher should never ask users to type their Microsoft password directly into the app.
 - Sign-in should happen through the browser/OAuth flow where implemented.
-- OAuth tokens/settings are stored locally under `%APPDATA%\.minecraft\launcher_revive` when login/config data is saved.
+- OAuth tokens/settings are stored locally under `%APPDATA%\.minecraft\launcher_revive` when
+  login/config data is saved.
 - The `Forget Login` button is intended to remove saved login data.
-- This project is unofficial and alpha-quality. Review the source before trusting it with an account.
+- This project is unofficial and alpha-quality. Review the source before trusting it with an
+  account.
 - This project is not approved, endorsed, sponsored, or reviewed by Mojang, Microsoft, or Minecraft.
-- Do not post access tokens, refresh tokens, authorization codes, or account details in public issues.
+- Do not post access tokens, refresh tokens, authorization codes, or account details in public
+  issues.
 
 See [SECURITY.md](SECURITY.md) and [Trust and Safety](docs/TRUST_AND_SAFETY.md) for more details.
 
@@ -102,7 +111,8 @@ See [SECURITY.md](SECURITY.md) and [Trust and Safety](docs/TRUST_AND_SAFETY.md) 
 
 - Alpha quality; behavior may change and some flows need more testing.
 - Authentication may need testing across browsers, Java versions, and Windows versions.
-- Older operating systems may have limited online login support due to TLS/root certificate/browser limits.
+- Older operating systems may have limited online login support due to TLS/root certificate/browser
+  limits.
 - Some Minecraft versions may require specific Java/LWJGL combinations.
 - Packaging and GitHub releases are still in progress.
 - macOS and Linux behavior is not a primary target yet.
@@ -117,12 +127,16 @@ See [SECURITY.md](SECURITY.md) and [Trust and Safety](docs/TRUST_AND_SAFETY.md) 
 
 ## Legal / unofficial disclaimer
 
-Minecraft is a trademark of Mojang/Microsoft. This project is unofficial and is not affiliated with, endorsed by, or sponsored by Mojang, Microsoft, or Minecraft.
+Minecraft is a trademark of Mojang/Microsoft. This project is unofficial and is not affiliated with,
+endorsed by, or sponsored by Mojang, Microsoft, or Minecraft.
 
-Users are responsible for owning or otherwise having the right to use Minecraft Java Edition and any downloaded game files.
+Users are responsible for owning or otherwise having the right to use Minecraft Java Edition and any
+downloaded game files.
 
 See [docs/DISCLAIMER.md](docs/DISCLAIMER.md) and [NOTICE.md](NOTICE.md) for more detail.
 
 ## License
 
-This repository includes a [LICENSE](LICENSE) file covering the original modernization code and scripts in this project. Third-party names, marks, services, game files, launcher artifacts, and historical assets remain owned by their respective rights holders.
+This repository includes a [LICENSE](LICENSE) file covering the original modernization code and
+scripts in this project. Third-party names, marks, services, game files, launcher artifacts, and
+historical assets remain owned by their respective rights holders.

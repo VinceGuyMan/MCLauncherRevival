@@ -126,7 +126,12 @@ final class BetaLauncher {
         command.addAll(expandArguments(minecraftArguments, profile, gameDir));
 
         File logFile = new File(logDir, "last-launch.log");
-        status.status("Starting Minecraft " + version + " as " + profile.name + (profile.online ? " (online token)." : " (offline mode)."));
+        status.status(
+                "Starting Minecraft "
+                        + version
+                        + " as "
+                        + profile.name
+                        + (profile.online ? " (online token)." : " (offline mode)."));
         ProcessBuilder builder = new ProcessBuilder(command);
         builder.directory(gameDir);
         builder.redirectErrorStream(true);
@@ -177,7 +182,11 @@ final class BetaLauncher {
         return jar;
     }
 
-    private void downloadLibraries(Map<String, Object> versionJson, File librariesDir, File nativeDir, List<File> classpath) throws IOException {
+    private void downloadLibraries(
+            Map<String, Object> versionJson,
+            File librariesDir,
+            File nativeDir,
+            List<File> classpath) throws IOException {
         List<Object> libraries = Json.array(versionJson.get("libraries"));
         if (libraries == null) {
             return;
@@ -207,10 +216,16 @@ final class BetaLauncher {
                 String classifier = Json.string(natives, osName());
                 if (classifier != null) {
                     classifier = classifier.replace("${arch}", is64Bit() ? "64" : "32");
-                    Map<String, Object> classifiers = Json.object(downloads == null ? null : downloads.get("classifiers"));
-                    Map<String, Object> nativeArtifact = Json.object(classifiers == null ? null : classifiers.get(classifier));
-                    File nativeJar = libraryFile(librariesDir, nativeArtifact, Json.string(library, "name"), classifier);
-                    downloadFile(artifactUrl(library, nativeArtifact, classifier), nativeJar, Json.string(nativeArtifact, "sha1"));
+                    Map<String, Object> classifiers =
+                            Json.object(downloads == null ? null : downloads.get("classifiers"));
+                    Map<String, Object> nativeArtifact =
+                            Json.object(classifiers == null ? null : classifiers.get(classifier));
+                    File nativeJar =
+                            libraryFile(librariesDir, nativeArtifact, Json.string(library, "name"), classifier);
+                    downloadFile(
+                            artifactUrl(library, nativeArtifact, classifier),
+                            nativeJar,
+                            Json.string(nativeArtifact, "sha1"));
                     extractNatives(nativeJar, nativeDir);
                 }
             }
@@ -239,7 +254,11 @@ final class BetaLauncher {
         return allowed;
     }
 
-    private static File libraryFile(File librariesDir, Map<String, Object> artifact, String name, String classifier) throws IOException {
+    private static File libraryFile(
+            File librariesDir,
+            Map<String, Object> artifact,
+            String name,
+            String classifier) throws IOException {
         String path = Json.string(artifact, "path");
         if (path == null) {
             path = pathFromMavenName(name, classifier);

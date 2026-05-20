@@ -2,7 +2,9 @@ name: Build Java Launcher
 
 on:
   push:
-    branches: [main, master]
+    branches:
+      - main
+      - master
   pull_request:
   workflow_dispatch:
 
@@ -22,7 +24,7 @@ jobs:
 
       - name: Build launcher
         shell: cmd
-        run: echo.| build-win7.cmd
+        run: echo. | build-win7.cmd
 
       - name: Upload launcher artifact
         uses: actions/upload-artifact@v4

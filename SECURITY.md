@@ -1,6 +1,7 @@
 # Security Policy
 
-MCLauncherRevival is unofficial and alpha-quality. Authentication-related issues are still treated seriously, but this hobby project cannot promise professional security response times.
+MCLauncherRevival is unofficial and alpha-quality. Authentication-related issues are still treated
+seriously, but this hobby project cannot promise professional security response times.
 
 ## Account safety
 
@@ -26,7 +27,8 @@ Use `Forget Login` in the launcher to remove cached login data.
 
 Please report vulnerabilities through a GitHub issue if the information is safe to discuss publicly.
 
-Do not post access tokens, refresh tokens, authorization codes, Microsoft account details, or private credentials in public issues.
+Do not post access tokens, refresh tokens, authorization codes, Microsoft account details, or
+private credentials in public issues.
 
 Good reports include:
 

@@ -1,6 +1,9 @@
 # Windows 7 Build and Run Guide
 
-MCLauncherRevival supports Windows XP for offline/classic play and Windows 7 SP1 through modern Windows for the full modern-auth launcher experience. This guide covers Windows 7 and newer, where Java 8 is recommended. The jar is compiled as Java 7 bytecode so XP offline/classic mode remains supported.
+MCLauncherRevival supports Windows XP for offline/classic play and Windows 7 SP1 through modern
+Windows for the full modern-auth launcher experience. This guide covers Windows 7 and newer, where
+Java 8 is recommended. The jar is compiled as Java 7 bytecode so XP offline/classic mode remains
+supported.
 
 ## Run
 

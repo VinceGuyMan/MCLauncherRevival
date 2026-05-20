@@ -75,7 +75,8 @@ final class ModernAuth {
         openBrowser(loginUrl);
         String redirected = status.ask("Microsoft Login",
                 "Sign in in the browser window that opened.\n\n"
-                        + "When it redirects to a mostly blank page, copy the full address from the browser bar and paste it here.\n"
+                        + "When it redirects to a mostly blank page, copy the full address "
+                        + "from the browser bar and paste it here.\n"
                         + "If it changes to removed=true, try again and copy it as soon as the blank page appears.\n\n"
                         + "It should start with:\n"
                         + REDIRECT_URI + "#access_token=");
@@ -127,7 +128,8 @@ final class ModernAuth {
                 + "while ((Get-Date) -lt $deadline) {\r\n"
                 + "  Start-Sleep -Milliseconds 100\r\n"
                 + "  try { $loc = $ie.LocationURL } catch { $loc = '' }\r\n"
-                + "  if ($loc -like 'https://login.live.com/oauth20_desktop.srf*' -and ($loc -match 'code=' -or $loc -match 'access_token=')) {\r\n"
+                + "  if ($loc -like 'https://login.live.com/oauth20_desktop.srf*' "
+                + "-and ($loc -match 'code=' -or $loc -match 'access_token=')) {\r\n"
                 + "    [IO.File]::WriteAllText($out, $loc, [Text.Encoding]::UTF8)\r\n"
                 + "    Start-Sleep -Milliseconds 300\r\n"
                 + "    try { $ie.Quit() } catch {}\r\n"
@@ -404,7 +406,12 @@ final class ModernAuth {
         return request("GET", endpoint, null, bearerToken, null);
     }
 
-    private static HttpResult request(String method, String endpoint, String contentType, String bearerToken, byte[] body) throws IOException {
+    private static HttpResult request(
+            String method,
+            String endpoint,
+            String contentType,
+            String bearerToken,
+            byte[] body) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) new URL(endpoint).openConnection();
         connection.setConnectTimeout(30000);
         connection.setReadTimeout(30000);

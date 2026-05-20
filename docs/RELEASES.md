@@ -4,7 +4,8 @@
 
 No public release has been published yet. Build from source for now.
 
-When an alpha release is available, download the release zip from GitHub Releases, extract it, then double-click:
+When an alpha release is available, download the release zip from GitHub Releases, extract it, then
+double-click:
 
 ```bat
 Start MCLauncherRevival.cmd

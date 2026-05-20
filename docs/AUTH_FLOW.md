@@ -52,4 +52,6 @@ Use `Forget Login` to clear cached OAuth tokens.
 
 ## Windows XP note
 
-Windows XP is supported for offline/classic play. Modern Microsoft login and fresh HTTPS downloads are best-effort on XP because the operating system, browser stack, Java TLS support, and root certificates are often too old for current Microsoft/Minecraft services.
+Windows XP is supported for offline/classic play. Modern Microsoft login and fresh HTTPS downloads
+are best-effort on XP because the operating system, browser stack, Java TLS support, and root
+certificates are often too old for current Microsoft/Minecraft services.

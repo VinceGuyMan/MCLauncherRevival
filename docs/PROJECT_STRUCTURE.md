@@ -44,7 +44,8 @@ Contains the Java launcher implementation:
 resources/net/minecraft/
 ```
 
-These files are copied into the jar under `/net/minecraft/` at build time so existing resource lookups remain simple.
+These files are copied into the jar under `/net/minecraft/` at build time so existing resource
+lookups remain simple.
 
 ## Generated/local files
 

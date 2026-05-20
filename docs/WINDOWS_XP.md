@@ -221,6 +221,47 @@ XP mode checks `tools\java7`, `tools\jdk8`, `JAVA_HOME`, and `java.exe` on `PATH
 
 Detailed download/install instructions are in [XP Java setup](XP_JAVA_SETUP.md).
 
+### Pixel format not accelerated / no accelerated OpenGL mode
+
+If Minecraft fails with:
+
+```text
+Minecraft was unable to start because it failed to find an accelerated OpenGL mode.
+org.lwjgl.LWJGLException: Pixel format not accelerated
+```
+
+then the launcher, Java runtime, and copied version-file layout are working well enough for
+Minecraft to start. The remaining failure is the graphics driver/OpenGL acceleration layer.
+
+This usually means Minecraft/LWJGL could not access hardware-accelerated OpenGL. It is usually a
+graphics driver problem, not a launcher problem.
+
+Common causes:
+
+- Windows XP is using a generic VGA/basic Microsoft display driver.
+- The correct GPU driver is missing or not installed cleanly.
+- Windows XP x64 needs a matching XP x64 GPU driver, which may be harder to find than normal XP
+  32-bit drivers.
+- Virtual machines or remote display drivers may not expose proper OpenGL acceleration.
+
+Practical steps:
+
+1. Install the correct Windows XP or Windows XP x64 graphics driver for the laptop/GPU.
+2. Avoid generic Microsoft display drivers for Minecraft/LWJGL.
+3. Run:
+
+   ```bat
+   dxdiag
+   ```
+
+4. Check the `Display` tab for driver details and DirectDraw/Direct3D acceleration.
+5. Try 32-bit Java 7 on XP x64 if 64-bit Java/LWJGL has issues.
+6. After drivers are fixed, try the desired Minecraft version again.
+
+Older Minecraft versions may be easier on old hardware, but most still need working OpenGL
+acceleration. MCLauncherRevival cannot fix missing GPU driver support and does not bundle graphics
+drivers.
+
 ### XP script says `choice` is not recognized
 
 Some Windows XP installs do not include `choice.exe`. The XP offline launcher path is designed to

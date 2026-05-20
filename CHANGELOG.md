@@ -2,6 +2,10 @@
 
 ## v0.3.0-alpha
 
+- Added XP/OpenGL troubleshooting for `Pixel format not accelerated` and missing accelerated
+  OpenGL mode errors.
+- Launcher Log now explains detected LWJGL OpenGL acceleration failures as XP graphics driver
+  issues instead of auth or version-file issues.
 - XP Play Offline now checks for local selected-version files before trying modern HTTPS downloads.
 - XP TLS/certificate failures such as `handshake_failure`, `Received fatal alert`, `PKIX`, and
   `unable to find valid certification path` now show a friendly offline-prep message.

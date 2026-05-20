@@ -1202,6 +1202,7 @@ public final class MinecraftLauncher extends JFrame {
                 + "<font size='+3'><b>Launcher Log</b></font><br><br>"
                 + "<p><font color='#999999'>Current launcher session messages. Game output is also written to disk after Minecraft starts.</font></p>"
                 + xpModeNoteHtml()
+                + openGlFailureNoteHtml(launchLog)
                 + "<p><b>Selected version:</b> " + escape(selectedVersion()) + "<br>"
                 + "<b>Java runtime:</b> " + escape(javaRuntimeSummary()) + "<br>"
                 + "<b>Java safety:</b> " + escape(javaSafetySummary()) + "<br>"
@@ -1216,6 +1217,49 @@ public final class MinecraftLauncher extends JFrame {
                 + "<pre style='font-family:Consolas,Monospaced;font-size:11px;color:#dddddd;white-space:pre-wrap'>" + escape(launchPreview()) + "</pre>"
                 + "</td></tr></table>"
                 + "</body></html>";
+    }
+
+    private static String openGlFailureNoteHtml(java.io.File launchLog) {
+        String text = readSmallLogLower(launchLog);
+        if (text.indexOf("pixel format not accelerated") < 0
+                && text.indexOf("failed to find an accelerated opengl mode") < 0
+                && text.indexOf("no opengl context found") < 0) {
+            return "";
+        }
+        return "<table width='100%' cellpadding='8' cellspacing='0' bgcolor='#1b1208' style='border:1px solid #6a3a22'><tr><td>"
+                + "<b>OpenGL/graphics driver note:</b><br>"
+                + "Minecraft started, but your XP graphics driver does not expose accelerated OpenGL. "
+                + "Install the correct XP graphics driver for this machine. This is a driver/OpenGL issue, "
+                + "not a Microsoft login or launcher file issue."
+                + "</td></tr></table><br>";
+    }
+
+    private static String readSmallLogLower(java.io.File file) {
+        if (file == null || !file.exists()) {
+            return "";
+        }
+        StringBuilder out = new StringBuilder();
+        java.io.BufferedReader reader = null;
+        try {
+            reader = new java.io.BufferedReader(new java.io.FileReader(file));
+            char[] buffer = new char[4096];
+            int read;
+            int total = 0;
+            while ((read = reader.read(buffer)) != -1 && total < 65536) {
+                out.append(buffer, 0, read);
+                total += read;
+            }
+        } catch (Exception ignored) {
+            return "";
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (Exception ignored) {
+                }
+            }
+        }
+        return out.toString().toLowerCase(java.util.Locale.ENGLISH);
     }
 
     private String profilePage() {

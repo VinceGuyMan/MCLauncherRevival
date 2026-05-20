@@ -201,6 +201,9 @@ newer and copy `.minecraft\versions`, `.minecraft\libraries`, and `.minecraft\as
 downloaded from MCVersions.net must be placed inside
 `.minecraft\versions\<version>\<version>.jar` and still needs matching JSON/libraries/assets.
 
+On XP, `Pixel format not accelerated` means Minecraft reached the game startup stage but the
+graphics driver does not provide accelerated OpenGL. Install the correct XP/XP x64 GPU driver.
+
 See [Windows XP Offline/Classic Guide](docs/WINDOWS_XP.md) and
 [XP Version Setup](docs/XP_VERSION_SETUP.md) for the full copy-path checklist.
 

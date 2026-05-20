@@ -102,6 +102,15 @@ final class BetaLauncher {
                 + "Use only Minecraft files you own or otherwise have the right to use.";
     }
 
+    static String xpLooseJarMessage(String version) {
+        String clean = normalizeVersion(version);
+        return "A loose " + clean + ".jar was found, but MCLauncherRevival needs the Mojang launcher-style "
+                + "version folder. Move/copy the jar to .minecraft\\versions\\" + clean + "\\" + clean
+                + ".jar and provide the matching " + clean + ".json, libraries, and assets. The easiest fix "
+                + "is to launch this version once on Windows 7 or newer, then copy the full .minecraft "
+                + "versions, libraries, and assets folders to XP.";
+    }
+
     static boolean isXpHttpsFailure(Throwable error) {
         Throwable current = error;
         while (current != null) {
@@ -216,6 +225,11 @@ final class BetaLauncher {
         File jarFile = new File(versionDir, version + ".jar");
         File jsonFile = new File(versionDir, version + ".json");
         if (!jarFile.exists() || !jsonFile.exists()) {
+            File versionsDir = versionDir.getParentFile();
+            File looseJar = versionsDir == null ? null : new File(versionsDir, version + ".jar");
+            if (looseJar != null && looseJar.exists()) {
+                throw new IOException(xpLooseJarMessage(version));
+            }
             throw new IOException(xpVersionFilesMessage());
         }
         Map<String, Object> versionJson = Json.object(Json.parse(readString(jsonFile)));

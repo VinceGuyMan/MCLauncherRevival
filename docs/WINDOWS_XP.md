@@ -80,18 +80,18 @@ The normal `Start MCLauncherRevival.cmd` path can still be used on Windows 7 thr
 
 ## Preparing Minecraft versions for XP
 
-XP mode is offline/classic. Offline launch still needs the selected Minecraft version files to
-already exist locally.
+Windows XP offline/classic mode still needs the selected Minecraft version files to already exist
+locally. Offline mode means no Microsoft login; it does not mean the launcher can run without the
+version jar, JSON metadata, libraries, natives, and sometimes assets.
 
-If XP/Java 7 cannot load Mojang's modern HTTPS version manifest, `b1.7.3` may be the only version
-shown in the version selector. You can still type a version manually if the matching files already
-exist in `.minecraft`.
+The preferred and safest method is to prepare the version once on Windows 7 or newer, then copy the
+full `.minecraft` folders to XP.
 
 Recommended workflow:
 
-1. On Windows 7 or newer, run the official launcher or MCLauncherRevival.
-2. Launch/download the Minecraft version you want to use on XP.
-3. Close Minecraft.
+1. On Windows 7 or newer, run MCLauncherRevival.
+2. Select the classic version you want, for example `b1.7.3`.
+3. Click `Play Offline` once and let the launcher prepare/download files.
 4. Copy these folders from the newer Windows PC:
 
    ```text
@@ -115,6 +115,73 @@ Recommended workflow:
    ```
 
 7. Select or type the prepared version and use `Play Offline`.
+
+Expected layout:
+
+```text
+.minecraft\versions\b1.7.3\b1.7.3.jar
+.minecraft\versions\b1.7.3\b1.7.3.json
+.minecraft\libraries\
+.minecraft\assets\
+```
+
+If you only have:
+
+```text
+.minecraft\versions\b1.7.3.jar
+```
+
+that is not enough. MCLauncherRevival also needs:
+
+```text
+.minecraft\versions\b1.7.3\b1.7.3.json
+.minecraft\libraries
+.minecraft\assets
+```
+
+### Optional manual jar method
+
+The preferred method is still to prepare/copy the full `.minecraft` folders from Windows 7 or newer.
+
+MCVersions.net can be an optional convenience for locating old client jars that are served from
+Mojang, but it is not an official MCLauncherRevival project source and it does not replace the full
+prepared `.minecraft` version folder.
+
+Example:
+
+1. Go to <https://mcversions.net/>.
+2. Search for the desired version, for example `b1.7.3`.
+3. Download the client jar only if you own Minecraft Java Edition or otherwise have the right to use
+   the files.
+4. Create this folder on XP:
+
+   ```text
+   C:\Documents and Settings\<User>\Application Data\.minecraft\versions\b1.7.3\
+   ```
+
+5. Place the jar here:
+
+   ```text
+   C:\Documents and Settings\<User>\Application Data\.minecraft\versions\b1.7.3\b1.7.3.jar
+   ```
+
+6. Still provide the matching:
+
+   ```text
+   b1.7.3.json
+   libraries folder
+   assets folder
+   ```
+
+MCVersions.net can help locate a client jar, but it does not replace the full prepared `.minecraft`
+version folder. If the JSON metadata or libraries are missing, the launcher may still try to
+download files, which often fails on XP.
+
+If XP/Java 7 cannot load Mojang's modern HTTPS version manifest, `b1.7.3` may be the only version
+shown in the version selector. You can still type a version manually if the matching files already
+exist locally.
+
+For a dedicated checklist, see [XP Version Setup](XP_VERSION_SETUP.md).
 
 Do not bundle Minecraft client jars, libraries, assets, or Mojang game files in MCLauncherRevival
 release packages. Users must own Minecraft Java Edition and prepare/copy their own local files.

@@ -5,6 +5,10 @@
 - XP Play Offline now checks for local selected-version files before trying modern HTTPS downloads.
 - XP TLS/certificate failures such as `handshake_failure`, `Received fatal alert`, `PKIX`, and
   `unable to find valid certification path` now show a friendly offline-prep message.
+- XP mode now detects loose `.minecraft\versions\<version>.jar` files and explains the required
+  Mojang launcher-style `versions\<version>\<version>.jar` plus JSON/libraries/assets layout.
+- Added XP version setup docs, including the preferred Windows 7+ copy workflow and optional
+  MCVersions.net client-jar guidance with ownership/legal reminders.
 - Added XP notes to Launcher Log/Profile Editor explaining that Microsoft login and fresh downloads
   are disabled/best-effort and offline play needs pre-cached `.minecraft` files.
 - Added docs for preparing Minecraft versions on Windows 7 or newer and copying `versions`,

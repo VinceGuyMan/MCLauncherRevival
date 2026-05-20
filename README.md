@@ -196,7 +196,13 @@ On XP, `handshake_failure` usually means the machine could not download modern H
 metadata/files. Prepare the selected Minecraft version on Windows 7 or newer, then copy your
 `.minecraft` `versions`, `libraries`, and `assets` folders to the XP machine.
 
-See [Windows XP Offline/Classic Guide](docs/WINDOWS_XP.md) for the full copy-path checklist.
+On XP, if you see `handshake_failure` or only `b1.7.3` appears, prepare the version on Windows 7 or
+newer and copy `.minecraft\versions`, `.minecraft\libraries`, and `.minecraft\assets` to XP. A jar
+downloaded from MCVersions.net must be placed inside
+`.minecraft\versions\<version>\<version>.jar` and still needs matching JSON/libraries/assets.
+
+See [Windows XP Offline/Classic Guide](docs/WINDOWS_XP.md) and
+[XP Version Setup](docs/XP_VERSION_SETUP.md) for the full copy-path checklist.
 
 ## Roadmap
 

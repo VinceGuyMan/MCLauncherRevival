@@ -14,7 +14,7 @@ if defined JAVAC_EXE if defined JAR_EXE goto HAVE_JDK
 :NEED_JDK
 if /I "%MCLAUNCHER_XP_MODE%"=="1" (
   echo Java runtime not found.
-  echo Windows XP offline/classic mode needs Java 7 or an XP-compatible Java 8 runtime already installed or extracted at tools\jdk8.
+  echo Windows XP offline/classic mode needs Java 7 or an XP-compatible Java 8 runtime already installed or extracted at tools\java7 ^(preferred^) or tools\jdk8.
   pause
   exit /b 1
 )

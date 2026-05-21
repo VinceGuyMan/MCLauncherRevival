@@ -30,11 +30,12 @@ if not defined JAVA_EXE goto NEED_JAVA
 if /I "%JAVA_SOURCE%"=="java7" echo Using bundled Java runtime: tools\java7
 echo Java runtime found: %JAVA_EXE%
 "%JAVA_EXE%" %MCLAUNCHER_JAVA_OPTS% -jar MCLauncherRevival.jar
-if errorlevel 1 (
+set "LAUNCH_EXIT=%ERRORLEVEL%"
+if not "%LAUNCH_EXIT%"=="0" (
   echo Launcher exited with an error.
   pause
 )
-exit /b 0
+exit /b %LAUNCH_EXIT%
 
 :NEED_JAVA
 echo Java runtime not found.
@@ -48,11 +49,12 @@ if /I "%MCLAUNCHER_XP_MODE%"=="1" (
     if /I "%JAVA_SOURCE%"=="java7" echo Using bundled Java runtime: tools\java7
     echo Java runtime found: %JAVA_EXE%
     "%JAVA_EXE%" %MCLAUNCHER_JAVA_OPTS% -jar MCLauncherRevival.jar
-    if errorlevel 1 (
+    set "LAUNCH_EXIT=%ERRORLEVEL%"
+    if not "%LAUNCH_EXIT%"=="0" (
       echo Launcher exited with an error.
       pause
     )
-    exit /b 0
+    exit /b %LAUNCH_EXIT%
   )
   echo Java runtime not found after installer prompt.
   pause
@@ -90,11 +92,12 @@ if not defined JAVA_EXE (
 if /I "%JAVA_SOURCE%"=="java7" echo Using bundled Java runtime: tools\java7
 echo Java runtime found: %JAVA_EXE%
 "%JAVA_EXE%" %MCLAUNCHER_JAVA_OPTS% -jar MCLauncherRevival.jar
-if errorlevel 1 (
+set "LAUNCH_EXIT=%ERRORLEVEL%"
+if not "%LAUNCH_EXIT%"=="0" (
   echo Launcher exited with an error.
   pause
 )
-exit /b 0
+exit /b %LAUNCH_EXIT%
 
 :OfferJavaInstaller
 if not exist "%~dp0tools\java-installers" exit /b 0

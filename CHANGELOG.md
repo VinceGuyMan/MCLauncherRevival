@@ -13,6 +13,8 @@
   refresh tokens can be cached when the account flow returns them.
 - Hardened `Redownload Version` so it can only delete the selected folder directly under
   `.minecraft\versions`.
+- Windows run script now preserves the Java launcher process exit code for setup/package checks.
+- XP build-script wording now points users to `tools\java7` first, with `tools\jdk8` as a fallback.
 
 ## v0.4.0-alpha
 

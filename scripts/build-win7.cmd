@@ -69,9 +69,7 @@ if errorlevel 1 (
   exit /b 1
 )
 
-if not exist build\classes\net\minecraft mkdir build\classes\net\minecraft
-if exist resources\net\minecraft\*.png copy /y resources\net\minecraft\*.png build\classes\net\minecraft\ >nul
-if exist resources\net\minecraft\*.jpg copy /y resources\net\minecraft\*.jpg build\classes\net\minecraft\ >nul
+if exist resources xcopy /e /i /y resources build\classes\ >nul
 
 > build\manifest.mf echo Manifest-Version: 1.0
 >> build\manifest.mf echo Main-Class: net.minecraft.MinecraftLauncher

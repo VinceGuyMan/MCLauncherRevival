@@ -1,5 +1,29 @@
 # Changelog
 
+## v0.5.0-alpha
+
+- Added a historical launcher presentation system with `Auto`, `Beta`, `Alpha`, `Infdev`,
+  `Classic`, and `Pre-Classic` style modes.
+- `Auto` style now maps selected versions to recreated era layouts:
+  - `b*` versions resolve to the Beta-style launcher.
+  - `a*` versions resolve to the Alpha-style launcher.
+  - `inf-*` versions resolve to the Infdev-style launcher.
+  - `c0.*` versions resolve to the Classic-style launcher.
+  - `rd-*` versions resolve to the Pre-Classic-style launcher.
+- Added a `Style:` dropdown in the bottom control bar. The selected style is saved in local launcher
+  settings and shown in the Launcher Log / Profile Editor pages.
+- Reworked the Update Notes presentation so version notes are content-driven while the active era
+  layout controls the surrounding visual style, sidebar, panel tone, and title/tab labels.
+- Added recreated, repo-owned pixel textures under `resources/net/minecraft/themes/` for the new
+  era layouts. These are original project assets, not extracted Mojang/Microsoft launcher files.
+- Added Minecraft-style animated yellow splash text that floats, scales, and tilts on the Update
+  Notes page, then pauses outside the news view.
+- Added a `Low-end 384MB` memory preset for weaker/period-correct hardware.
+- Cached theme background tiles and avoided unnecessary news HTML reloads to reduce UI churn.
+- Updated build scripts so nested resources, including theme textures, are copied into
+  `MCLauncherRevival.jar`.
+- Added v0.5.0 release documentation describing the historical layout work and safe asset policy.
+
 
 ## v0.4.6-alpha
 

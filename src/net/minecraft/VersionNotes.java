@@ -13,58 +13,119 @@ final class VersionNotes {
     }
 
     static String page(String version, boolean patchMode, boolean compact) {
-        String splash = SplashText.forKey(clean(version) + ":" + patchMode);
+        return page(version, patchMode, compact, "beta");
+    }
+
+    static String page(String version, boolean patchMode, boolean compact, String themeId) {
+        Style style = Style.forId(themeId);
         Note note = noteFor(version);
-        return "<html><body text='#e8e8e8' link='#aaaaff' vlink='#aaaaff' style='font-family:Verdana,Arial,sans-serif;font-size:11px;margin:24px;background-color:transparent'>"
-                + "<table width='100%' cellpadding='0' cellspacing='0'><tr>"
-                + "<td><font size='+3'><b>Minecraft News</b></font></td>"
-                + "<td align='right'><font color='#ffff55'><b>" + escape(splash) + "</b></font></td>"
-                + "</tr></table>"
-                + "<br><br>"
-                + "<p><a href='" + note.learnMore + "'><b>" + escape(note.title) + "</b></a></p>"
-                + "<p><font color='#b8b8ff'><b>Selected version:</b> " + escape(clean(version)) + "</font><br>"
-                + "<font color='#999999'>Timeline family: " + escape(note.family) + "</font></p>"
-                + (compact ? compactSection(note, version, patchMode) : (patchMode ? patchSection(note, version) : updateSection(note, version)))
-                + (patchMode ? "" : "<br><p><a href='https://www.minecraft.net/'><b>MCLauncherRevival Alpha Released</b></a></p>"
-                + "<p>The old launcher window learned modern Microsoft auth while keeping the big dark update notes, tiny bottom bar, and blocky nostalgia intact.</p>"
-                + "<p>+ Browser-based Microsoft login<br>"
-                + "+ Local token caching with Forget Login<br>"
-                + "+ Offline singleplayer<br>"
-                + "+ Selectable classic versions from Beta 1.8.x down through early alpha/classic builds</p>")
-                + "<hr color='#333333'>"
-                + "<p><font color='#888888'>Version summaries are compact, launcher-friendly notes based on Minecraft Timeline data. "
+        return bodyStart(style)
+                + header(style)
+                + eraLead(style, note, version)
+                + (compact ? compactSection(note, version, patchMode, style) : (patchMode ? patchSection(note, version, style) : updateSection(note, version, style)))
+                + (patchMode ? "" : projectNote(style))
+                + "<hr color='" + style.rule + "'>"
+                + "<p><font color='" + style.muted + "'>" + style.footer + " "
                 + "Read more at <a href='https://minecraft-timeline.github.io/'>minecraft-timeline.github.io</a>. "
                 + "MCLauncherRevival Alpha.</font></p>"
                 + "</body></html>";
     }
 
-    private static String compactSection(Note note, String version, boolean patchMode) {
-        return "<table width='100%' cellpadding='8' cellspacing='0' bgcolor='#0d0d0d' style='border:1px solid #444444'><tr><td>"
+    private static String bodyStart(Style style) {
+        return "<html><body text='" + style.text + "' link='" + style.link + "' vlink='" + style.link
+                + "' style='font-family:" + style.font + ";font-size:" + style.fontSize
+                + "px;margin:" + style.margin + "px;background-color:transparent'>";
+    }
+
+    private static String header(Style style) {
+        return "<table width='100%' cellpadding='0' cellspacing='0'><tr>"
+                + "<td><font size='" + style.titleSize + "'><b>" + style.title + "</b></font></td>"
+                + "</tr></table>"
+                + "<p><font color='" + style.muted + "'>" + style.subtitle + "</font></p>";
+    }
+
+    private static String eraLead(Style style, Note note, String version) {
+        if ("classic".equals(style.id) || "preclassic".equals(style.id)) {
+            return "<table width='82%' cellpadding='8' cellspacing='0' bgcolor='" + style.panel + "' style='border:1px solid " + style.border + "'><tr><td>"
+                    + "<center><a href='" + note.learnMore + "'><b>" + escape(note.title) + "</b></a><br>"
+                    + "<font color='" + style.accent + "'><b>" + escape(clean(version)) + "</b></font> / "
+                    + "<font color='" + style.muted + "'>" + escape(note.family) + "</font></center>"
+                    + "</td></tr></table><br>"
+                    + "<table width='82%' cellpadding='10' cellspacing='0' bgcolor='" + style.panel + "' style='border:1px solid " + style.border + "'><tr><td>"
+                    + "<b>Version Selection</b><br>"
+                    + "Version: " + escape(clean(version)) + "<br>"
+                    + "Status: local/offline-ready when files are prepared<br><br>"
+                    + "<b>Login</b><br>"
+                    + "Use the shared bottom bar for Microsoft Login or Play Offline. This era shell keeps the old right-panel feeling without bringing back raw password boxes."
+                    + "</td></tr></table><br>";
+        }
+        if ("infdev".equals(style.id)) {
+            return "<table width='100%' cellpadding='6' cellspacing='0' bgcolor='" + style.panel + "' style='border:1px solid " + style.border + "'><tr><td>"
+                    + "<b>build:</b> <font color='" + style.accent + "'>" + escape(clean(version)) + "</font><br>"
+                    + "<b>family:</b> " + escape(note.family) + "<br>"
+                    + "<b>board:</b> <a href='" + note.learnMore + "'>" + escape(note.title) + "</a><br>"
+                    + "<b>layout:</b> experimental side-board inspired by early launcher development screens"
+                    + "</td></tr></table><br>";
+        }
+        return "<p><a href='" + note.learnMore + "'><b>" + escape(note.title) + "</b></a></p>"
+                + "<p><font color='" + style.accent + "'><b>Selected version:</b> " + escape(clean(version)) + "</font><br>"
+                + "<font color='" + style.muted + "'>Timeline family: " + escape(note.family) + "</font></p>";
+    }
+
+    private static String compactSection(Note note, String version, boolean patchMode, Style style) {
+        return "<table width='100%' cellpadding='8' cellspacing='0' bgcolor='" + style.panel + "' style='border:1px solid " + style.border + "'><tr><td>"
                 + "<b>" + escape(patchMode ? "Compact patch notes" : "Compact update notes") + " - " + escape(clean(version)) + "</b><br><br>"
                 + escape(note.summary) + "<br><br>"
                 + "<b>Highlights:</b><br>" + bulletLines(note.mainFeatures)
                 + "</td></tr></table>";
     }
 
-    private static String updateSection(Note note, String version) {
-        return "<p><font color='#999999'>Posted in the style of the old launcher update feed.</font></p>"
+    private static String updateSection(Note note, String version, Style style) {
+        String label = "classic".equals(style.id) || "preclassic".equals(style.id)
+                ? "Prototype note board."
+                : ("infdev".equals(style.id) ? "Sparse experimental build notes." : "Posted in the style of the old launcher update feed.");
+        return "<p><font color='" + style.muted + "'>" + label + "</font></p>"
                 + "<p>" + escape(note.summary) + "</p>"
                 + "<p><b>Why players remember this era:</b><br>" + sentenceLines(note.mainFeatures) + "</p>"
                 + "<p><b>Launcher note:</b> " + escape(note.launcherNote) + "</p>"
-                + "<br><p><font color='#999999'>For today's selected build, <b>" + escape(clean(version)) + "</b>, the launcher has pulled together a small era summary instead of a giant wiki dump. "
+                + "<br><p><font color='" + style.muted + "'>For today's selected build, <b>" + escape(clean(version)) + "</b>, the launcher has pulled together a small era summary instead of a giant wiki dump. "
                 + "Think of this as the old news page telling you why this version matters before you press Play.</font></p>";
     }
 
-    private static String patchSection(Note note, String version) {
-        return "<table width='100%' cellpadding='8' cellspacing='0' bgcolor='#0d0d0d' style='border:1px solid #444444'><tr><td>"
+    private static String patchSection(Note note, String version, Style style) {
+        return "<table width='100%' cellpadding='8' cellspacing='0' bgcolor='" + style.panel + "' style='border:1px solid " + style.border + "'><tr><td>"
                 + "<font size='+1'><b>Patch Notes - " + escape(clean(version)) + "</b></font><br><br>"
-                + "<font color='#bbbbbb'>Compact launcher notes for the " + escape(note.family) + " era.</font><br><br>"
+                + "<font color='" + style.muted + "'>Compact launcher notes for the " + escape(note.family) + " era.</font><br><br>"
                 + "<b>Added:</b><br>" + bulletLines(note.mainFeatures) + "<br><br>"
                 + "<b>Changed:</b><br>" + bulletLines(note.minorFeatures) + "<br><br>"
                 + "<b>Launcher commentary:</b><br>+ " + escape(note.launcherNote) + "<br>"
                 + "+ Notes are intentionally compact so the launcher still feels like an update panel, not a wiki dump.<br>"
                 + "+ Use the title link above for fuller historical reading."
                 + "</td></tr></table>";
+    }
+
+    private static String projectNote(Style style) {
+        if ("classic".equals(style.id)) {
+            return "<br><table width='82%' cellpadding='7' cellspacing='0' bgcolor='" + style.panel + "' style='border:1px solid " + style.border + "'><tr><td>"
+                    + "<b>MCLauncherRevival Classic Shell</b><br>"
+                    + "A very small launcher face wrapped around modern-safe auth and offline play."
+                    + "</td></tr></table>";
+        }
+        if ("preclassic".equals(style.id)) {
+            return "<br><p><b>Prototype shell:</b> blocky, sparse, and intentionally tiny. Modern account plumbing stays behind the curtain.</p>";
+        }
+        if ("infdev".equals(style.id)) {
+            return "<br><p><b>MCLauncherRevival Infdev Board</b><br>"
+                    + "+ Infinite-world era presentation<br>"
+                    + "+ Shared modern authentication backend<br>"
+                    + "+ Offline play for prepared classic files</p>";
+        }
+        return "<br><p><a href='https://www.minecraft.net/'><b>MCLauncherRevival Alpha Released</b></a></p>"
+                + "<p>The old launcher window learned modern Microsoft auth while keeping the big dark update notes, tiny bottom bar, and blocky nostalgia intact.</p>"
+                + "<p>+ Browser-based Microsoft login<br>"
+                + "+ Local token caching with Forget Login<br>"
+                + "+ Offline singleplayer<br>"
+                + "+ Selectable classic versions from Beta 1.8.x down through early alpha/classic builds</p>";
     }
 
     private static Note noteFor(String rawVersion) {
@@ -214,6 +275,76 @@ final class VersionNotes {
 
     private static String escape(String value) {
         return value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+    }
+
+    private static final class Style {
+        final String id;
+        final String title;
+        final String subtitle;
+        final String text;
+        final String link;
+        final String muted;
+        final String accent;
+        final String rule;
+        final String panel;
+        final String border;
+        final String font;
+        final String footer;
+        final String titleSize;
+        final int fontSize;
+        final int margin;
+
+        Style(String id, String title, String subtitle, String text, String link, String muted, String accent,
+                String rule, String panel, String border, String font, String footer, String titleSize,
+                int fontSize, int margin) {
+            this.id = id;
+            this.title = title;
+            this.subtitle = subtitle;
+            this.text = text;
+            this.link = link;
+            this.muted = muted;
+            this.accent = accent;
+            this.rule = rule;
+            this.panel = panel;
+            this.border = border;
+            this.font = font;
+            this.footer = footer;
+            this.titleSize = titleSize;
+            this.fontSize = fontSize;
+            this.margin = margin;
+        }
+
+        static Style forId(String id) {
+            String clean = id == null ? "beta" : id.toLowerCase();
+            if ("alpha".equals(clean)) {
+                return new Style("alpha", "Minecraft Alpha News", "Chunky early-survival launcher board.",
+                        "#f1ead2", "#c6e5ff", "#b6a985", "#e3f0b8", "#5b4a2a", "#171008", "#6a5730",
+                        "Verdana,Arial,sans-serif", "Alpha-styled notes based on compact historical summaries.",
+                        "+3", 11, 24);
+            }
+            if ("infdev".equals(clean)) {
+                return new Style("infdev", "Infdev Build Board", "Experimental infinite-world bulletin.",
+                        "#e0f0d0", "#d8ff9a", "#9fb08d", "#f4eaa0", "#445238", "#0b130d", "#536742",
+                        "Monospaced,Verdana,sans-serif", "Infdev-styled notes based on compact historical summaries.",
+                        "+2", 11, 22);
+            }
+            if ("classic".equals(clean)) {
+                return new Style("classic", "Minecraft Classic", "Simple creative-era launcher panel.",
+                        "#eeeeee", "#99ccff", "#aaaaaa", "#dddddd", "#555555", "#111111", "#666666",
+                        "Arial,Verdana,sans-serif", "Classic-styled notes based on compact historical summaries.",
+                        "+2", 11, 20);
+            }
+            if ("preclassic".equals(clean)) {
+                return new Style("preclassic", "Minecraft Prototype", "Pre-Classic block test panel.",
+                        "#f0e6e6", "#ffb8a8", "#bba0a0", "#ffd0a0", "#5a3f3f", "#120c0c", "#6c5050",
+                        "Monospaced,Verdana,sans-serif", "Pre-Classic-styled notes based on compact historical summaries.",
+                        "+2", 10, 18);
+            }
+            return new Style("beta", "Minecraft News", "News-heavy Beta-era launcher page.",
+                    "#e8e8e8", "#aaaaff", "#888888", "#b8b8ff", "#333333", "#0d0d0d", "#444444",
+                    "Verdana,Arial,sans-serif", "Version summaries are compact, launcher-friendly notes based on Minecraft Timeline data.",
+                    "+3", 11, 24);
+        }
     }
 
     private static final class Note {

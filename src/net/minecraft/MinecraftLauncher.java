@@ -27,10 +27,14 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GradientPaint;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.RenderingHints;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -44,6 +48,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import javax.swing.Timer;
 
 public final class MinecraftLauncher extends JFrame {
     private final TokenCache tokenCache = new TokenCache();
@@ -56,7 +61,8 @@ public final class MinecraftLauncher extends JFrame {
     private final JLabel eraBadge = new JLabel("Beta");
     private final JTextField offlineName = new JTextField("Player");
     private final JComboBox<String> versionBox = new JComboBox<String>(new String[] { BetaLauncher.DEFAULT_VERSION });
-    private final JComboBox<String> memoryBox = new JComboBox<String>(new String[] { "Classic 512MB", "Comfort 1024MB", "Overkill 2048MB", "Custom..." });
+    private final JComboBox<String> memoryBox = new JComboBox<String>(new String[] { "Low-end 384MB", "Classic 512MB", "Comfort 1024MB", "Overkill 2048MB", "Custom..." });
+    private final JComboBox<String> styleBox = new JComboBox<String>(new String[] { "Auto", "Beta", "Alpha", "Infdev", "Classic", "Pre-Classic" });
     private final JButton loginButton = new FooterButton("Microsoft Login");
     private final JButton playOnlineButton = new PlayButton("Play");
     private final JButton playOfflineButton = new FooterButton("Play Offline");
@@ -68,12 +74,17 @@ public final class MinecraftLauncher extends JFrame {
     private final TabLabel logTab = new TabLabel("Launcher Log", false);
     private final TabLabel profileTab = new TabLabel("Profile Editor", false);
     private final JEditorPane news = new JEditorPane();
+    private final DarkNewsPanel newsShell = new DarkNewsPanel();
+    private final SplashLabel splashLabel = new SplashLabel();
     private final StringBuilder launcherLog = new StringBuilder();
     private final JLabel skinLabel = new JLabel();
     private final Random random = new Random();
     private List<String> allVersions = new java.util.ArrayList<String>();
     private volatile AuthProfile currentProfile;
     private String activeTab = "notes";
+    private EraTheme activeTheme = EraTheme.beta();
+    private JEditorPane linksPane;
+    private String lastNewsHtml = "";
 
     public static void main(String[] args) {
         configureCompatibilityProperties();
@@ -128,10 +139,21 @@ public final class MinecraftLauncher extends JFrame {
         versionBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 updateEraBadge();
+                refreshTheme();
                 refreshActiveTab();
             }
         });
+        addComponentListener(new ComponentAdapter() {
+            public void componentShown(ComponentEvent e) {
+                updateSplashAnimation();
+            }
+
+            public void componentHidden(ComponentEvent e) {
+                updateSplashAnimation();
+            }
+        });
         int localVersions = loadLocalVersions();
+        refreshTheme();
         refreshActiveTab();
         if (xpCompatibilityMode()) {
             if (localVersions > 0) {
@@ -167,9 +189,8 @@ public final class MinecraftLauncher extends JFrame {
     }
 
     private JPanel buildNewsShell() {
-        DarkNewsPanel shell = new DarkNewsPanel();
-        shell.setLayout(new BorderLayout());
-        shell.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(110, 110, 110)));
+        newsShell.setLayout(new BorderLayout());
+        newsShell.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(110, 110, 110)));
 
         news.setEditable(false);
         news.setOpaque(false);
@@ -191,13 +212,18 @@ public final class MinecraftLauncher extends JFrame {
         newsScroll.setOpaque(false);
         newsScroll.getViewport().setOpaque(false);
         newsScroll.setBorder(BorderFactory.createEmptyBorder());
-        shell.add(newsScroll, BorderLayout.CENTER);
+        newsShell.add(newsScroll, BorderLayout.CENTER);
 
-        JEditorPane links = htmlPane(sidebarHtml());
-        links.setPreferredSize(new Dimension(210, 100));
-        shell.add(links, BorderLayout.EAST);
+        JPanel splashRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 28, 8));
+        splashRow.setOpaque(false);
+        splashRow.add(splashLabel);
+        newsShell.add(splashRow, BorderLayout.NORTH);
 
-        return shell;
+        linksPane = htmlPane(sidebarHtml(activeTheme));
+        linksPane.setPreferredSize(new Dimension(activeTheme.sidebarWidth, 100));
+        newsShell.add(linksPane, BorderLayout.EAST);
+
+        return newsShell;
     }
 
     private JPanel buildBottomBar() {
@@ -234,6 +260,12 @@ public final class MinecraftLauncher extends JFrame {
         eraBadge.setBorder(new EmptyBorder(3, 6, 3, 6));
         eraBadge.setFont(new Font("Dialog", Font.BOLD, 10));
         profile.add(eraBadge);
+        JLabel styleLabel = new JLabel("Style:");
+        styleLabel.setFont(new Font("Dialog", Font.PLAIN, 11));
+        profile.add(styleLabel);
+        styleBox.setPreferredSize(new Dimension(92, 24));
+        styleBox.setFont(new Font("Dialog", Font.PLAIN, 11));
+        profile.add(styleBox);
         profile.add(randomVersionButton);
         memoryBox.setSelectedItem("Comfort 1024MB");
         memoryBox.setPreferredSize(new Dimension(126, 24));
@@ -342,6 +374,13 @@ public final class MinecraftLauncher extends JFrame {
         compactNewsBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 saveSettingsOnly();
+                refreshActiveTab();
+            }
+        });
+        styleBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                saveSettingsOnly();
+                refreshTheme();
                 refreshActiveTab();
             }
         });
@@ -703,13 +742,52 @@ public final class MinecraftLauncher extends JFrame {
     }
 
     private void refreshActiveTab() {
+        refreshTheme();
         if ("log".equals(activeTab)) {
+            updateSplashAnimation();
             setNewsHtml(logPage());
         } else if ("profile".equals(activeTab)) {
+            updateSplashAnimation();
             setNewsHtml(profilePage());
         } else {
-            setNewsHtml(VersionNotes.page(selectedVersion(), compactNewsBox.isSelected(), false));
+            splashLabel.setSplash(SplashText.forKey(selectedVersion() + ":" + compactNewsBox.isSelected()));
+            updateSplashAnimation();
+            setNewsHtml(VersionNotes.page(selectedVersion(), compactNewsBox.isSelected(), false, activeTheme.id));
         }
+    }
+
+    private void refreshTheme() {
+        EraTheme next = EraTheme.resolve(selectedStyleMode(), selectedVersion());
+        activeTheme = next;
+        if (newsShell != null) {
+            newsShell.setTheme(next);
+        }
+        if (splashLabel != null) {
+            splashLabel.setTheme(next);
+        }
+        if (linksPane != null) {
+            linksPane.setText(sidebarHtml(next));
+            linksPane.setPreferredSize(new Dimension(next.sidebarWidth, 100));
+        }
+        setTitle(next.windowTitle);
+        updateTab.setText(next.updateTabTitle);
+        logTab.setText(next.logTabTitle);
+        profileTab.setText(next.profileTabTitle);
+        updateTabsTheme();
+        updateEraBadge();
+        repaint();
+    }
+
+    private void updateSplashAnimation() {
+        boolean notesVisible = "notes".equals(activeTab) && isDisplayable() && isVisible();
+        splashLabel.setAnimationActive(notesVisible);
+        splashLabel.setVisible(notesVisible);
+    }
+
+    private void updateTabsTheme() {
+        updateTab.setTheme(activeTheme);
+        logTab.setTheme(activeTheme);
+        profileTab.setTheme(activeTheme);
     }
 
     private void appendLog(String message) {
@@ -728,6 +806,7 @@ public final class MinecraftLauncher extends JFrame {
         versionBox.getEditor().setItem(settings.get("version", BetaLauncher.DEFAULT_VERSION));
         String memory = settings.get("memory", "Comfort 1024MB");
         memoryBox.setSelectedItem(memory);
+        styleBox.setSelectedItem(settings.get("theme.mode", "Auto"));
         compactNewsBox.setSelected(settings.getBoolean("compactNews", false));
         updateLastPlayedLabel();
         updateEraBadge();
@@ -737,6 +816,7 @@ public final class MinecraftLauncher extends JFrame {
         settings.put("profile.name", offlineName.getText());
         settings.put("version", selectedVersion());
         settings.put("memory", String.valueOf(memoryBox.getSelectedItem()));
+        settings.put("theme.mode", selectedStyleMode());
         settings.putBoolean("compactNews", compactNewsBox.isSelected());
         try {
             settings.save();
@@ -749,6 +829,7 @@ public final class MinecraftLauncher extends JFrame {
         settings.put("profile.name", profile.name);
         settings.put("version", selectedVersion());
         settings.put("memory", String.valueOf(memoryBox.getSelectedItem()));
+        settings.put("theme.mode", selectedStyleMode());
         settings.put("last.name", profile.name);
         settings.put("last.version", selectedVersion());
         settings.put("last.mode", profile.online ? "online" : "offline");
@@ -797,19 +878,10 @@ public final class MinecraftLauncher extends JFrame {
     }
 
     private void updateEraBadge() {
-        String era = eraName(selectedVersion());
-        eraBadge.setText(era);
-        if ("beta".equals(era)) {
-            eraBadge.setBackground(new Color(70, 95, 150));
-        } else if ("alpha".equals(era)) {
-            eraBadge.setBackground(new Color(88, 130, 70));
-        } else if ("infdev".equals(era)) {
-            eraBadge.setBackground(new Color(135, 96, 45));
-        } else if ("classic".equals(era)) {
-            eraBadge.setBackground(new Color(105, 105, 105));
-        } else {
-            eraBadge.setBackground(new Color(120, 70, 70));
-        }
+        EraTheme theme = EraTheme.resolve(selectedStyleMode(), selectedVersion());
+        eraBadge.setText(theme.badgeText);
+        eraBadge.setBackground(theme.badgeColor);
+        eraBadge.setForeground(theme.badgeForeground);
         updateRedownloadVisibility();
     }
 
@@ -1112,6 +1184,12 @@ public final class MinecraftLauncher extends JFrame {
         return BetaLauncher.memoryPreview(text);
     }
 
+    private String selectedStyleMode() {
+        Object value = styleBox.getSelectedItem();
+        String text = value == null ? "Auto" : value.toString().trim();
+        return text.length() == 0 ? "Auto" : text;
+    }
+
     private int loadLocalVersions() {
         java.io.File versionsDir = new java.io.File(TokenCache.minecraftDir(), "versions");
         if (!versionsDir.exists() || !versionsDir.isDirectory()) {
@@ -1192,6 +1270,7 @@ public final class MinecraftLauncher extends JFrame {
         String message = friendlyErrorMessage(ex);
         status("Launcher error");
         appendLog("ERROR: " + message);
+        splashLabel.setAnimationActive(false);
         setNewsHtml(errorNews(message));
     }
 
@@ -1203,6 +1282,10 @@ public final class MinecraftLauncher extends JFrame {
     }
 
     private void setNewsHtml(String html) {
+        if (html != null && html.equals(lastNewsHtml)) {
+            return;
+        }
+        lastNewsHtml = html == null ? "" : html;
         news.setText(html);
         news.setCaretPosition(0);
     }
@@ -1263,9 +1346,32 @@ public final class MinecraftLauncher extends JFrame {
                 + "</body></html>";
     }
 
-    private static String sidebarHtml() {
-        return "<html><body text='#eeeeee' link='#aaaaff' vlink='#aaaaff' style='font-family:Verdana,Arial,sans-serif;font-size:10px;margin:18px;background-color:transparent'>"
-                + "<font size='+2'><b>Official links:</b></font><br><br>"
+    private static String sidebarHtml(EraTheme theme) {
+        String style = "font-family:" + theme.fontFamily + ";font-size:" + theme.sidebarFontSize
+                + "px;margin:" + theme.sidebarMargin + "px;background-color:transparent";
+        String body = "<html><body text='" + theme.textHex + "' link='" + theme.linkHex + "' vlink='" + theme.linkHex
+                + "' style='" + style + "'>";
+        if ("classic".equals(theme.id) || "preclassic".equals(theme.id)) {
+            return body
+                    + "<font size='+1'><b>" + theme.sidebarTitle + "</b></font><br><br>"
+                    + "<a href='https://www.minecraft.net/'>Minecraft.net</a><br>"
+                    + "<a href='https://minecraft.wiki/'>Minecraft Wiki</a><br><br>"
+                    + "<hr color='" + theme.ruleHex + "'>"
+                    + "<font color='" + theme.mutedHex + "'>" + theme.sidebarNote + "</font>"
+                    + "</body></html>";
+        }
+        if ("infdev".equals(theme.id)) {
+            return body
+                    + "<font size='+1'><b>Infdev links:</b></font><br><br>"
+                    + "<a href='https://www.minecraft.net/'>Minecraft.net</a><br>"
+                    + "<a href='https://minecraft.wiki/w/Minecraft_Infdev'>Infdev history</a><br>"
+                    + "<a href='https://bugs.mojang.com/'>Bug tracker</a><br><br>"
+                    + "<hr color='" + theme.ruleHex + "'>"
+                    + "<font color='" + theme.mutedHex + "'>Infinite worlds.<br>Finite patience.</font>"
+                    + "</body></html>";
+        }
+        return body
+                + "<font size='+2'><b>" + theme.sidebarTitle + "</b></font><br><br>"
                 + "<a href='https://www.minecraft.net/'>Minecraft.net</a><br>"
                 + "<a href='https://www.minecraft.net/realms'>Minecraft Realms</a><br>"
                 + "<a href='https://www.facebook.com/minecraft'>Minecraft on Facebook</a><br>"
@@ -1275,7 +1381,7 @@ public final class MinecraftLauncher extends JFrame {
                 + "<a href='https://twitter.com/Minecraft'>Mojang on Twitter</a><br>"
                 + "<a href='https://twitter.com/MojangSupport'>Support on Twitter</a><br><br>"
 
-                + "<font size='+1'><b>Try our other games!</b></font><br><br>"
+                + "<font size='+1'><b>" + theme.gamesTitle + "</b></font><br><br>"
                 + "<center><a href='https://www.minecraft.net/en-us/article/scrolls-now-free'><img src='" + scrollsLogoUrl() + "' width='150' height='44' border='0'></a><br>"
                 + "<a href='https://playcobalt.com/'><img src='" + cobaltLogoUrl() + "' width='130' height='38' border='0'></a></center><br>"
 
@@ -1283,9 +1389,8 @@ public final class MinecraftLauncher extends JFrame {
                 + "<a href='https://www.minecraftforum.net/'>Minecraft Forums</a><br>"
                 + "<a href='https://minecraft.wiki/'>Minecraft Wiki</a><br><br>"
 
-                + "<hr color='#333333'>"
-                + "<font color='#888888'>Modern twist:</font><br>"
-                + "<font color='#cccccc'>OAuth backstage.<br>Old vibes up front.</font><br><br>"
+                + "<hr color='" + theme.ruleHex + "'>"
+                + "<font color='" + theme.mutedHex + "'>" + theme.sidebarNote + "</font><br><br>"
                 + "</body></html>";
     }
 
@@ -1298,6 +1403,7 @@ public final class MinecraftLauncher extends JFrame {
                 + macOsNoteHtml()
                 + openGlFailureNoteHtml(launchLog)
                 + "<p><b>Selected version:</b> " + escape(selectedVersion()) + "<br>"
+                + "<b>Launcher style:</b> " + escape(selectedStyleMode()) + " -> " + escape(activeTheme.displayName) + "<br>"
                 + "<b>Java runtime:</b> " + escape(javaRuntimeSummary()) + "<br>"
                 + "<b>Java safety:</b> " + escape(javaSafetySummary()) + "<br>"
                 + "<b>Minecraft folder:</b> " + escape(TokenCache.minecraftDir().getAbsolutePath()) + "<br>"
@@ -1377,6 +1483,9 @@ public final class MinecraftLauncher extends JFrame {
                 + "<tr><td><b>Offline name</b></td><td>" + escape(offlineName.getText()) + "</td></tr>"
                 + "<tr><td><b>Selected version</b></td><td>" + escape(selectedVersion()) + "</td></tr>"
                 + "<tr><td><b>Memory preset</b></td><td>" + escape(String.valueOf(memoryBox.getSelectedItem())) + "</td></tr>"
+                + "<tr><td><b>Style mode</b></td><td>" + escape(selectedStyleMode()) + "</td></tr>"
+                + "<tr><td><b>Resolved layout</b></td><td>" + escape(activeTheme.displayName) + "</td></tr>"
+                + "<tr><td><b>Splash animation</b></td><td>" + ("notes".equals(activeTab) ? "Active on Update Notes" : "Paused off Update Notes") + "</td></tr>"
                 + "<tr><td><b>Java runtime</b></td><td>" + escape(javaRuntimeSummary()) + "</td></tr>"
                 + "<tr><td><b>Java safety</b></td><td>" + escape(javaSafetySummary()) + "</td></tr>"
                 + "<tr><td><b>Era</b></td><td>" + escape(eraName(selectedVersion())) + "</td></tr>"
@@ -1562,6 +1671,9 @@ public final class MinecraftLauncher extends JFrame {
     }
 
     private static final class TabLabel extends JLabel {
+        private boolean active;
+        private EraTheme theme = EraTheme.beta();
+
         TabLabel(String text, boolean selected) {
             super(text);
             setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -1569,13 +1681,23 @@ public final class MinecraftLauncher extends JFrame {
         }
 
         void setActive(boolean selected) {
+            active = selected;
+            applyStyle();
+        }
+
+        void setTheme(EraTheme next) {
+            theme = next == null ? EraTheme.beta() : next;
+            applyStyle();
+        }
+
+        private void applyStyle() {
             setOpaque(true);
-            setFont(new Font("Dialog", Font.PLAIN, 11));
+            setFont(new Font(theme.controlFont, Font.PLAIN, 11));
             setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createMatteBorder(0, 0, 1, 1, new Color(145, 145, 145)),
+                    BorderFactory.createMatteBorder(0, 0, 1, 1, theme.borderColor),
                     new EmptyBorder(5, 7, 5, 7)));
-            setBackground(selected ? Color.WHITE : new Color(230, 230, 230));
-            setForeground(Color.BLACK);
+            setBackground(active ? theme.tabActive : theme.tabInactive);
+            setForeground(theme.tabForeground);
         }
     }
 
@@ -1607,25 +1729,288 @@ public final class MinecraftLauncher extends JFrame {
         }
     }
 
+    private static final class SplashLabel extends JLabel {
+        private EraTheme theme = EraTheme.beta();
+        private double phase;
+        private final Timer timer;
+
+        SplashLabel() {
+            super("");
+            setOpaque(false);
+            setForeground(new Color(255, 255, 85));
+            setFont(new Font("Dialog", Font.BOLD, 15));
+            setBorder(new EmptyBorder(0, 0, 0, 0));
+            timer = new Timer(55, new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    phase += 0.16;
+                    repaint();
+                }
+            });
+        }
+
+        void setSplash(String splash) {
+            setText(splash == null ? "" : splash);
+            setToolTipText(getText());
+        }
+
+        void setTheme(EraTheme next) {
+            theme = next == null ? EraTheme.beta() : next;
+            setForeground(theme.splashColor);
+            setFont(new Font(theme.splashFont, Font.BOLD, theme.splashSize));
+        }
+
+        void setAnimationActive(boolean active) {
+            if (active && getText().length() > 0) {
+                if (!timer.isRunning()) {
+                    timer.start();
+                }
+            } else if (timer.isRunning()) {
+                timer.stop();
+            }
+        }
+
+        public Dimension getPreferredSize() {
+            Dimension size = super.getPreferredSize();
+            return new Dimension(size.width + 34, size.height + 18);
+        }
+
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            try {
+                g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                double bob = Math.sin(phase) * 3.0;
+                double scale = 1.0 + Math.sin(phase * 0.85) * 0.055;
+                double rotate = Math.sin(phase * 0.65) * 0.08;
+                g2.translate(getWidth() / 2, getHeight() / 2 + bob);
+                g2.rotate(rotate);
+                g2.scale(scale, scale);
+                g2.translate(-getWidth() / 2, -getHeight() / 2);
+                g2.setColor(new Color(40, 35, 0, 155));
+                g2.drawString(getText(), 18, getHeight() / 2 + 6);
+                g2.setColor(theme.splashColor);
+                g2.drawString(getText(), 16, getHeight() / 2 + 4);
+            } finally {
+                g2.dispose();
+            }
+        }
+    }
+
+    private static final class EraTheme {
+        final String id;
+        final String displayName;
+        final String badgeText;
+        final Color badgeColor;
+        final Color badgeForeground;
+        final Color overlayColor;
+        final Color borderColor;
+        final Color tabActive;
+        final Color tabInactive;
+        final Color tabForeground;
+        final Color splashColor;
+        final String textHex;
+        final String linkHex;
+        final String mutedHex;
+        final String ruleHex;
+        final String fontFamily;
+        final String controlFont;
+        final String splashFont;
+        final String sidebarTitle;
+        final String gamesTitle;
+        final String sidebarNote;
+        final String texturePath;
+        final String windowTitle;
+        final String updateTabTitle;
+        final String logTabTitle;
+        final String profileTabTitle;
+        final int sidebarWidth;
+        final int sidebarFontSize;
+        final int sidebarMargin;
+        final int splashSize;
+        final int tileScale;
+
+        EraTheme(String id, String displayName, String badgeText, Color badgeColor, Color badgeForeground,
+                Color overlayColor, Color borderColor, Color tabActive, Color tabInactive, Color tabForeground,
+                Color splashColor, String textHex, String linkHex, String mutedHex, String ruleHex,
+                String fontFamily, String controlFont, String splashFont, String sidebarTitle, String gamesTitle,
+                String sidebarNote, String texturePath, String windowTitle, String updateTabTitle,
+                String logTabTitle, String profileTabTitle, int sidebarWidth, int sidebarFontSize,
+                int sidebarMargin, int splashSize, int tileScale) {
+            this.id = id;
+            this.displayName = displayName;
+            this.badgeText = badgeText;
+            this.badgeColor = badgeColor;
+            this.badgeForeground = badgeForeground;
+            this.overlayColor = overlayColor;
+            this.borderColor = borderColor;
+            this.tabActive = tabActive;
+            this.tabInactive = tabInactive;
+            this.tabForeground = tabForeground;
+            this.splashColor = splashColor;
+            this.textHex = textHex;
+            this.linkHex = linkHex;
+            this.mutedHex = mutedHex;
+            this.ruleHex = ruleHex;
+            this.fontFamily = fontFamily;
+            this.controlFont = controlFont;
+            this.splashFont = splashFont;
+            this.sidebarTitle = sidebarTitle;
+            this.gamesTitle = gamesTitle;
+            this.sidebarNote = sidebarNote;
+            this.texturePath = texturePath;
+            this.windowTitle = windowTitle;
+            this.updateTabTitle = updateTabTitle;
+            this.logTabTitle = logTabTitle;
+            this.profileTabTitle = profileTabTitle;
+            this.sidebarWidth = sidebarWidth;
+            this.sidebarFontSize = sidebarFontSize;
+            this.sidebarMargin = sidebarMargin;
+            this.splashSize = splashSize;
+            this.tileScale = tileScale;
+        }
+
+        static EraTheme resolve(String mode, String version) {
+            String cleanMode = mode == null ? "auto" : mode.trim().toLowerCase(java.util.Locale.ENGLISH);
+            if ("beta".equals(cleanMode)) {
+                return beta();
+            }
+            if ("alpha".equals(cleanMode)) {
+                return alpha();
+            }
+            if ("infdev".equals(cleanMode)) {
+                return infdev();
+            }
+            if ("classic".equals(cleanMode)) {
+                return classic();
+            }
+            if ("pre-classic".equals(cleanMode) || "preclassic".equals(cleanMode)) {
+                return preclassic();
+            }
+            return forVersion(version);
+        }
+
+        static EraTheme forVersion(String version) {
+            String clean = version == null ? "" : version.trim().toLowerCase(java.util.Locale.ENGLISH);
+            if (clean.startsWith("b")) {
+                return beta();
+            }
+            if (clean.startsWith("a")) {
+                return alpha();
+            }
+            if (clean.startsWith("inf")) {
+                return infdev();
+            }
+            if (clean.startsWith("c")) {
+                return classic();
+            }
+            if (clean.startsWith("rd")) {
+                return preclassic();
+            }
+            return beta();
+        }
+
+        static EraTheme beta() {
+            return new EraTheme("beta", "Beta news launcher", "beta", new Color(70, 95, 150), Color.WHITE,
+                    new Color(0, 0, 0, 145), new Color(110, 110, 110),
+                    Color.WHITE, new Color(230, 230, 230), Color.BLACK, new Color(255, 255, 85),
+                    "#e8e8e8", "#aaaaff", "#888888", "#333333",
+                    "Verdana,Arial,sans-serif", "Dialog", "Dialog", "Official links:", "Try our other games!",
+                    "Modern twist:<br>OAuth backstage.<br>Old vibes up front.", "/net/minecraft/themes/beta.png",
+                    "Minecraft Launcher 1.6.89-j Revival", "Update Notes", "Launcher Log", "Profile Editor",
+                    210, 10, 18, 15, 2);
+        }
+
+        static EraTheme alpha() {
+            return new EraTheme("alpha", "Alpha login board", "alpha", new Color(88, 130, 70), Color.WHITE,
+                    new Color(24, 15, 7, 132), new Color(96, 78, 45),
+                    new Color(222, 215, 196), new Color(198, 185, 150), Color.BLACK, new Color(255, 230, 80),
+                    "#f1ead2", "#c6e5ff", "#b6a985", "#5b4a2a",
+                    "Verdana,Arial,sans-serif", "Dialog", "Dialog", "Mojang links:", "Tiny side quests!",
+                    "Alpha mood:<br>rough edges.<br>big worlds.", "/net/minecraft/themes/alpha.png",
+                    "Minecraft Launcher Alpha Revival", "Update Notes", "Development Console", "Profile Editor",
+                    188, 10, 16, 15, 3);
+        }
+
+        static EraTheme infdev() {
+            return new EraTheme("infdev", "Infdev experiment board", "infdev", new Color(135, 96, 45), Color.WHITE,
+                    new Color(8, 18, 14, 126), new Color(82, 95, 68),
+                    new Color(205, 218, 188), new Color(172, 188, 150), Color.BLACK, new Color(255, 245, 120),
+                    "#e0f0d0", "#d8ff9a", "#9fb08d", "#445238",
+                    "Monospaced,Verdana,sans-serif", "Dialog", "Monospaced", "Infdev links:", "Other experiments!",
+                    "Build note:<br>terrain forever.<br>docs nearby.", "/net/minecraft/themes/infdev.png",
+                    "Minecraft Infdev Launcher Revival", "Build Notes", "Development Console", "Profile",
+                    176, 10, 14, 14, 3);
+        }
+
+        static EraTheme classic() {
+            return new EraTheme("classic", "Classic compact launcher", "classic", new Color(105, 105, 105), Color.WHITE,
+                    new Color(0, 0, 0, 112), new Color(125, 125, 125),
+                    new Color(235, 235, 235), new Color(205, 205, 205), Color.BLACK, new Color(255, 255, 85),
+                    "#eeeeee", "#99ccff", "#aaaaaa", "#555555",
+                    "Arial,Verdana,sans-serif", "Dialog", "Dialog", "Classic links:", "Blocks nearby!",
+                    "Classic mode:<br>small panel.<br>big nostalgia.", "/net/minecraft/themes/classic.png",
+                    "Minecraft Launcher Classic Revival", "News", "Console", "Login",
+                    156, 10, 12, 14, 4);
+        }
+
+        static EraTheme preclassic() {
+            return new EraTheme("preclassic", "Pre-Classic prototype", "rd", new Color(120, 70, 70), Color.WHITE,
+                    new Color(18, 12, 12, 102), new Color(110, 84, 84),
+                    new Color(228, 218, 218), new Color(196, 180, 180), Color.BLACK, new Color(255, 235, 110),
+                    "#f0e6e6", "#ffb8a8", "#bba0a0", "#5a3f3f",
+                    "Monospaced,Verdana,sans-serif", "Dialog", "Monospaced", "Prototype:", "No shop yet!",
+                    "Pre-classic:<br>stone, grass,<br>and nerve.", "/net/minecraft/themes/preclassic.png",
+                    "Minecraft Launcher 0.1 (Dev) Revival", "Block Notes", "Console", "Login",
+                    138, 10, 10, 13, 4);
+        }
+    }
+
     private static final class DarkNewsPanel extends JPanel {
-        private final Image dirt = loadImage("/net/minecraft/dirt.png");
+        private Image texture = loadImage("/net/minecraft/themes/beta.png");
+        private EraTheme theme = EraTheme.beta();
+        private BufferedImage cachedTile;
+
+        void setTheme(EraTheme next) {
+            theme = next == null ? EraTheme.beta() : next;
+            Image loaded = loadImage(theme.texturePath);
+            texture = loaded == null ? loadImage("/net/minecraft/dirt.png") : loaded;
+            cachedTile = null;
+            repaint();
+        }
 
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-            if (dirt != null) {
-                int tileW = dirt.getWidth(this) * 2;
-                int tileH = dirt.getHeight(this) * 2;
+            if (texture != null) {
+                BufferedImage tile = scaledTile();
+                int tileW = tile.getWidth();
+                int tileH = tile.getHeight();
                 for (int x = 0; x < getWidth(); x += tileW) {
                     for (int y = 0; y < getHeight(); y += tileH) {
-                        g.drawImage(dirt, x, y, tileW, tileH, this);
+                        g.drawImage(tile, x, y, this);
                     }
                 }
             } else {
                 g.setColor(new Color(30, 30, 30));
                 g.fillRect(0, 0, getWidth(), getHeight());
             }
-            g.setColor(new Color(0, 0, 0, 145));
+            g.setColor(theme.overlayColor);
             g.fillRect(0, 0, getWidth(), getHeight());
+        }
+
+        private BufferedImage scaledTile() {
+            int scale = Math.max(1, theme.tileScale);
+            int width = Math.max(1, texture.getWidth(this) * scale);
+            int height = Math.max(1, texture.getHeight(this) * scale);
+            if (cachedTile != null && cachedTile.getWidth() == width && cachedTile.getHeight() == height) {
+                return cachedTile;
+            }
+            cachedTile = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2 = cachedTile.createGraphics();
+            try {
+                g2.drawImage(texture, 0, 0, width, height, this);
+            } finally {
+                g2.dispose();
+            }
+            return cachedTile;
         }
     }
 }

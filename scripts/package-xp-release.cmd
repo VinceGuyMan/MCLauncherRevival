@@ -5,7 +5,7 @@ for %%I in ("%ROOT_DIR%") do set "ROOT_DIR=%%~fI"
 cd /d "%ROOT_DIR%"
 
 set "RELEASE_VERSION=%~1"
-if "%RELEASE_VERSION%"=="" set "RELEASE_VERSION=v0.4.6-alpha"
+if "%RELEASE_VERSION%"=="" set "RELEASE_VERSION=v0.5.0-alpha"
 
 set "PACKAGE_NAME=MCLauncherRevival-%RELEASE_VERSION%-xp-bundled-java"
 set "DIST_DIR=%ROOT_DIR%\dist"
@@ -98,10 +98,10 @@ if errorlevel 1 (
   exit /b 1
 )
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "Add-Type -AssemblyName System.IO.Compression.FileSystem; $zip = [IO.Compression.ZipFile]::OpenRead('%ZIP_PATH%'); try { $hasJar = $false; $hasJava = $false; $hasInstaller = $false; foreach ($entry in $zip.Entries) { $name = ($entry.FullName -replace '\\','/'); if ($name -match '(^|/)MCLauncherRevival\.jar$') { $hasJar = $true }; if ($name -match '(^|/)tools/java7/bin/java\.exe$') { $hasJava = $true }; if ($name -match '(^|/)tools/java-installers/[^/]+\.exe$') { $hasInstaller = $true } }; if (-not $hasJar -or (-not $hasJava -and -not $hasInstaller)) { exit 2 } } finally { $zip.Dispose() }"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Add-Type -AssemblyName System.IO.Compression.FileSystem; $zip = [IO.Compression.ZipFile]::OpenRead('%ZIP_PATH%'); try { $hasJar = $false; $hasJava = $false; $hasInstaller = $false; $hasThemes = $false; foreach ($entry in $zip.Entries) { $name = ($entry.FullName -replace '\\','/'); if ($name -match '(^|/)MCLauncherRevival\.jar$') { $hasJar = $true }; if ($name -match '(^|/)tools/java7/bin/java\.exe$') { $hasJava = $true }; if ($name -match '(^|/)tools/java-installers/[^/]+\.exe$') { $hasInstaller = $true }; if ($name -match '(^|/)resources/net/minecraft/themes/beta\.png$') { $hasThemes = $true } }; if (-not $hasJar -or -not $hasThemes -or (-not $hasJava -and -not $hasInstaller)) { exit 2 } } finally { $zip.Dispose() }"
 if errorlevel 1 (
   echo XP bundled-Java ZIP verification failed.
-  echo Expected MCLauncherRevival.jar and either tools\java7\bin\java.exe or Java installer EXEs under tools\java-installers.
+  echo Expected MCLauncherRevival.jar, theme resources, and either tools\java7\bin\java.exe or Java installer EXEs under tools\java-installers.
   pause
   exit /b 1
 )

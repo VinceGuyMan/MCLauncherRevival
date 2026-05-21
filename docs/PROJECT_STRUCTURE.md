@@ -6,6 +6,8 @@ human-facing launchers and documentation visible, while internal helpers live un
 ```text
 src/                         Java launcher source
 resources/net/minecraft/     Images bundled into the launcher jar
+resources/net/minecraft/themes/
+                             Recreated era-layout background textures
 docs/                        Documentation, screenshots, release notes
 scripts/                     Build, run, and package helper scripts
 tools/                       Dependency helper scripts and optional local Java payloads
@@ -60,6 +62,10 @@ resources/net/minecraft/
 
 These files are copied into the jar under `/net/minecraft/` at build time so existing resource
 lookups remain simple.
+
+The `themes/` subfolder contains small recreated pixel textures used by the v0.5.0 historical
+launcher layouts. They are project-owned recreated assets, not extracted Mojang/Microsoft launcher
+or game files.
 
 ## Screenshots
 

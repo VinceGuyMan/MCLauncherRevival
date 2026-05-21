@@ -1,10 +1,18 @@
 # Release Checklist
 
-For `v0.4.6`:
+For `v0.5.0`:
 
 - Confirm the project builds from a clean clone.
 - Confirm the jar launches.
+- Confirm Java bytecode remains major version `51`.
 - Confirm offline mode behavior.
+- Confirm `Style: Auto` maps Beta, Alpha, Infdev, Classic, and Pre-Classic versions to the expected
+  recreated layouts.
+- Confirm manual `Style:` overrides persist after restart.
+- Confirm the animated yellow splash text runs on Update Notes and pauses on Launcher Log/Profile
+  Editor.
+- Confirm the `Low-end 384MB` memory preset launches with the expected `-Xmx384M` JVM setting.
+- Confirm `resources/net/minecraft/themes/` is included in the built jar and release ZIP.
 - Confirm Microsoft sign-in flow does not request passwords inside the app.
 - Confirm the release ZIP is used for user testing, not GitHub's source-code ZIP.
 - Confirm Windows 7 dependency setup can reuse `tools\jdk8` or `tools\temurin8-jdk.zip`.
@@ -63,7 +71,9 @@ Expected project files include:
 - `docs/TRUST_AND_SAFETY.md`
 - `docs/DISCLAIMER.md`
 - `docs/AUTH_FLOW.md`
+- `docs/HISTORICAL_THEMES.md`
 - `docs/RELEASES.md`
+- `docs/RELEASE_NOTES_v0.5.0.md`
 - `LICENSE`
 
 ## Do not commit
@@ -80,7 +90,7 @@ Expected project files include:
 Recommended release tag and artifact names:
 
 ```text
-v0.4.6
-MCLauncherRevival-v0.4.6-alpha.zip
+v0.5.0
+MCLauncherRevival-v0.5.0-alpha.zip
 MCLauncherRevival.jar
 ```

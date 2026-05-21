@@ -48,13 +48,8 @@ mkdir -p build/classes
 find src -name '*.java' | sort > build/sources.txt
 "$JAVAC" -source 1.7 -target 1.7 -encoding UTF-8 -d build/classes @build/sources.txt
 
-mkdir -p build/classes/net/minecraft
-if [ -d resources/net/minecraft ]; then
-    for file in resources/net/minecraft/*.png resources/net/minecraft/*.jpg; do
-        if [ -f "$file" ]; then
-            cp "$file" build/classes/net/minecraft/
-        fi
-    done
+if [ -d resources ]; then
+    cp -R resources/. build/classes/
 fi
 
 {

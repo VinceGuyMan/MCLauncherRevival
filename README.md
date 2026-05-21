@@ -27,10 +27,15 @@ More screenshots and annotated UI guides are available in
 - [Microsoft login flow](docs/screenshots/microsoft-login-redirect.png)
 - [backdrop artwork](docs/screenshots/backdrop.png)
 
+The v0.5.0 historical style system is documented in
+[docs/HISTORICAL_THEMES.md](docs/HISTORICAL_THEMES.md).
+
 ## What it does
 
-- Presents a classic launcher-inspired Swing UI with a dirt-texture news panel and compact bottom
-  controls.
+- Presents a classic launcher-inspired Swing UI with era-aware layouts, recreated pixel textures,
+  animated splash text, and compact bottom controls.
+- Adds a `Style` selector with `Auto`, `Beta`, `Alpha`, `Infdev`, `Classic`, and `Pre-Classic`
+  presentation modes.
 - Uses a modern browser/OAuth account flow where available.
 - Keeps offline singleplayer fallback behavior available.
 - Supports selecting and launching classic Minecraft Java versions from Beta 1.8.x downward where
@@ -43,6 +48,7 @@ More screenshots and annotated UI guides are available in
 | Area | Status | Notes |
 | --- | --- | --- |
 | Classic launcher UI | Working | Preserves the old launcher feel with modernized internals. |
+| Historical era layouts | New in v0.5.0 / experimental | `Auto` maps selected versions to recreated Beta, Alpha, Infdev, Classic, or Pre-Classic launcher-inspired layouts. |
 | Offline mode | Working / needs broader testing | Intended for singleplayer and older systems. |
 | Microsoft login / OAuth flow | Experimental | Should use browser/OAuth flow. It should never ask for a Microsoft password inside the app. |
 | Version selection | Working / needs broader testing | Classic versions are listed from Mojang metadata where available. |
@@ -67,13 +73,13 @@ Those source archives are useful for reading or building the code, but they may 
 The current alpha package is:
 
 ```text
-MCLauncherRevival-v0.4.6-alpha.zip
+MCLauncherRevival-v0.5.0-alpha.zip
 ```
 
 If an XP bundled-Java package is published, it should be named like:
 
 ```text
-MCLauncherRevival-v0.4.6-alpha-xp-bundled-java.zip
+MCLauncherRevival-v0.5.0-alpha-xp-bundled-java.zip
 ```
 
 That XP package is for offline/classic use only. It may include a maintainer-provided
@@ -189,6 +195,9 @@ See [SECURITY.md](SECURITY.md) and [Trust and Safety](docs/TRUST_AND_SAFETY.md) 
 ## Known limitations
 
 - Alpha quality; behavior may change and some flows need more testing.
+- Historical launcher styles are recreated/inspired layouts, not exact bundled historical launcher
+  assets. Proprietary Mojang/Microsoft launcher artwork is not redistributed unless rights are
+  verified.
 - Authentication may need testing across browsers, Java versions, and Windows versions.
 - Older operating systems may have limited online login support due to TLS/root certificate/browser
   limits.
@@ -237,8 +246,8 @@ See [Windows XP Offline/Classic Guide](docs/WINDOWS_XP.md) and
 
 ## Roadmap
 
-- Continue polishing alpha packaging and release notes.
-- Improve release zip packaging.
+- Continue refining historical launcher layout fidelity with recreated project-owned assets.
+- Improve release zip packaging and smoke-test coverage.
 - Add smoke-test/build verification around clean clones.
 - Continue compatibility testing across Windows versions.
 

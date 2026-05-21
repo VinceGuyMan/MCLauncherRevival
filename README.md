@@ -67,13 +67,13 @@ Those source archives are useful for reading or building the code, but they may 
 The current alpha package is:
 
 ```text
-MCLauncherRevival-v0.4.5-alpha.zip
+MCLauncherRevival-v0.4.6-alpha.zip
 ```
 
 If an XP bundled-Java package is published, it should be named like:
 
 ```text
-MCLauncherRevival-v0.4.5-alpha-xp-bundled-java.zip
+MCLauncherRevival-v0.4.6-alpha-xp-bundled-java.zip
 ```
 
 That XP package is for offline/classic use only. It may include a maintainer-provided
@@ -101,7 +101,7 @@ For direct Windows 7-11 startup, run:
 Start MCLauncherRevival.cmd
 ```
 
-That shortcut calls `run-win7.cmd`, which launches the packaged jar or builds it if needed.
+That shortcut calls `scripts\run-win7.cmd`, which launches the packaged jar or builds it if needed.
 
 For Windows XP offline/classic mode, use:
 
@@ -119,8 +119,8 @@ For manual Java setup, see [docs/XP_JAVA_SETUP.md](docs/XP_JAVA_SETUP.md).
 For preliminary Linux testing, use:
 
 ```sh
-chmod +x run-linux.sh build-linux.sh
-./run-linux.sh
+chmod +x scripts/run-linux.sh scripts/build-linux.sh
+./scripts/run-linux.sh
 ```
 
 See [docs/LINUX.md](docs/LINUX.md) before relying on Linux behavior.
@@ -128,8 +128,8 @@ See [docs/LINUX.md](docs/LINUX.md) before relying on Linux behavior.
 For preliminary macOS testing, use:
 
 ```sh
-chmod +x run-macos.sh build-macos.sh
-./run-macos.sh
+chmod +x scripts/run-macos.sh scripts/build-macos.sh
+./scripts/run-macos.sh
 ```
 
 See [docs/MACOS.md](docs/MACOS.md) before relying on macOS behavior.
@@ -147,19 +147,19 @@ See [docs/MACOS.md](docs/MACOS.md) before relying on macOS behavior.
 3. Run the build script on Windows:
 
    ```bat
-   build-win7.cmd
+   scripts\build-win7.cmd
    ```
 
    Or on Linux:
 
    ```sh
-   ./build-linux.sh
+   ./scripts/build-linux.sh
    ```
 
    Or on macOS:
 
    ```sh
-   ./build-macos.sh
+   ./scripts/build-macos.sh
    ```
 
 4. The build output is:

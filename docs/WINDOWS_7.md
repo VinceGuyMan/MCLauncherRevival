@@ -14,7 +14,7 @@ Setup MCLauncherRevival.cmd
 ```
 
 Then choose the Windows 7-11 normal launcher path. You can also run `Start MCLauncherRevival.cmd`
-or `run-win7.cmd` directly.
+or `scripts\run-win7.cmd` directly.
 
 If Java is missing, the script offers to download Eclipse Temurin 8 JDK into:
 
@@ -38,7 +38,7 @@ JDK.
 Double-click:
 
 ```bat
-build-win7.cmd
+scripts\build-win7.cmd
 ```
 
 The build output is:
@@ -60,8 +60,8 @@ jar.exe
 Then run:
 
 ```bat
-build-win7.cmd
-run-win7.cmd
+scripts\build-win7.cmd
+scripts\run-win7.cmd
 ```
 
 ## Troubleshooting

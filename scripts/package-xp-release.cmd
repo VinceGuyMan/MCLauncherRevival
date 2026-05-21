@@ -1,12 +1,14 @@
-@echo off
+﻿@echo off
 setlocal
-cd /d "%~dp0"
+set "ROOT_DIR=%~dp0.."
+for %%I in ("%ROOT_DIR%") do set "ROOT_DIR=%%~fI"
+cd /d "%ROOT_DIR%"
 
 set "RELEASE_VERSION=%~1"
-if "%RELEASE_VERSION%"=="" set "RELEASE_VERSION=v0.4.5-alpha"
+if "%RELEASE_VERSION%"=="" set "RELEASE_VERSION=v0.4.6-alpha"
 
 set "PACKAGE_NAME=MCLauncherRevival-%RELEASE_VERSION%-xp-bundled-java"
-set "DIST_DIR=%~dp0dist"
+set "DIST_DIR=%ROOT_DIR%\dist"
 set "STAGE_DIR=%DIST_DIR%\%PACKAGE_NAME%"
 set "ZIP_PATH=%DIST_DIR%\%PACKAGE_NAME%.zip"
 
@@ -18,8 +20,8 @@ echo.
 
 set "HAS_JAVA7_RUNTIME="
 set "HAS_JAVA_INSTALLERS="
-if exist "%~dp0tools\java7\bin\java.exe" set "HAS_JAVA7_RUNTIME=1"
-if exist "%~dp0tools\java-installers\*.exe" set "HAS_JAVA_INSTALLERS=1"
+if exist "%ROOT_DIR%\tools\java7\bin\java.exe" set "HAS_JAVA7_RUNTIME=1"
+if exist "%ROOT_DIR%\tools\java-installers\*.exe" set "HAS_JAVA_INSTALLERS=1"
 
 if not defined HAS_JAVA7_RUNTIME if not defined HAS_JAVA_INSTALLERS (
   echo XP bundled Java package cannot be created because tools\java7\bin\java.exe was not found. Add a verified redistributable Java 7 or XP-compatible Java 8 runtime first.
@@ -28,7 +30,7 @@ if not defined HAS_JAVA7_RUNTIME if not defined HAS_JAVA_INSTALLERS (
   exit /b 1
 )
 
-if not exist "%~dp0MCLauncherRevival.jar" (
+if not exist "%ROOT_DIR%\MCLauncherRevival.jar" (
   echo MCLauncherRevival.jar was not found.
   echo Build MCLauncherRevival.jar on Windows 7 or newer before creating the XP bundled-Java package.
   pause
@@ -39,16 +41,17 @@ if not exist "%DIST_DIR%" mkdir "%DIST_DIR%"
 if exist "%STAGE_DIR%" rmdir /s /q "%STAGE_DIR%"
 if exist "%ZIP_PATH%" del /q "%ZIP_PATH%"
 mkdir "%STAGE_DIR%"
+mkdir "%STAGE_DIR%\scripts"
 
 echo Staging XP bundled-Java release files...
-copy /y "MCLauncherRevival.jar" "%STAGE_DIR%\" >nul
-copy /y "README.md" "%STAGE_DIR%\" >nul
-copy /y "LICENSE" "%STAGE_DIR%\" >nul
-copy /y "NOTICE.md" "%STAGE_DIR%\" >nul
-copy /y "Setup MCLauncherRevival.cmd" "%STAGE_DIR%\" >nul
-copy /y "Start MCLauncherRevival XP Offline.cmd" "%STAGE_DIR%\" >nul
-copy /y "Start MCLauncherRevival.cmd" "%STAGE_DIR%\" >nul
-copy /y "run-win7.cmd" "%STAGE_DIR%\" >nul
+copy /y "MCLauncherRevival.jar" "%STAGE_DIR%" >nul
+copy /y "README.md" "%STAGE_DIR%" >nul
+copy /y "LICENSE" "%STAGE_DIR%" >nul
+copy /y "NOTICE.md" "%STAGE_DIR%" >nul
+copy /y "Setup MCLauncherRevival.cmd" "%STAGE_DIR%" >nul
+copy /y "Start MCLauncherRevival XP Offline.cmd" "%STAGE_DIR%" >nul
+copy /y "Start MCLauncherRevival.cmd" "%STAGE_DIR%" >nul
+copy /y "scripts\run-win7.cmd" "%STAGE_DIR%\scripts" >nul
 
 xcopy /e /i /y "docs" "%STAGE_DIR%\docs" >nul
 xcopy /e /i /y "resources" "%STAGE_DIR%\resources" >nul
@@ -69,6 +72,8 @@ if defined HAS_JAVA_INSTALLERS xcopy /e /i /y "tools\java-installers" "%STAGE_DI
   echo.
   echo Start XP offline/classic mode:
   echo   Start MCLauncherRevival XP Offline.cmd
+  echo.
+  echo Internal helper scripts live under scripts\.
   echo.
   echo Bundled Java is third-party software under its own license/readme files.
   echo Old Java runtimes are not secure for general browsing or production use.

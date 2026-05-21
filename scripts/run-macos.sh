@@ -1,14 +1,18 @@
-#!/usr/bin/env sh
+﻿#!/usr/bin/env sh
 set -eu
 
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
 find_java() {
+    if [ -x "./tools/jdk8/Contents/Home/bin/java" ]; then
+        printf '%s\n' "./tools/jdk8/Contents/Home/bin/java"
+        return 0
+    fi
     if [ -x "./tools/jdk8/bin/java" ]; then
         printf '%s\n' "./tools/jdk8/bin/java"
         return 0
     fi
-    for candidate in ./tools/jdk8/*/bin/java; do
+    for candidate in ./tools/jdk8/*/Contents/Home/bin/java ./tools/jdk8/*/bin/java; do
         if [ -x "$candidate" ]; then
             printf '%s\n' "$candidate"
             return 0
@@ -28,8 +32,10 @@ find_java() {
 JAVA="$(find_java || true)"
 
 if [ ! -f MCLauncherRevival.jar ]; then
-    echo "MCLauncherRevival.jar was not found; building from source."
-    ./build-linux.sh
+    echo "MCLauncherRevival.jar was not found."
+    echo "For normal use, download the attached GitHub Releases ZIP instead of GitHub's source-code ZIP."
+    echo "Building from source now; this requires a JDK."
+    sh ./build-macos.sh
     JAVA="$(find_java || true)"
 fi
 

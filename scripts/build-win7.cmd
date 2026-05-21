@@ -1,6 +1,8 @@
-@echo off
+﻿@echo off
 setlocal
-cd /d "%~dp0"
+set "ROOT_DIR=%~dp0.."
+for %%I in ("%ROOT_DIR%") do set "ROOT_DIR=%%~fI"
+cd /d "%ROOT_DIR%"
 
 if /I "%MCLAUNCHER_XP_MODE%"=="1" (
   echo XP offline mode detected.
@@ -24,7 +26,7 @@ echo The jar is compiled as Java 7 bytecode for Windows XP-era compatibility.
 echo.
 echo I can download a portable Eclipse Temurin 8 JDK from Adoptium now.
 echo It will be stored locally in:
-echo   %~dp0tools\jdk8
+echo   %ROOT_DIR%\tools\jdk8
 echo.
 set "DOWNLOAD_JDK="
 set /p "DOWNLOAD_JDK=Download Java JDK 8 now? [Y/N] "
@@ -33,8 +35,8 @@ if /I not "%DOWNLOAD_JDK%"=="Y" (
   pause
   exit /b 1
 )
-if not exist "%~dp0tools" mkdir "%~dp0tools"
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0tools\download-temurin8-jdk.ps1" -Destination "%~dp0tools\jdk8"
+if not exist "%ROOT_DIR%\tools" mkdir "%ROOT_DIR%\tools"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%ROOT_DIR%\tools\download-temurin8-jdk.ps1" -Destination "%ROOT_DIR%\tools\jdk8"
 if errorlevel 1 (
   echo Java JDK 8 still was not found after dependency setup.
   echo Install Java JDK 8 manually, or place/extract it at tools\jdk8.
@@ -90,15 +92,15 @@ exit /b 0
 set "JAVA_EXE="
 set "JAVAC_EXE="
 set "JAR_EXE="
-if exist "%~dp0tools\jdk8\bin\java.exe" (
-  set "JAVA_HOME=%~dp0tools\jdk8"
-  set "PATH=%~dp0tools\jdk8\bin;%PATH%"
-  set "JAVA_EXE=%~dp0tools\jdk8\bin\java.exe"
-  if exist "%~dp0tools\jdk8\bin\javac.exe" set "JAVAC_EXE=%~dp0tools\jdk8\bin\javac.exe"
-  if exist "%~dp0tools\jdk8\bin\jar.exe" set "JAR_EXE=%~dp0tools\jdk8\bin\jar.exe"
+if exist "%ROOT_DIR%\tools\jdk8\bin\java.exe" (
+  set "JAVA_HOME=%ROOT_DIR%\tools\jdk8"
+  set "PATH=%ROOT_DIR%\tools\jdk8\bin;%PATH%"
+  set "JAVA_EXE=%ROOT_DIR%\tools\jdk8\bin\java.exe"
+  if exist "%ROOT_DIR%\tools\jdk8\bin\javac.exe" set "JAVAC_EXE=%ROOT_DIR%\tools\jdk8\bin\javac.exe"
+  if exist "%ROOT_DIR%\tools\jdk8\bin\jar.exe" set "JAR_EXE=%ROOT_DIR%\tools\jdk8\bin\jar.exe"
 )
 if not defined JAVAC_EXE (
-  for /d %%D in ("%~dp0tools\jdk8\*") do (
+  for /d %%D in ("%ROOT_DIR%\tools\jdk8\*") do (
     if exist "%%~fD\bin\java.exe" (
       set "JAVA_HOME=%%~fD"
       set "PATH=%%~fD\bin;%PATH%"

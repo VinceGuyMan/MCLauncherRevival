@@ -1,7 +1,7 @@
-#!/usr/bin/env sh
+﻿#!/usr/bin/env sh
 set -eu
 
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
 find_tool() {
     name="$1"

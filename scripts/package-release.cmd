@@ -1,12 +1,14 @@
-@echo off
+﻿@echo off
 setlocal
-cd /d "%~dp0"
+set "ROOT_DIR=%~dp0.."
+for %%I in ("%ROOT_DIR%") do set "ROOT_DIR=%%~fI"
+cd /d "%ROOT_DIR%"
 
 set "RELEASE_VERSION=%~1"
-if "%RELEASE_VERSION%"=="" set "RELEASE_VERSION=v0.4.5-alpha"
+if "%RELEASE_VERSION%"=="" set "RELEASE_VERSION=v0.4.6-alpha"
 
 set "PACKAGE_NAME=MCLauncherRevival-%RELEASE_VERSION%"
-set "RELEASE_ROOT=%~dp0..\release"
+set "RELEASE_ROOT=%ROOT_DIR%\..\release"
 set "STAGE_DIR=%RELEASE_ROOT%\%PACKAGE_NAME%"
 set "ZIP_PATH=%RELEASE_ROOT%\%PACKAGE_NAME%.zip"
 
@@ -16,14 +18,14 @@ echo.
 if not exist "%RELEASE_ROOT%" mkdir "%RELEASE_ROOT%"
 
 echo Building launcher jar...
-call build-win7.cmd
+call "%ROOT_DIR%\scripts\build-win7.cmd"
 if errorlevel 1 (
   echo Build failed. Release package was not created.
   pause
   exit /b 1
 )
 
-if not exist "%~dp0MCLauncherRevival.jar" (
+if not exist "%ROOT_DIR%\MCLauncherRevival.jar" (
   echo MCLauncherRevival.jar is missing after build.
   echo Release package cannot be created without the runnable launcher jar.
   pause
@@ -33,22 +35,23 @@ if not exist "%~dp0MCLauncherRevival.jar" (
 if exist "%STAGE_DIR%" rmdir /s /q "%STAGE_DIR%"
 if exist "%ZIP_PATH%" del /q "%ZIP_PATH%"
 mkdir "%STAGE_DIR%"
+mkdir "%STAGE_DIR%\scripts"
 
 echo Staging release files...
-copy /y "MCLauncherRevival.jar" "%STAGE_DIR%\" >nul
-copy /y "README.md" "%STAGE_DIR%\" >nul
-copy /y "CHANGELOG.md" "%STAGE_DIR%\" >nul
-copy /y "LICENSE" "%STAGE_DIR%\" >nul
-copy /y "NOTICE.md" "%STAGE_DIR%\" >nul
-copy /y "Setup MCLauncherRevival.cmd" "%STAGE_DIR%\" >nul
-copy /y "Start MCLauncherRevival.cmd" "%STAGE_DIR%\" >nul
-copy /y "Start MCLauncherRevival XP Offline.cmd" "%STAGE_DIR%\" >nul
-copy /y "run-win7.cmd" "%STAGE_DIR%\" >nul
-copy /y "build-win7.cmd" "%STAGE_DIR%\" >nul
-copy /y "run-linux.sh" "%STAGE_DIR%\" >nul
-copy /y "build-linux.sh" "%STAGE_DIR%\" >nul
-copy /y "run-macos.sh" "%STAGE_DIR%\" >nul
-copy /y "build-macos.sh" "%STAGE_DIR%\" >nul
+copy /y "MCLauncherRevival.jar" "%STAGE_DIR%" >nul
+copy /y "README.md" "%STAGE_DIR%" >nul
+copy /y "CHANGELOG.md" "%STAGE_DIR%" >nul
+copy /y "LICENSE" "%STAGE_DIR%" >nul
+copy /y "NOTICE.md" "%STAGE_DIR%" >nul
+copy /y "Setup MCLauncherRevival.cmd" "%STAGE_DIR%" >nul
+copy /y "Start MCLauncherRevival.cmd" "%STAGE_DIR%" >nul
+copy /y "Start MCLauncherRevival XP Offline.cmd" "%STAGE_DIR%" >nul
+copy /y "scripts\run-win7.cmd" "%STAGE_DIR%\scripts" >nul
+copy /y "scripts\build-win7.cmd" "%STAGE_DIR%\scripts" >nul
+copy /y "scripts\run-linux.sh" "%STAGE_DIR%\scripts" >nul
+copy /y "scripts\build-linux.sh" "%STAGE_DIR%\scripts" >nul
+copy /y "scripts\run-macos.sh" "%STAGE_DIR%\scripts" >nul
+copy /y "scripts\build-macos.sh" "%STAGE_DIR%\scripts" >nul
 
 if exist "%STAGE_DIR%\docs" rmdir /s /q "%STAGE_DIR%\docs"
 if exist "%STAGE_DIR%\resources" rmdir /s /q "%STAGE_DIR%\resources"
@@ -57,7 +60,7 @@ if exist "%STAGE_DIR%\tools" rmdir /s /q "%STAGE_DIR%\tools"
 xcopy /e /i /y "docs" "%STAGE_DIR%\docs" >nul
 xcopy /e /i /y "resources" "%STAGE_DIR%\resources" >nul
 mkdir "%STAGE_DIR%\tools"
-copy /y "tools\download-temurin8-jdk.ps1" "%STAGE_DIR%\tools\" >nul
+copy /y "tools\download-temurin8-jdk.ps1" "%STAGE_DIR%\tools" >nul
 
 (
   echo MCLauncherRevival %RELEASE_VERSION%
@@ -73,6 +76,8 @@ copy /y "tools\download-temurin8-jdk.ps1" "%STAGE_DIR%\tools\" >nul
   echo.
   echo Start on Windows XP offline/classic mode:
   echo   Start MCLauncherRevival XP Offline.cmd
+  echo.
+  echo Internal helper scripts live under scripts\.
   echo.
   echo This project is unofficial alpha software and is not affiliated with Mojang, Microsoft, Xbox, or Minecraft.
 ) > "%STAGE_DIR%\RELEASE_INFO.txt"
@@ -94,16 +99,16 @@ if errorlevel 1 (
   exit /b 1
 )
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "Add-Type -AssemblyName System.IO.Compression.FileSystem; $zip = [IO.Compression.ZipFile]::OpenRead('%ZIP_PATH%'); try { if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)MCLauncherRevival\.jar$' })) { exit 2 } } finally { $zip.Dispose() }"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Add-Type -AssemblyName System.IO.Compression.FileSystem; $zip = [IO.Compression.ZipFile]::OpenRead('%ZIP_PATH%'); try { if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)MCLauncherRevival\.jar$' })) { exit 2 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)scripts/run-win7\.cmd$' })) { exit 3 } } finally { $zip.Dispose() }"
 if errorlevel 1 (
-  echo Release ZIP does not include MCLauncherRevival.jar.
-  echo Release package verification failed.
+  echo Release ZIP verification failed.
+  echo Expected MCLauncherRevival.jar and scripts\run-win7.cmd.
   pause
   exit /b 1
 )
 
 echo.
-echo Release ZIP verified: MCLauncherRevival.jar is included.
+echo Release ZIP verified: MCLauncherRevival.jar and scripts\run-win7.cmd are included.
 echo Created:
 echo   %ZIP_PATH%
 pause

@@ -1,4 +1,4 @@
-@echo off
+﻿@echo off
 setlocal
 cd /d "%~dp0"
 title MCLauncherRevival Setup
@@ -82,7 +82,7 @@ if defined IS_XP (
 )
 echo Starting build script...
 echo.
-call "%~dp0build-win7.cmd"
+call "%~dp0scripts\build-win7.cmd"
 set "SETUP_EXIT=%ERRORLEVEL%"
 goto END
 
@@ -105,7 +105,7 @@ echo If you downloaded GitHub's green Code -^> Download ZIP or an auto-generated
 echo that archive may not include the runnable jar.
 echo.
 echo For normal play, download the attached GitHub Releases ZIP named like:
-echo   MCLauncherRevival-v0.4.0-alpha.zip
+echo   MCLauncherRevival-v0.4.6-alpha.zip
 echo.
 echo Windows 7-11 can try to build the jar from source.
 echo Windows XP Offline / Classic mode expects the jar to already be included.

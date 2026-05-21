@@ -1,6 +1,6 @@
 # Release Checklist
 
-For `v0.4.5`:
+For `v0.4.6`:
 
 - Confirm the project builds from a clean clone.
 - Confirm the jar launches.
@@ -14,22 +14,23 @@ For `v0.4.5`:
   selected `.minecraft\versions\<version>` folder.
 - Confirm Linux shell scripts pass syntax checks and are clearly marked as preliminary until tested
   on a real distro.
-- On Linux, run `bash -n run-linux.sh build-linux.sh` when a machine with bash is available.
+- On Linux, run `bash -n scripts/run-linux.sh scripts/build-linux.sh` when a machine with bash is
+  available.
 - On Linux, manually smoke-test `java -jar MCLauncherRevival.jar` only as UI/preliminary behavior
   unless old-client game launch is tested.
 - Confirm macOS shell scripts pass syntax checks and are clearly marked as preliminary until tested
   on a real Mac.
-- On macOS, run `sh -n run-macos.sh build-macos.sh` and verify the blank-window limitation remains
-  documented.
+- On macOS, run `sh -n scripts/run-macos.sh scripts/build-macos.sh` and verify the blank-window
+  limitation remains documented.
 - Confirm saved tokens/settings can be removed if implemented.
 - Confirm no secrets, tokens, client secrets, or personal credentials are committed.
 - Confirm README instructions match the actual release files.
 - Confirm release zip contains only expected files.
-- Confirm `package-release.cmd` fails if `MCLauncherRevival.jar` is missing.
-- Confirm `package-release.cmd` prints the final ZIP contents.
+- Confirm `scripts/package-release.cmd` fails if `MCLauncherRevival.jar` is missing.
+- Confirm `scripts/package-release.cmd` prints the final ZIP contents.
 - Confirm the final ZIP includes `MCLauncherRevival.jar`.
 - Confirm antivirus false-positive risk is minimized by avoiding packed/obfuscated binaries.
-- Attach release zip to GitHub Releases manually.
+- Attach release zip to GitHub Releases manually or through the GitHub CLI.
 - Mark the release clearly as alpha.
 
 ## Expected source files
@@ -42,15 +43,17 @@ Expected project files include:
 - `resources/`
 - `docs/`
 - `.github/workflows/build.yml`
+- `Setup MCLauncherRevival.cmd`
 - `Start MCLauncherRevival.cmd`
 - `Start MCLauncherRevival XP Offline.cmd`
-- `run-win7.cmd`
-- `build-win7.cmd`
-- `run-linux.sh`
-- `build-linux.sh`
-- `run-macos.sh`
-- `build-macos.sh`
-- `package-release.cmd`
+- `scripts/run-win7.cmd`
+- `scripts/build-win7.cmd`
+- `scripts/run-linux.sh`
+- `scripts/build-linux.sh`
+- `scripts/run-macos.sh`
+- `scripts/build-macos.sh`
+- `scripts/package-release.cmd`
+- `scripts/package-xp-release.cmd`
 - `tools/download-temurin8-jdk.ps1`
 - `README.md`
 - `CHANGELOG.md`
@@ -77,7 +80,7 @@ Expected project files include:
 Recommended release tag and artifact names:
 
 ```text
-v0.4.5
-MCLauncherRevival-v0.4.5-alpha.zip
+v0.4.6
+MCLauncherRevival-v0.4.6-alpha.zip
 MCLauncherRevival.jar
 ```

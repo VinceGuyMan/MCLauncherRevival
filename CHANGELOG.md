@@ -1,5 +1,12 @@
 # Changelog
 
+
+## v0.4.6-alpha
+
+- Moved internal build, run, and packaging helpers into `scripts/` to keep the GitHub root cleaner.
+- Kept the main double-click Windows entrypoints in the repo root for normal users.
+- Updated documentation, GitHub Actions, and release packaging paths for the new script layout.
+
 ## v0.4.5-alpha
 
 - Added `Setup MCLauncherRevival.cmd`, a single Windows setup hub that auto-detects or asks for the

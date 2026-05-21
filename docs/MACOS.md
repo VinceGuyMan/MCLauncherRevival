@@ -47,11 +47,11 @@ Primary launch log path:
 After extracting a release ZIP:
 
 ```sh
-chmod +x run-macos.sh build-macos.sh
-./run-macos.sh
+chmod +x scripts/run-macos.sh scripts/build-macos.sh
+./scripts/run-macos.sh
 ```
 
-If `MCLauncherRevival.jar` is already included, `run-macos.sh` only needs a Java runtime.
+If `MCLauncherRevival.jar` is already included, `scripts/run-macos.sh` only needs a Java runtime.
 
 If the jar is missing, you may have downloaded GitHub's source-code ZIP instead of the attached
 release ZIP. For normal use, download the attached release asset from GitHub Releases. Source ZIPs
@@ -62,8 +62,8 @@ are meant for reading/building the code and require a local JDK.
 Install a JDK, then run:
 
 ```sh
-chmod +x build-macos.sh
-./build-macos.sh
+chmod +x scripts/build-macos.sh
+./scripts/build-macos.sh
 ```
 
 The output is:

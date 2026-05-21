@@ -45,11 +45,11 @@ Primary launch log path:
 After extracting a release ZIP:
 
 ```sh
-chmod +x run-linux.sh build-linux.sh
-./run-linux.sh
+chmod +x scripts/run-linux.sh scripts/build-linux.sh
+./scripts/run-linux.sh
 ```
 
-If `MCLauncherRevival.jar` is already included, `run-linux.sh` only needs a Java runtime.
+If `MCLauncherRevival.jar` is already included, `scripts/run-linux.sh` only needs a Java runtime.
 
 If the jar is missing, you may have downloaded GitHub's source-code ZIP instead of the attached
 release ZIP. For normal use, download the attached release asset from GitHub Releases. Source ZIPs
@@ -60,8 +60,8 @@ are meant for reading/building the code and require a local JDK.
 Install a JDK, then run:
 
 ```sh
-chmod +x build-linux.sh
-./build-linux.sh
+chmod +x scripts/build-linux.sh
+./scripts/build-linux.sh
 ```
 
 The output is:

@@ -14,16 +14,16 @@ Do not use these files for normal play:
 Those source archives are useful for reading or building the code, but they may not include
 `MCLauncherRevival.jar`. The attached release asset is the runnable package.
 
-For `v0.4.5`, download:
+For `v0.4.6`, download:
 
 ```text
-MCLauncherRevival-v0.4.5-alpha.zip
+MCLauncherRevival-v0.4.6-alpha.zip
 ```
 
 If an XP bundled-Java package is published, it should be named:
 
 ```text
-MCLauncherRevival-v0.4.5-alpha-xp-bundled-java.zip
+MCLauncherRevival-v0.4.6-alpha-xp-bundled-java.zip
 ```
 
 That package is only for XP offline/classic use. It may include a maintainer-provided Java runtime
@@ -58,32 +58,37 @@ Start MCLauncherRevival XP Offline.cmd
 Recommended release zip layout:
 
 ```text
-MCLauncherRevival-v0.4.5-alpha/
+MCLauncherRevival-v0.4.6-alpha/
   Setup MCLauncherRevival.cmd
   Start MCLauncherRevival.cmd
   Start MCLauncherRevival XP Offline.cmd
-  run-win7.cmd
-  build-win7.cmd
-  run-linux.sh
-  build-linux.sh
-  run-macos.sh
-  build-macos.sh
   MCLauncherRevival.jar
+  scripts/
+    run-win7.cmd
+    build-win7.cmd
+    run-linux.sh
+    build-linux.sh
+    run-macos.sh
+    build-macos.sh
   resources/
   tools/
   docs/
   README.md
+  CHANGELOG.md
+  LICENSE
+  NOTICE.md
 ```
 
 Recommended XP bundled-Java release zip layout:
 
 ```text
-MCLauncherRevival-v0.4.5-alpha-xp-bundled-java/
+MCLauncherRevival-v0.4.6-alpha-xp-bundled-java/
   Setup MCLauncherRevival.cmd
   Start MCLauncherRevival XP Offline.cmd
   Start MCLauncherRevival.cmd
-  run-win7.cmd
   MCLauncherRevival.jar
+  scripts/
+    run-win7.cmd
   resources/
   tools/
     java7/                    optional extracted runtime
@@ -100,7 +105,7 @@ MCLauncherRevival-v0.4.5-alpha-xp-bundled-java/
 The jar can be built locally:
 
 ```bat
-build-win7.cmd
+scripts\build-win7.cmd
 ```
 
 ## Notes
@@ -112,8 +117,8 @@ build-win7.cmd
   fallback on Windows 7.
 - Microsoft accounts need an Xbox profile before XSTS/Minecraft services login can succeed.
 - Windows XP is supported for offline/classic play with Java 7 or an XP-compatible Java 8 build.
-- XP bundled-Java packages must be created with `package-xp-release.cmd` after manually placing a
-  verified redistributable runtime at `tools\java7` or verified installer EXEs at
+- XP bundled-Java packages must be created with `scripts\package-xp-release.cmd` after manually
+  placing a verified redistributable runtime at `tools\java7` or verified installer EXEs at
   `tools\java-installers`.
 - If Java is missing and `tools\java-installers` exists, the XP launcher asks before running a
   bundled installer.
@@ -127,7 +132,6 @@ build-win7.cmd
   due to LWJGL/OpenGL/native compatibility. macOS logs are written to
   `~/Library/Application Support/minecraft/launcher_revive/logs/last-launch.log`.
 - The launcher never asks for a raw Microsoft password.
-- If the jar is missing on Windows 7 or newer, `run-win7.cmd` will attempt to build it.
+- If the jar is missing on Windows 7 or newer, `scripts\run-win7.cmd` will attempt to build it.
 - If the jar is missing in XP offline mode, download the attached release ZIP instead of the
   source-code or tag ZIP.
-

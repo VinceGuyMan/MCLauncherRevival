@@ -86,13 +86,22 @@ If a bundled-Java package is not available, follow the manual XP Java setup guid
 
 - [Windows XP Java setup](docs/XP_JAVA_SETUP.md)
 
-After extracting the release ZIP on Windows, run:
+After extracting the release ZIP on Windows, the recommended first-run entrypoint is:
+
+```bat
+Setup MCLauncherRevival.cmd
+```
+
+The setup hub detects/asks which Windows path to use, explains missing Java or source-ZIP problems,
+and then calls the appropriate launcher script.
+
+For direct Windows 7-11 startup, run:
 
 ```bat
 Start MCLauncherRevival.cmd
 ```
 
-That friendly shortcut calls `run-win7.cmd`, which launches the packaged jar or builds it if needed.
+That shortcut calls `run-win7.cmd`, which launches the packaged jar or builds it if needed.
 
 For Windows XP offline/classic mode, use:
 

@@ -40,6 +40,7 @@ copy /y "README.md" "%STAGE_DIR%\" >nul
 copy /y "CHANGELOG.md" "%STAGE_DIR%\" >nul
 copy /y "LICENSE" "%STAGE_DIR%\" >nul
 copy /y "NOTICE.md" "%STAGE_DIR%\" >nul
+copy /y "Setup MCLauncherRevival.cmd" "%STAGE_DIR%\" >nul
 copy /y "Start MCLauncherRevival.cmd" "%STAGE_DIR%\" >nul
 copy /y "Start MCLauncherRevival XP Offline.cmd" "%STAGE_DIR%\" >nul
 copy /y "run-win7.cmd" "%STAGE_DIR%\" >nul
@@ -63,6 +64,9 @@ copy /y "tools\download-temurin8-jdk.ps1" "%STAGE_DIR%\tools\" >nul
   echo.
   echo This is the runnable release package.
   echo Do not confuse this package with GitHub source-code or tag ZIP archives.
+  echo.
+  echo Recommended first run:
+  echo   Setup MCLauncherRevival.cmd
   echo.
   echo Start on Windows 7-11:
   echo   Start MCLauncherRevival.cmd

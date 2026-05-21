@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Added `Setup MCLauncherRevival.cmd`, a single Windows setup hub that auto-detects or asks for the
+  right path, then routes users to Windows 7-11 normal launch, XP Offline / Classic mode, source
+  builds, or setup notes.
+- Included the setup hub in standard and XP bundled-Java release package staging.
+
 ## v0.4.0-alpha
 
 - Added more XP field-test performance notes for Beta 1.4, Alpha 1.2.6, and Alpha 1.2_01.

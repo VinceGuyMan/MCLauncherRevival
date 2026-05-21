@@ -15,6 +15,14 @@ Double-click:
 Start MCLauncherRevival XP Offline.cmd
 ```
 
+You can also run:
+
+```bat
+Setup MCLauncherRevival.cmd
+```
+
+and choose `Windows XP Offline / Classic mode` from the menu.
+
 This starts the launcher with:
 
 ```text

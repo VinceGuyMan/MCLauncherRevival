@@ -45,6 +45,7 @@ copy /y "MCLauncherRevival.jar" "%STAGE_DIR%\" >nul
 copy /y "README.md" "%STAGE_DIR%\" >nul
 copy /y "LICENSE" "%STAGE_DIR%\" >nul
 copy /y "NOTICE.md" "%STAGE_DIR%\" >nul
+copy /y "Setup MCLauncherRevival.cmd" "%STAGE_DIR%\" >nul
 copy /y "Start MCLauncherRevival XP Offline.cmd" "%STAGE_DIR%\" >nul
 copy /y "Start MCLauncherRevival.cmd" "%STAGE_DIR%\" >nul
 copy /y "run-win7.cmd" "%STAGE_DIR%\" >nul
@@ -62,6 +63,9 @@ if defined HAS_JAVA_INSTALLERS xcopy /e /i /y "tools\java-installers" "%STAGE_DI
   echo.
   echo If tools\java7 is present, the XP launcher will use it first.
   echo If tools\java-installers is present, the XP launcher can ask before running a bundled installer.
+  echo.
+  echo Recommended first run:
+  echo   Setup MCLauncherRevival.cmd
   echo.
   echo Start XP offline/classic mode:
   echo   Start MCLauncherRevival XP Offline.cmd

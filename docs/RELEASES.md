@@ -36,6 +36,14 @@ XP users to [XP Java setup](XP_JAVA_SETUP.md).
 Extract it, then double-click:
 
 ```bat
+Setup MCLauncherRevival.cmd
+```
+
+The setup hub can auto-detect or ask which Windows path to use, then route to the correct script.
+
+For direct Windows 7-11 startup, double-click:
+
+```bat
 Start MCLauncherRevival.cmd
 ```
 
@@ -51,6 +59,7 @@ Recommended release zip layout:
 
 ```text
 MCLauncherRevival-v0.4.0-alpha/
+  Setup MCLauncherRevival.cmd
   Start MCLauncherRevival.cmd
   Start MCLauncherRevival XP Offline.cmd
   run-win7.cmd
@@ -70,6 +79,7 @@ Recommended XP bundled-Java release zip layout:
 
 ```text
 MCLauncherRevival-v0.4.0-alpha-xp-bundled-java/
+  Setup MCLauncherRevival.cmd
   Start MCLauncherRevival XP Offline.cmd
   Start MCLauncherRevival.cmd
   run-win7.cmd

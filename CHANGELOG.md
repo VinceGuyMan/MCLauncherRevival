@@ -8,6 +8,7 @@
 - Added more XP field-test performance notes for Beta 1.4, Alpha 1.2.6, and Alpha 1.2_01.
 - Added XP field-test screenshots showing the test machine specs and prepared `.minecraft` folder
   transfer workflow from a newer PC to removable media to Windows XP.
+- Added Windows XP Beta 1.7.3 proof-of-launch screenshots showing the main menu and debug/FPS view.
 - The launcher now scans `.minecraft\versions` on startup and adds locally prepared versions to
   the dropdown, which helps XP show versions that were copied from a newer PC.
 - Added a macOS compatibility warning before launching old Beta/Alpha clients.

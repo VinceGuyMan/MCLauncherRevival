@@ -45,3 +45,7 @@ These images document the real Windows XP offline/classic testing workflow and f
 ![Copying prepared .minecraft folders from a newer PC to removable media](screenshots/xp-files-to-removable-media.png)
 
 ![Prepared .minecraft folders copied from removable media to Windows XP](screenshots/xp-files-copied-to-xp.png)
+
+![Minecraft Beta 1.7.3 main menu running on Windows XP](screenshots/xp-beta-173-main-menu.png)
+
+![Minecraft Beta 1.7.3 debug/FPS view running on Windows XP](screenshots/xp-beta-173-debug-fps.png)

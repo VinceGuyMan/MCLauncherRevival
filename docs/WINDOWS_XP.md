@@ -62,6 +62,14 @@ Example field-test machine:
 
 ![Windows XP test machine specs](screenshots/xp-test-specs.png)
 
+Minecraft Beta 1.7.3 reaching the main menu on Windows XP:
+
+![Minecraft Beta 1.7.3 main menu running on Windows XP](screenshots/xp-beta-173-main-menu.png)
+
+Minecraft Beta 1.7.3 in-game debug/FPS view on Windows XP:
+
+![Minecraft Beta 1.7.3 debug/FPS view running on Windows XP](screenshots/xp-beta-173-debug-fps.png)
+
 Requirements and caveats:
 
 - Java 7 or an XP-compatible Java 8 runtime must already be installed or extracted.

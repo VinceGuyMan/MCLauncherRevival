@@ -95,6 +95,12 @@ Observed performance on that test laptop varied by version:
 - Alpha 1.2.6: around 5-10 FPS.
 - Alpha 1.2_01: around 12-20 FPS.
 
+Beta 1.7.3 proof-of-launch screenshots from the XP test machine:
+
+![Minecraft Beta 1.7.3 main menu running on Windows XP](screenshots/xp-beta-173-main-menu.png)
+
+![Minecraft Beta 1.7.3 debug/FPS view running on Windows XP](screenshots/xp-beta-173-debug-fps.png)
+
 ## Optional manual jar method with MCVersions.net
 
 The preferred method is still copying the full prepared `.minecraft` folders from Windows 7 or

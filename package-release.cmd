@@ -3,7 +3,7 @@ setlocal
 cd /d "%~dp0"
 
 set "RELEASE_VERSION=%~1"
-if "%RELEASE_VERSION%"=="" set "RELEASE_VERSION=v0.4.0-alpha"
+if "%RELEASE_VERSION%"=="" set "RELEASE_VERSION=v0.4.5-alpha"
 
 set "PACKAGE_NAME=MCLauncherRevival-%RELEASE_VERSION%"
 set "RELEASE_ROOT=%~dp0..\release"

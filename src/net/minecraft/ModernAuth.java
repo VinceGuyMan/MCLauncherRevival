@@ -284,16 +284,37 @@ final class ModernAuth {
         } catch (Throwable ignored) {
         }
         String os = System.getProperty("os.name", "").toLowerCase();
-        if (os.indexOf("win") >= 0) {
-            try {
-                new ProcessBuilder("rundll32", "url.dll,FileProtocolHandler", uri).start();
+        if (os.indexOf("mac") >= 0) {
+            if (tryStart("open", uri)) {
                 return;
-            } catch (Throwable ignored) {
             }
-            try {
-                new ProcessBuilder("cmd", "/c", "start", "", uri).start();
-            } catch (Throwable ignored) {
+        }
+        if (os.indexOf("linux") >= 0 || os.indexOf("nux") >= 0
+                || os.indexOf("nix") >= 0 || os.indexOf("aix") >= 0) {
+            if (tryStart("xdg-open", uri)) {
+                return;
             }
+            if (tryStart("gio", "open", uri)) {
+                return;
+            }
+            if (tryStart("sensible-browser", uri)) {
+                return;
+            }
+        }
+        if (os.indexOf("win") >= 0) {
+            if (tryStart("rundll32", "url.dll,FileProtocolHandler", uri)) {
+                return;
+            }
+            tryStart("cmd", "/c", "start", "", uri);
+        }
+    }
+
+    private static boolean tryStart(String... command) {
+        try {
+            new ProcessBuilder(command).start();
+            return true;
+        } catch (Throwable ignored) {
+            return false;
         }
     }
 
@@ -397,7 +418,7 @@ final class ModernAuth {
         connection.setReadTimeout(30000);
         connection.setRequestMethod(method);
         connection.setRequestProperty("Accept", "application/json");
-        connection.setRequestProperty("User-Agent", "MCLauncherRevival/0.1-alpha");
+        connection.setRequestProperty("User-Agent", "MCLauncherRevival/alpha");
         if (contentType != null) {
             connection.setRequestProperty("Content-Type", contentType);
         }

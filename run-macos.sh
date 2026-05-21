@@ -32,8 +32,10 @@ find_java() {
 JAVA="$(find_java || true)"
 
 if [ ! -f MCLauncherRevival.jar ]; then
-    echo "MCLauncherRevival.jar was not found; building from source."
-    ./build-macos.sh
+    echo "MCLauncherRevival.jar was not found."
+    echo "For normal use, download the attached GitHub Releases ZIP instead of GitHub's source-code ZIP."
+    echo "Building from source now; this requires a JDK."
+    sh ./build-macos.sh
     JAVA="$(find_java || true)"
 fi
 

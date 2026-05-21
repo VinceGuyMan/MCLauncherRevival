@@ -659,6 +659,11 @@ public final class MinecraftLauncher extends JFrame {
         return os.indexOf("windows xp") >= 0;
     }
 
+    private static boolean windowsOs() {
+        String os = System.getProperty("os.name", "").toLowerCase(java.util.Locale.ENGLISH);
+        return os.indexOf("win") >= 0;
+    }
+
     private static boolean macOs() {
         String os = System.getProperty("os.name", "").toLowerCase(java.util.Locale.ENGLISH);
         return os.indexOf("mac") >= 0;
@@ -935,7 +940,8 @@ public final class MinecraftLauncher extends JFrame {
     private String launchPreview() {
         String mode = currentProfile == null ? "Offline or login-on-play" : "Online as " + currentProfile.name;
         String memory = BetaLauncher.memoryPreview(selectedMemoryMegabytes()) + " MB";
-        return "javaw -Xmx" + memory + " -Djava.library.path=<selected version natives> -cp <libraries + " + selectedVersion() + ".jar> <main class> <safe auth/session args hidden>\n"
+        String javaCommand = windowsOs() ? "javaw" : "java";
+        return javaCommand + " -Xmx" + memory + " -Djava.library.path=<selected version natives> -cp <libraries + " + selectedVersion() + ".jar> <main class> <safe auth/session args hidden>\n"
                 + "Mode: " + mode + "\n"
                 + "Version: " + selectedVersion() + "\n"
                 + "Memory: " + memory + "\n"
@@ -1316,8 +1322,9 @@ public final class MinecraftLauncher extends JFrame {
         }
         return "<table width='100%' cellpadding='8' cellspacing='0' bgcolor='#1b1208' style='border:1px solid #6a3a22'><tr><td>"
                 + "<b>OpenGL/graphics driver note:</b><br>"
-                + "Minecraft started, but your XP graphics driver does not expose accelerated OpenGL. "
-                + "Install the correct XP graphics driver for this machine. This is a driver/OpenGL issue, "
+                + "Minecraft started, but the graphics/OpenGL layer did not expose accelerated OpenGL. "
+                + "On Windows XP this is usually a graphics driver issue. On macOS/Linux this may be old "
+                + "LWJGL/OpenGL/native compatibility. This is a driver/OpenGL issue, "
                 + "not a Microsoft login or launcher file issue."
                 + "</td></tr></table><br>";
     }

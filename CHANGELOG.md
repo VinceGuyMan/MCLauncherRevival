@@ -15,6 +15,9 @@
   `.minecraft\versions`.
 - Windows run script now preserves the Java launcher process exit code for setup/package checks.
 - XP build-script wording now points users to `tools\java7` first, with `tools\jdk8` as a fallback.
+- Added best-effort macOS/Linux browser fallbacks for Microsoft login after Java Desktop browsing.
+- Made OpenGL/LWJGL launch-log diagnostics platform-neutral instead of XP-only.
+- macOS run script now gives a clearer source-ZIP warning and invokes the build script through `sh`.
 
 ## v0.4.0-alpha
 

@@ -10,8 +10,11 @@ supported.
 Double-click:
 
 ```bat
-run-win7.cmd
+Setup MCLauncherRevival.cmd
 ```
+
+Then choose the Windows 7-11 normal launcher path. You can also run `Start MCLauncherRevival.cmd`
+or `run-win7.cmd` directly.
 
 If Java is missing, the script offers to download Eclipse Temurin 8 JDK into:
 
@@ -20,6 +23,15 @@ tools\jdk8
 ```
 
 This is portable and local to the project folder.
+
+## Release ZIP vs source ZIP
+
+For normal use, download the attached GitHub Releases ZIP. Do not use GitHub's green
+**Code -> Download ZIP** source archive as the runnable package.
+
+Source ZIPs are useful for reading or building the code, but they may not include
+`MCLauncherRevival.jar`. If you use a source ZIP, Windows 7+ may try to build locally and require a
+JDK.
 
 ## Build
 
@@ -83,6 +95,17 @@ Offline Play remains available if online authentication still fails.
 On Windows 7, Microsoft login may require the redirect URL paste fallback. After login, Microsoft
 can change the redirect URL to `removed=true`, so copy the full redirect URL as soon as the blank
 redirect page appears and paste it back into the launcher.
+
+### Redownload Version safety
+
+`Redownload Version` deletes only the selected folder under:
+
+```text
+%APPDATA%\.minecraft\versions\<selected-version>
+```
+
+It does not delete saves, auth tokens, libraries, assets, or unrelated folders. The launcher rejects
+empty or path-like version names before deleting anything.
 
 ## Common notes
 

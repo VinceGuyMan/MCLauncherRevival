@@ -7,6 +7,19 @@ certificates, Internet Explorer, and Java networking are the limiting pieces.
 
 XP mode is intended for offline/classic play only.
 
+## Start here on XP
+
+1. Use the attached GitHub Releases ZIP, not GitHub's source-code ZIP.
+2. Run `Setup MCLauncherRevival.cmd`.
+3. Choose `Windows XP Offline / Classic mode`.
+4. Make sure Java 7 or an XP-compatible Java 8 runtime is installed or extracted at
+   `tools\java7`.
+5. Prepare Minecraft version files on Windows 7 or newer, then copy `versions`, `libraries`, and
+   `assets` to the XP `.minecraft` folder.
+
+If Java is the blocker, see [XP Java setup](XP_JAVA_SETUP.md). If version files are the blocker,
+see [XP Version Setup](XP_VERSION_SETUP.md).
+
 ## Recommended XP flow
 
 Double-click:
@@ -270,7 +283,7 @@ source archive and not the tag/source ZIP.
 The correct release asset should be named like:
 
 ```text
-MCLauncherRevival-v0.4.0-alpha.zip
+MCLauncherRevival-v0.4.5-alpha.zip
 ```
 
 If you only have the source archive, build `MCLauncherRevival.jar` on Windows 7 or newer, then copy

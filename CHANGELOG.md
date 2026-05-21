@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.4.5-alpha
 
 - Added `Setup MCLauncherRevival.cmd`, a single Windows setup hub that auto-detects or asks for the
   right path, then routes users to Windows 7-11 normal launch, XP Offline / Classic mode, source
@@ -18,6 +18,8 @@
 - Added best-effort macOS/Linux browser fallbacks for Microsoft login after Java Desktop browsing.
 - Made OpenGL/LWJGL launch-log diagnostics platform-neutral instead of XP-only.
 - macOS run script now gives a clearer source-ZIP warning and invokes the build script through `sh`.
+- Expanded Windows 7+, XP, macOS, Linux, auth-flow, and release checklist documentation based on the
+  four-agent platform audit.
 
 ## v0.4.0-alpha
 

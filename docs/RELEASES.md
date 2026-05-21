@@ -14,16 +14,16 @@ Do not use these files for normal play:
 Those source archives are useful for reading or building the code, but they may not include
 `MCLauncherRevival.jar`. The attached release asset is the runnable package.
 
-For `v0.4.0`, download:
+For `v0.4.5`, download:
 
 ```text
-MCLauncherRevival-v0.4.0-alpha.zip
+MCLauncherRevival-v0.4.5-alpha.zip
 ```
 
 If an XP bundled-Java package is published, it should be named:
 
 ```text
-MCLauncherRevival-v0.4.0-alpha-xp-bundled-java.zip
+MCLauncherRevival-v0.4.5-alpha-xp-bundled-java.zip
 ```
 
 That package is only for XP offline/classic use. It may include a maintainer-provided Java runtime
@@ -58,7 +58,7 @@ Start MCLauncherRevival XP Offline.cmd
 Recommended release zip layout:
 
 ```text
-MCLauncherRevival-v0.4.0-alpha/
+MCLauncherRevival-v0.4.5-alpha/
   Setup MCLauncherRevival.cmd
   Start MCLauncherRevival.cmd
   Start MCLauncherRevival XP Offline.cmd
@@ -78,7 +78,7 @@ MCLauncherRevival-v0.4.0-alpha/
 Recommended XP bundled-Java release zip layout:
 
 ```text
-MCLauncherRevival-v0.4.0-alpha-xp-bundled-java/
+MCLauncherRevival-v0.4.5-alpha-xp-bundled-java/
   Setup MCLauncherRevival.cmd
   Start MCLauncherRevival XP Offline.cmd
   Start MCLauncherRevival.cmd
@@ -122,9 +122,10 @@ build-win7.cmd
 - Bundled Java is third-party software under its own license/readme files. Old Java runtimes are not
   secure for general browsing or production use.
 - Linux shell wrappers are included for preliminary testing, but old Minecraft/LWJGL game launch is
-  experimental.
+  experimental. Linux logs are written to `~/.minecraft/launcher_revive/logs/last-launch.log`.
 - macOS testing can open the launcher, but old client launch may hang on a blank Minecraft window
-  due to LWJGL/OpenGL/native compatibility.
+  due to LWJGL/OpenGL/native compatibility. macOS logs are written to
+  `~/Library/Application Support/minecraft/launcher_revive/logs/last-launch.log`.
 - The launcher never asks for a raw Microsoft password.
 - If the jar is missing on Windows 7 or newer, `run-win7.cmd` will attempt to build it.
 - If the jar is missing in XP offline mode, download the attached release ZIP instead of the

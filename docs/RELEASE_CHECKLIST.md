@@ -1,6 +1,6 @@
 # Release Checklist
 
-For `v0.4.0`:
+For `v0.4.5`:
 
 - Confirm the project builds from a clean clone.
 - Confirm the jar launches.
@@ -10,10 +10,17 @@ For `v0.4.0`:
 - Confirm Windows 7 dependency setup can reuse `tools\jdk8` or `tools\temurin8-jdk.zip`.
 - Confirm the Microsoft login prompt opens before the browser and supports redirect paste fallback.
 - Confirm the XErr `2148916233` troubleshooting note points users to Xbox profile setup.
+- Confirm `Redownload Version` refuses empty or path-like version names and only deletes the
+  selected `.minecraft\versions\<version>` folder.
 - Confirm Linux shell scripts pass syntax checks and are clearly marked as preliminary until tested
   on a real distro.
+- On Linux, run `bash -n run-linux.sh build-linux.sh` when a machine with bash is available.
+- On Linux, manually smoke-test `java -jar MCLauncherRevival.jar` only as UI/preliminary behavior
+  unless old-client game launch is tested.
 - Confirm macOS shell scripts pass syntax checks and are clearly marked as preliminary until tested
   on a real Mac.
+- On macOS, run `sh -n run-macos.sh build-macos.sh` and verify the blank-window limitation remains
+  documented.
 - Confirm saved tokens/settings can be removed if implemented.
 - Confirm no secrets, tokens, client secrets, or personal credentials are committed.
 - Confirm README instructions match the actual release files.
@@ -70,7 +77,7 @@ Expected project files include:
 Recommended release tag and artifact names:
 
 ```text
-v0.4.0
-MCLauncherRevival-v0.4.0-alpha.zip
+v0.4.5
+MCLauncherRevival-v0.4.5-alpha.zip
 MCLauncherRevival.jar
 ```

@@ -73,6 +73,10 @@ The important file is:
 tools\java7\bin\java.exe
 ```
 
+`tools\java7` is the preferred runtime folder for XP release packages. `tools\jdk8` remains a
+fallback for users who already have an XP-compatible Java 8 runtime, but new XP packages should use
+`tools\java7` when possible.
+
 Then run:
 
 ```bat

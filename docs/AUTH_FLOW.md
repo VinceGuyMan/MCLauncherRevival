@@ -8,7 +8,8 @@ MCLauncherRevival keeps the old launcher look, but avoids the unsafe legacy user
 flowchart LR
     User["Player clicks Microsoft Login"]
     Browser["Browser OAuth sign-in"]
-    MS["Microsoft OAuth token"]
+    MS["Microsoft OAuth authorization code"]
+    MSToken["Microsoft OAuth access/refresh token"]
     XBL["Xbox Live authentication"]
     XSTS["XSTS authorization"]
     MC["Minecraft services login"]
@@ -17,7 +18,8 @@ flowchart LR
 
     User --> Browser
     Browser --> MS
-    MS --> XBL
+    MS --> MSToken
+    MSToken --> XBL
     XBL --> XSTS
     XSTS --> MC
     MC --> Profile
@@ -37,6 +39,15 @@ flowchart LR
     Version --> Cache
     Cache --> Launch
 ```
+
+## Current browser/OAuth behavior
+
+The preferred alpha flow is browser-based Microsoft authorization-code login with `offline_access`.
+When Microsoft returns a refresh token, MCLauncherRevival stores it locally so future sessions can
+refresh without asking the user to sign in every time.
+
+The launcher still accepts a legacy pasted `access_token` redirect as a compatibility fallback, but
+the normal flow should be an authorization code.
 
 ## Token cache
 

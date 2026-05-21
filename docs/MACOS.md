@@ -7,6 +7,12 @@ This is not yet a notarized `.app` bundle. It is a plain Java jar plus helper sh
 
 Windows remains the primary supported target.
 
+Primary launch log path:
+
+```text
+~/Library/Application Support/minecraft/launcher_revive/logs/last-launch.log
+```
+
 ## What should work
 
 - The Swing launcher UI should run on macOS with Java installed.
@@ -46,6 +52,10 @@ chmod +x run-macos.sh build-macos.sh
 ```
 
 If `MCLauncherRevival.jar` is already included, `run-macos.sh` only needs a Java runtime.
+
+If the jar is missing, you may have downloaded GitHub's source-code ZIP instead of the attached
+release ZIP. For normal use, download the attached release asset from GitHub Releases. Source ZIPs
+are meant for reading/building the code and require a local JDK.
 
 ## Build from source on macOS
 
@@ -94,6 +104,11 @@ Minecraft started. Launch log: <path>
 
 That means the process was started; it does not guarantee that the old Minecraft client rendered
 successfully on macOS.
+
+## Browser did not open
+
+Microsoft login first tries Java desktop browsing, then a macOS `open` fallback. If no browser opens,
+the manual redirect paste flow may still work, but macOS auth remains experimental.
 
 ## Account safety
 

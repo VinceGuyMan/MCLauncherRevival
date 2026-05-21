@@ -48,7 +48,7 @@ More screenshots and annotated UI guides are available in
 | Version selection | Working / needs broader testing | Classic versions are listed from Mojang metadata where available. |
 | Windows 7-11 support | Primary target | Java 8 is recommended, especially for old Minecraft/LWJGL behavior. |
 | Windows XP / older Windows behavior | Offline/classic only | Real XP hardware testing confirmed classic launches can work with prepared files, Java, and drivers. Performance depends on hardware. |
-| Linux behavior | Preliminary | Launcher UI may run, but old Minecraft/LWJGL game launch is experimental. See docs/LINUX.md. |
+| Linux behavior | Preliminary / experimental | Launcher UI may run, but old Minecraft/LWJGL game launch may fail with blank windows, OpenGL errors, or native-library issues. See docs/LINUX.md. |
 | macOS behavior | Experimental | Launcher UI may run, but old Minecraft/LWJGL game launch is experimental. Blank game windows may occur. See docs/MACOS.md. |
 | Release packaging | Alpha packages available | Use the attached GitHub Releases ZIP, not the source-code ZIP. |
 
@@ -67,13 +67,13 @@ Those source archives are useful for reading or building the code, but they may 
 The current alpha package is:
 
 ```text
-MCLauncherRevival-v0.4.0-alpha.zip
+MCLauncherRevival-v0.4.5-alpha.zip
 ```
 
 If an XP bundled-Java package is published, it should be named like:
 
 ```text
-MCLauncherRevival-v0.4.0-alpha-xp-bundled-java.zip
+MCLauncherRevival-v0.4.5-alpha-xp-bundled-java.zip
 ```
 
 That XP package is for offline/classic use only. It may include a maintainer-provided
@@ -213,6 +213,24 @@ downloaded from MCVersions.net must be placed inside
 
 On XP, `Pixel format not accelerated` means Minecraft reached the game startup stage but the
 graphics driver does not provide accelerated OpenGL. Install the correct XP/XP x64 GPU driver.
+
+On Windows 7 and newer, use the attached release ZIP for normal play. GitHub source ZIPs are meant
+for reading/building the code and may require a local JDK setup.
+
+`Redownload Version` deletes only the selected `.minecraft\versions\<version>` folder. It does not
+delete saves, auth tokens, libraries, assets, or unrelated folders.
+
+On macOS, check:
+
+```text
+~/Library/Application Support/minecraft/launcher_revive/logs/last-launch.log
+```
+
+On Linux, check:
+
+```text
+~/.minecraft/launcher_revive/logs/last-launch.log
+```
 
 See [Windows XP Offline/Classic Guide](docs/WINDOWS_XP.md) and
 [XP Version Setup](docs/XP_VERSION_SETUP.md) for the full copy-path checklist.

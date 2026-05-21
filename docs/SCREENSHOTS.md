@@ -36,6 +36,25 @@ app.
 
 ![MCLauncherRevival backdrop artwork](screenshots/backdrop.png)
 
+## Era style showcases
+
+These screenshots show MCLauncherRevival's recreated take on each historical launcher/build-era
+style. They are project-owned visual interpretations inspired by the era, not bundled original
+Mojang/Microsoft launcher assets.
+
+The launcher-visible manifest range includes Infdev, Classic, Alpha, and Beta builds. It does not
+currently expose a separate Indev build, so the prototype-era example uses `inf-20100618`.
+
+![Infdev / prototype-era showcase](screenshots/era-showcase/infdev-20100618.png)
+
+![Pre-Classic showcase](screenshots/era-showcase/preclassic-rd132211.png)
+
+![Classic showcase](screenshots/era-showcase/classic-c030-01c.png)
+
+![Alpha showcase](screenshots/era-showcase/alpha-a126.png)
+
+![Beta showcase](screenshots/era-showcase/beta-b173.png)
+
 ## Windows XP field testing
 
 These images document the real Windows XP offline/classic testing workflow and file-transfer setup.

@@ -1,6 +1,6 @@
 # Release Checklist
 
-For `v0.5.0`:
+For `v0.5.5`:
 
 - Confirm the project builds from a clean clone.
 - Confirm the jar launches.
@@ -73,7 +73,7 @@ Expected project files include:
 - `docs/AUTH_FLOW.md`
 - `docs/HISTORICAL_THEMES.md`
 - `docs/RELEASES.md`
-- `docs/RELEASE_NOTES_v0.5.0.md`
+- `docs/RELEASE_NOTES_v0.5.5.md`
 - `LICENSE`
 
 ## Do not commit
@@ -91,6 +91,7 @@ Recommended release tag and artifact names:
 
 ```text
 v0.5.0
-MCLauncherRevival-v0.5.0-alpha.zip
+MCLauncherRevival-v0.5.5-alpha.zip
 MCLauncherRevival.jar
 ```
+

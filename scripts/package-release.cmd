@@ -1,11 +1,11 @@
-﻿@echo off
+@echo off
 setlocal
 set "ROOT_DIR=%~dp0.."
 for %%I in ("%ROOT_DIR%") do set "ROOT_DIR=%%~fI"
 cd /d "%ROOT_DIR%"
 
 set "RELEASE_VERSION=%~1"
-if "%RELEASE_VERSION%"=="" set "RELEASE_VERSION=v0.5.0-alpha"
+if "%RELEASE_VERSION%"=="" set "RELEASE_VERSION=v0.5.5-alpha"
 
 set "PACKAGE_NAME=MCLauncherRevival-%RELEASE_VERSION%"
 set "RELEASE_ROOT=%ROOT_DIR%\..\release"
@@ -113,3 +113,4 @@ echo Created:
 echo   %ZIP_PATH%
 pause
 exit /b 0
+

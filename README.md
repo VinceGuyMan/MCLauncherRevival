@@ -73,13 +73,13 @@ Those source archives are useful for reading or building the code, but they may 
 The current alpha package is:
 
 ```text
-MCLauncherRevival-v0.5.0-alpha.zip
+MCLauncherRevival-v0.5.5-alpha.zip
 ```
 
 If an XP bundled-Java package is published, it should be named like:
 
 ```text
-MCLauncherRevival-v0.5.0-alpha-xp-bundled-java.zip
+MCLauncherRevival-v0.5.5-alpha-xp-bundled-java.zip
 ```
 
 That XP package is for offline/classic use only. It may include a maintainer-provided
@@ -266,3 +266,24 @@ See [docs/DISCLAIMER.md](docs/DISCLAIMER.md) and [NOTICE.md](NOTICE.md) for more
 This repository includes a [LICENSE](LICENSE) file covering the original modernization code and
 scripts in this project. Third-party names, marks, services, game files, launcher artifacts, and
 historical assets remain owned by their respective rights holders.
+
+## Historical version notes
+
+The Update Notes and Patch Notes Mode panels use static, offline-friendly historical notes from Mojang's version manifest, Minecraft Wiki version pages, and Minecraft Timeline orientation. Exact version notes are shown when available; otherwise the launcher clearly labels the nearest verified era fallback.
+
+See `docs/VERSION_NOTES.md` for the note format, sources, and rules for adding more history safely.
+
+## Era style showcase screenshots
+
+MCLauncherRevival includes showcase screenshots for our recreated take on the launcher/build-era
+styles used by the historical theme system:
+
+- [Infdev / prototype-era showcase](docs/screenshots/era-showcase/infdev-20100618.png)
+- [Pre-Classic showcase](docs/screenshots/era-showcase/preclassic-rd132211.png)
+- [Classic showcase](docs/screenshots/era-showcase/classic-c030-01c.png)
+- [Alpha showcase](docs/screenshots/era-showcase/alpha-a126.png)
+- [Beta showcase](docs/screenshots/era-showcase/beta-b173.png)
+
+These are project-owned visual interpretations, not bundled original Mojang/Microsoft launcher
+assets.
+

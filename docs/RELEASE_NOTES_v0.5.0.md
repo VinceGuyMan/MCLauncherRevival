@@ -13,6 +13,8 @@ to handle Microsoft OAuth, offline play, logging, version selection, and launch 
 - Added theme-specific sidebars, tab labels, titles, update-note panels, and launcher notes.
 - Added `Low-end 384MB` for older or weaker systems.
 - Cached tiled theme backgrounds and avoided unnecessary Update Notes reloads.
+- Added GitHub showcase screenshots for our recreated take on each historical build-era style:
+  Infdev/prototype, Pre-Classic, Classic, Alpha, and Beta.
 
 ## Version-to-style mapping
 

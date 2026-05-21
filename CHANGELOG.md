@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.5.5-alpha
+
+- Expanded the animated splash text pool with 50 additional nostalgia/auth/old-Java themed phrases.
+- Updated Beta-era Update Notes headers to say `Minecraft Beta News` so Beta builds match the
+  era-specific naming used by the other historical layouts.
+- Added GitHub showcase screenshots for our recreated take on each historical build-era style:
+  Infdev/prototype, Pre-Classic, Classic, Alpha, and Beta.
+- Added static, offline-friendly historical version notes for major launcher-visible Beta, Alpha,
+  Infdev, Classic, and Pre-Classic versions.
+- Update Notes now prefer exact version entries and clearly label family fallbacks when exact notes
+  are not available.
+- Patch Notes Mode now shows compact Added / Changed / Fixed / Removed / Known quirks sections with
+  source links.
+- Added `docs/VERSION_NOTES.md` to document note sources and safe rules for adding more history.
+
 ## v0.5.0-alpha
 
 - Added a historical launcher presentation system with `Auto`, `Beta`, `Alpha`, `Infdev`,
@@ -20,6 +35,8 @@
   Notes page, then pauses outside the news view.
 - Improved HTML link readability across dark era textures with a subtle backing and bottom-edge
   treatment while keeping the old blue-link feel.
+- Added GitHub showcase screenshots for our recreated take on each historical build-era style:
+  Infdev/prototype, Pre-Classic, Classic, Alpha, and Beta.
 - Added a `Low-end 384MB` memory preset for weaker/period-correct hardware.
 - Cached theme background tiles and avoided unnecessary news HTML reloads to reduce UI churn.
 - Updated build scripts so nested resources, including theme textures, are copied into
@@ -183,3 +200,10 @@ fails.
   status.
 - Preserved the dirt-background news panel and classic compact launcher layout.
 
+
+## Unreleased - Historical version notes
+
+- Added static, offline-friendly historical notes for major launcher-visible Beta, Alpha, Infdev, Classic, and Pre-Classic versions.
+- Update Notes now prefer exact version entries and clearly label family fallbacks when exact notes are not available.
+- Patch Notes Mode now shows compact Added / Changed / Fixed / Removed / Known quirks sections with source links.
+- Added `docs/VERSION_NOTES.md` to document note sources and safe rules for adding more history.

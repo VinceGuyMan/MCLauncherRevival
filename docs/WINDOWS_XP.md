@@ -51,6 +51,8 @@ Observed result:
 - Classic/offline Minecraft can launch.
 - One tested XP laptop ran Minecraft Beta 1.7.3 at around 15 FPS on the lowest settings.
 - Beta 1.4 also launched during testing, but on the test laptop it ran around 2-5 FPS.
+- Alpha 1.2.6 launched during testing at around 5-10 FPS.
+- Alpha 1.2_01 launched during testing at around 12-20 FPS.
 
 This confirms basic XP offline/classic compatibility, but it does not mean XP support is perfect.
 Performance depends heavily on the laptop hardware, graphics driver, Java version, and selected

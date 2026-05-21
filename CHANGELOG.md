@@ -5,6 +5,7 @@
 - Confirmed XP Offline mode launches successfully on real Windows XP hardware with an XP-compatible
   Java runtime. Performance is hardware-dependent; one test system ran around 15 FPS on lowest
   settings.
+- Added more XP field-test performance notes for Beta 1.4, Alpha 1.2.6, and Alpha 1.2_01.
 - Added XP field-test screenshots showing the test machine specs and prepared `.minecraft` folder
   transfer workflow from a newer PC to removable media to Windows XP.
 - The launcher now scans `.minecraft\versions` on startup and adds locally prepared versions to

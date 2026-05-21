@@ -88,6 +88,13 @@ Example real XP test machine:
 
 ![Windows XP test machine specs](screenshots/xp-test-specs.png)
 
+Observed performance on that test laptop varied by version:
+
+- Beta 1.7.3: around 15 FPS on lowest settings.
+- Beta 1.4: around 2-5 FPS.
+- Alpha 1.2.6: around 5-10 FPS.
+- Alpha 1.2_01: around 12-20 FPS.
+
 ## Optional manual jar method with MCVersions.net
 
 The preferred method is still copying the full prepared `.minecraft` folders from Windows 7 or

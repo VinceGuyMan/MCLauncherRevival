@@ -46,13 +46,7 @@ final class VersionNotes {
     }
 
     private static String header(Style style, VersionNoteData.Note note, boolean compactMode) {
-        String splash = compactMode ? "Patch Notes Mode!" : splashFor(note.family);
-        String mode = compactMode ? "Patch notes" : "Update notes";
-        return "<table width='100%' cellpadding='0' cellspacing='0'><tr>"
-                + "<td><h1>" + escape(style.headingText) + "</h1></td>"
-                + "<td align='right' valign='top'><span class='splash'>" + escape(splash) + "</span><br>"
-                + "<span class='small'>" + escape(mode) + " from static historical notes</span></td>"
-                + "</tr></table>";
+        return "<h1>" + escape(style.headingText) + "</h1>";
     }
 
     private static String eraLead(VersionNoteData.Note note) {
@@ -62,21 +56,13 @@ final class VersionNotes {
         if (note.releaseDate.length() > 0) {
             html.append("<b>Release date:</b> ").append(escape(note.releaseDate)).append("<br>");
         }
-        html.append("<b>Timeline family:</b> ").append(escape(note.family)).append("<br>");
-        if (note.exact) {
-            html.append("<span class='exact'>Exact version note</span>");
-        } else {
-            html.append("<span class='fallback'>Exact historical notes for this build were not found. Showing the nearest verified era summary instead.</span>");
-        }
+        html.append("<b>Timeline family:</b> ").append(escape(note.family));
         html.append("</p>");
         return html.toString();
     }
 
     private static void updateSection(StringBuilder html, VersionNoteData.Note note) {
         html.append("<p>").append(escape(note.shortSummary)).append("</p>");
-        if (!note.exact) {
-            html.append("<div class='box'><b>Fallback note:</b> Exact historical notes for this build were not found. This panel is using a verified family summary rather than pretending the note is exact.</div>");
-        }
         html.append("<h3>Why this version matters</h3>");
         html.append("<p>").append(escape(note.whyItMatters)).append("</p>");
         if (note.knownQuirks.length() > 0) {
@@ -87,20 +73,25 @@ final class VersionNotes {
             html.append("<p><b>Launcher note:</b> ").append(escape(note.launcherCommentary)).append("</p>");
         }
         sources(html, note);
+        fallbackNotice(html, note);
     }
 
     private static void patchSection(StringBuilder html, VersionNoteData.Note note) {
         html.append("<p class='muted'>Compact patch-style notes for ").append(escape(note.versionId))
                 .append(". These are curated for launcher readability, not copied as a full wiki dump.</p>");
-        if (!note.exact) {
-            html.append("<div class='box'><b>Fallback note:</b> Exact historical notes for this build were not found. Showing the nearest verified era summary instead.</div>");
-        }
         listBlock(html, "Added", note.addedItems());
         listBlock(html, "Changed", note.changedItems());
         listBlock(html, "Fixed", note.fixedItems());
         listBlock(html, "Removed", note.removedItems());
         listBlock(html, "Known quirks", note.quirkItems());
         sources(html, note);
+        fallbackNotice(html, note);
+    }
+
+    private static void fallbackNotice(StringBuilder html, VersionNoteData.Note note) {
+        if (!note.exact) {
+            html.append("<div class='box'><b>Fallback note:</b> Exact historical notes for this build were not found. This panel is using a verified family summary rather than pretending the note is exact.</div>");
+        }
     }
 
     private static void listBlock(StringBuilder html, String title, String[] items) {
@@ -152,19 +143,6 @@ final class VersionNotes {
         html.append("<p>The launcher now uses static, version-aware notes researched from public historical sources. "
                 + "The goal is to be useful inside a small old launcher panel without pretending to be a full wiki page.</p>");
         html.append("<p class='small'>MCLauncherRevival Alpha. Unofficial project. Vibe-Coded with Codex.</p>");
-    }
-
-    private static String splashFor(String family) {
-        family = family == null ? "" : family.toLowerCase();
-        if (family.indexOf("beta 1.8") >= 0) return "Adventure-ish!";
-        if (family.indexOf("beta 1.7") >= 0) return "Pistons but no hunger!";
-        if (family.indexOf("beta 1.6") >= 0) return "Map in hand!";
-        if (family.indexOf("beta") >= 0) return "Old Beta, real notes!";
-        if (family.indexOf("alpha 1.2") >= 0) return "Portals and pumpkins!";
-        if (family.indexOf("alpha") >= 0) return "Seecret Friday energy!";
-        if (family.indexOf("infdev") >= 0) return "Infinite-ish!";
-        if (family.indexOf("classic") >= 0) return "Classic blocks!";
-        return "Historical notes!";
     }
 
     private static String clean(String value) {
@@ -225,18 +203,18 @@ final class VersionNotes {
             String theme = themeId == null ? "" : themeId.toLowerCase();
             String fam = family == null ? "" : family.toLowerCase();
             if (theme.indexOf("pre") >= 0 || fam.indexOf("pre-classic") >= 0) {
-                return new Style("Prototype Notes", "#101010", "#eeeeee", "#ffffff", "#bbbbbb", "#3355ff", "#555555", "#181818", 26, 34, 13);
+                return new Style("Minecraft Pre-Classic News", "#101010", "#eeeeee", "#ffffff", "#bbbbbb", "#3355ff", "#555555", "#181818", 26, 34, 13);
             }
             if (theme.indexOf("classic") >= 0 || fam.indexOf("classic") >= 0) {
-                return new Style("Classic Notes", "#151515", "#eeeeee", "#ffffff", "#c6c6c6", "#3355ff", "#666666", "#202020", 28, 34, 13);
+                return new Style("Minecraft Classic News", "#151515", "#eeeeee", "#ffffff", "#c6c6c6", "#3355ff", "#666666", "#202020", 28, 34, 13);
             }
             if (theme.indexOf("inf") >= 0 || fam.indexOf("infdev") >= 0) {
-                return new Style("Infdev Notes", "#111111", "#eeeeee", "#ffffff", "#c4c4c4", "#3355ff", "#666666", "#1d1d1d", 30, 36, 13);
+                return new Style("Minecraft Indev News", "#111111", "#eeeeee", "#ffffff", "#c4c4c4", "#3355ff", "#666666", "#1d1d1d", 30, 36, 13);
             }
             if (theme.indexOf("alpha") >= 0 || fam.indexOf("alpha") >= 0) {
-                return new Style("Minecraft News", "#120f0b", "#f1f1f1", "#ffffff", "#c8c8c8", "#3355ff", "#6b5c43", "#1b160f", 32, 38, 14);
+                return new Style("Minecraft Alpha News", "#120f0b", "#f1f1f1", "#ffffff", "#c8c8c8", "#3355ff", "#6b5c43", "#1b160f", 32, 38, 14);
             }
-            if (fam.indexOf("beta") >= 0) {
+            if (theme.indexOf("beta") >= 0 || fam.indexOf("beta") >= 0) {
                 return new Style("Minecraft Beta News", "#111111", "#f2f2f2", "#ffffff", "#bdbdbd", "#3355ff", "#777777", "#181818", 34, 38, 14);
             }
             return new Style("Minecraft News", "#111111", "#f2f2f2", "#ffffff", "#bdbdbd", "#3355ff", "#777777", "#181818", 34, 38, 14);

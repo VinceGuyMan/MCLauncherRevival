@@ -837,6 +837,13 @@ public final class MinecraftLauncher extends JFrame {
 
     private void forceRedownloadSelectedVersion() {
         String version = selectedVersion();
+        java.io.File versionDir;
+        try {
+            versionDir = selectedVersionFolderForRedownload(version);
+        } catch (IOException e) {
+            showError(e);
+            return;
+        }
         int choice = JOptionPane.showConfirmDialog(this,
                 "Delete and re-download only this selected version?\n\n" + version + "\n\nYour saves and auth tokens will not be touched.",
                 "Force Redownload",
@@ -845,7 +852,6 @@ public final class MinecraftLauncher extends JFrame {
         if (choice != JOptionPane.YES_OPTION) {
             return;
         }
-        java.io.File versionDir = new java.io.File(new java.io.File(TokenCache.minecraftDir(), "versions"), version);
         try {
             deleteRecursive(versionDir);
             status("Deleted selected version folder for re-download: " + version);
@@ -855,13 +861,35 @@ public final class MinecraftLauncher extends JFrame {
         }
     }
 
+    private java.io.File selectedVersionFolderForRedownload(String version) throws IOException {
+        if (version == null || version.trim().length() == 0) {
+            throw new IOException("No selected version to redownload.");
+        }
+        String clean = version.trim();
+        if (clean.indexOf('/') >= 0 || clean.indexOf('\\') >= 0
+                || clean.indexOf(':') >= 0 || clean.indexOf("..") >= 0) {
+            throw new IOException("Invalid version name for redownload: " + clean);
+        }
+        java.io.File root = new java.io.File(TokenCache.minecraftDir(), "versions").getCanonicalFile();
+        java.io.File target = new java.io.File(root, clean).getCanonicalFile();
+        if (target.equals(root) || !root.equals(target.getParentFile())) {
+            throw new IOException("Refusing to delete outside versions folder: " + target.getAbsolutePath());
+        }
+        if (!target.exists()) {
+            throw new IOException("Selected version folder was not found: " + clean);
+        }
+        return target;
+    }
+
     private void deleteRecursive(java.io.File file) throws IOException {
         if (file == null || !file.exists()) {
             return;
         }
         java.io.File root = new java.io.File(TokenCache.minecraftDir(), "versions").getCanonicalFile();
         java.io.File target = file.getCanonicalFile();
-        if (!target.getPath().startsWith(root.getPath())) {
+        String rootPath = root.getPath();
+        String targetPath = target.getPath();
+        if (target.equals(root) || !targetPath.startsWith(rootPath + java.io.File.separator)) {
             throw new IOException("Refusing to delete outside versions folder: " + target.getAbsolutePath());
         }
         if (file.isDirectory()) {

@@ -11,6 +11,8 @@
 - XP mode now reports loaded local versions even when exactly one prepared version is found.
 - Microsoft browser login now requests an authorization code with `offline_access` so Microsoft
   refresh tokens can be cached when the account flow returns them.
+- Hardened `Redownload Version` so it can only delete the selected folder directly under
+  `.minecraft\versions`.
 
 ## v0.4.0-alpha
 

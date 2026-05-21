@@ -3,7 +3,7 @@ setlocal
 cd /d "%~dp0"
 
 set "RELEASE_VERSION=%~1"
-if "%RELEASE_VERSION%"=="" set "RELEASE_VERSION=v0.3.5-alpha"
+if "%RELEASE_VERSION%"=="" set "RELEASE_VERSION=v0.4.0-alpha"
 
 set "PACKAGE_NAME=MCLauncherRevival-%RELEASE_VERSION%-xp-bundled-java"
 set "DIST_DIR=%~dp0dist"

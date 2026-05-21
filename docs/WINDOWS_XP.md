@@ -262,7 +262,7 @@ source archive and not the tag/source ZIP.
 The correct release asset should be named like:
 
 ```text
-MCLauncherRevival-v0.3.5-alpha.zip
+MCLauncherRevival-v0.4.0-alpha.zip
 ```
 
 If you only have the source archive, build `MCLauncherRevival.jar` on Windows 7 or newer, then copy

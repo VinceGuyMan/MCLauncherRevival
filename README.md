@@ -47,7 +47,7 @@ More screenshots and annotated UI guides are available in
 | Microsoft login / OAuth flow | Experimental | Should use browser/OAuth flow. It should never ask for a Microsoft password inside the app. |
 | Version selection | Working / needs broader testing | Classic versions are listed from Mojang metadata where available. |
 | Windows 7-11 support | Primary target | Java 8 is recommended, especially for old Minecraft/LWJGL behavior. |
-| Windows XP / older Windows behavior | Offline/classic only | Online login and fresh downloads are best-effort due to TLS, certificate, and browser limitations. |
+| Windows XP / older Windows behavior | Offline/classic only | Real XP hardware testing confirmed classic launches can work with prepared files, Java, and drivers. Performance depends on hardware. |
 | Linux behavior | Preliminary | Launcher UI may run, but old Minecraft/LWJGL game launch is experimental. See docs/LINUX.md. |
 | macOS behavior | Experimental | Launcher UI may run, but old Minecraft/LWJGL game launch is experimental. Blank game windows may occur. See docs/MACOS.md. |
 | Release packaging | Alpha packages available | Use the attached GitHub Releases ZIP, not the source-code ZIP. |
@@ -67,13 +67,13 @@ Those source archives are useful for reading or building the code, but they may 
 The current alpha package is:
 
 ```text
-MCLauncherRevival-v0.3.5-alpha.zip
+MCLauncherRevival-v0.4.0-alpha.zip
 ```
 
 If an XP bundled-Java package is published, it should be named like:
 
 ```text
-MCLauncherRevival-v0.3.5-alpha-xp-bundled-java.zip
+MCLauncherRevival-v0.4.0-alpha-xp-bundled-java.zip
 ```
 
 That XP package is for offline/classic use only. It may include a maintainer-provided

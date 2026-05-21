@@ -6,6 +6,9 @@
   right path, then routes users to Windows 7-11 normal launch, XP Offline / Classic mode, source
   builds, or setup notes.
 - Included the setup hub in standard and XP bundled-Java release package staging.
+- Setup hub now preserves child script exit codes for clearer automation/package testing.
+- Improved the XSTS no-Xbox-profile message with the Xbox profile setup URL and retry steps.
+- XP mode now reports loaded local versions even when exactly one prepared version is found.
 
 ## v0.4.0-alpha
 

@@ -216,7 +216,7 @@ final class ModernAuth {
             Map<String, Object> error = Json.object(Json.parse(result.body));
             String xerr = Json.string(error, "XErr");
             if ("2148916233".equals(xerr)) {
-                throw new IOException("This Microsoft account has no Xbox profile yet.");
+                throw new IOException("This Microsoft account has no Xbox profile yet. Open https://start.ui.xboxlive.com/, finish Xbox profile setup, then click Forget Login and try Microsoft Login again.");
             }
             if ("2148916238".equals(xerr)) {
                 throw new IOException("This account is a child account and needs family approval for Xbox Live.");

@@ -134,7 +134,7 @@ public final class MinecraftLauncher extends JFrame {
         int localVersions = loadLocalVersions();
         refreshActiveTab();
         if (xpCompatibilityMode()) {
-            if (localVersions > 1) {
+            if (localVersions > 0) {
                 status("XP mode: loaded " + localVersions + " local version(s). Use Play Offline.");
             } else {
                 status("XP mode: online version list unavailable. Type a version manually or copy prepared version files from a newer PC.");

@@ -34,7 +34,7 @@ app.
 
 ## Repository/social preview
 
-![MCLauncherRevival social preview artwork](screenshots/social-preview.png)
+![MCLauncherRevival backdrop artwork](screenshots/backdrop.png)
 
 ## Windows XP field testing
 

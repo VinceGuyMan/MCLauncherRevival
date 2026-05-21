@@ -1,6 +1,6 @@
 # MCLauncherRevival
 
-![MCLauncherRevival social preview artwork](docs/screenshots/social-preview.png)
+![MCLauncherRevival backdrop artwork](docs/screenshots/backdrop.png)
 
 A nostalgic 2011-style Minecraft launcher revival, modernized for 2026.
 ## Status
@@ -25,7 +25,7 @@ More screenshots and annotated UI guides are available in
 - [Profile Editor](docs/screenshots/profile-editor.png)
 - [Launcher Log](docs/screenshots/launcher-log.png)
 - [Microsoft login flow](docs/screenshots/microsoft-login-redirect.png)
-- [Social preview artwork](docs/screenshots/social-preview.png)
+- [backdrop artwork](docs/screenshots/backdrop.png)
 
 ## What it does
 

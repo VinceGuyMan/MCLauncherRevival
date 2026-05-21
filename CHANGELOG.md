@@ -18,6 +18,8 @@
   era layouts. These are original project assets, not extracted Mojang/Microsoft launcher files.
 - Added Minecraft-style animated yellow splash text that floats, scales, and tilts on the Update
   Notes page, then pauses outside the news view.
+- Improved HTML link readability across dark era textures with a subtle backing and bottom-edge
+  treatment while keeping the old blue-link feel.
 - Added a `Low-end 384MB` memory preset for weaker/period-correct hardware.
 - Cached theme background tiles and avoided unnecessary news HTML reloads to reduce UI churn.
 - Updated build scripts so nested resources, including theme textures, are copied into

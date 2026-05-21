@@ -858,7 +858,7 @@ public final class MinecraftLauncher extends JFrame {
             return;
         }
         switchTab("notes");
-        setNewsHtml("<html><body text='#e8e8e8' link='#aaaaff' vlink='#aaaaff' style='font-family:Verdana,Arial,sans-serif;font-size:11px;margin:24px;background-color:transparent'>"
+        setNewsHtml(htmlStart("#e8e8e8", "#aaaaff", "Verdana,Arial,sans-serif", 11, 24)
                 + "<font size='+3'><b>Welcome to MCLauncherRevival</b></font><br><br>"
                 + "<p>This is a 2011-flavored launcher shell with modern Minecraft auth behind the curtain.</p>"
                 + "<p><b>Quick start:</b><br>"
@@ -1307,7 +1307,7 @@ public final class MinecraftLauncher extends JFrame {
     }
 
     private static String defaultNews() {
-        return "<html><body text='#e8e8e8' link='#aaaaff' vlink='#aaaaff' style='font-family:Verdana,Arial,sans-serif;font-size:11px;margin:24px;background-color:transparent'>"
+        return htmlStart("#e8e8e8", "#aaaaff", "Verdana,Arial,sans-serif", 11, 24)
                 + "<table width='100%' cellpadding='0' cellspacing='0'><tr>"
                 + "<td><font size='+3'><b>Minecraft News</b></font></td>"
                 + "<td align='right'></td>"
@@ -1347,10 +1347,7 @@ public final class MinecraftLauncher extends JFrame {
     }
 
     private static String sidebarHtml(EraTheme theme) {
-        String style = "font-family:" + theme.fontFamily + ";font-size:" + theme.sidebarFontSize
-                + "px;margin:" + theme.sidebarMargin + "px;background-color:transparent";
-        String body = "<html><body text='" + theme.textHex + "' link='" + theme.linkHex + "' vlink='" + theme.linkHex
-                + "' style='" + style + "'>";
+        String body = htmlStart(theme);
         if ("classic".equals(theme.id) || "preclassic".equals(theme.id)) {
             return body
                     + "<font size='+1'><b>" + theme.sidebarTitle + "</b></font><br><br>"
@@ -1396,7 +1393,7 @@ public final class MinecraftLauncher extends JFrame {
 
     private String logPage() {
         java.io.File launchLog = new java.io.File(new java.io.File(new java.io.File(TokenCache.minecraftDir(), "launcher_revive"), "logs"), "last-launch.log");
-        return "<html><body text='#e8e8e8' link='#aaaaff' vlink='#aaaaff' style='font-family:Verdana,Arial,sans-serif;font-size:11px;margin:24px;background-color:transparent'>"
+        return htmlStart("#e8e8e8", "#aaaaff", "Verdana,Arial,sans-serif", 11, 24)
                 + "<font size='+3'><b>Launcher Log</b></font><br><br>"
                 + "<p><font color='#999999'>Current launcher session messages. Game output is also written to disk after Minecraft starts.</font></p>"
                 + xpModeNoteHtml()
@@ -1474,7 +1471,7 @@ public final class MinecraftLauncher extends JFrame {
         String backupsDir = new java.io.File(new java.io.File(TokenCache.minecraftDir(), "launcher_revive"), "backups").getAbsolutePath();
         String selectedVersionDir = new java.io.File(new java.io.File(TokenCache.minecraftDir(), "versions"), selectedVersion()).getAbsolutePath();
         String lastPlayed = settings.get("last.version", "(never)") + " as " + settings.get("last.name", "(nobody)");
-        return "<html><body text='#e8e8e8' link='#aaaaff' vlink='#aaaaff' style='font-family:Verdana,Arial,sans-serif;font-size:11px;margin:24px;background-color:transparent'>"
+        return htmlStart("#e8e8e8", "#aaaaff", "Verdana,Arial,sans-serif", 11, 24)
                 + "<font size='+3'><b>Profile Editor</b></font><br><br>"
                 + "<p><font color='#999999'>Classic launcher-style profile controls, focused on the settings this revived launcher actually uses.</font></p>"
                 + xpModeNoteHtml()
@@ -1562,8 +1559,26 @@ public final class MinecraftLauncher extends JFrame {
         return choice == JOptionPane.YES_OPTION;
     }
 
+    private static String htmlStart(EraTheme theme) {
+        return htmlStart(theme.textHex, theme.linkHex, theme.linkBackHex, theme.linkEdgeHex,
+                theme.fontFamily, theme.sidebarFontSize, theme.sidebarMargin);
+    }
+
+    private static String htmlStart(String textHex, String linkHex, String fontFamily, int fontSize, int margin) {
+        return htmlStart(textHex, linkHex, "#111226", "#5c5fae", fontFamily, fontSize, margin);
+    }
+
+    private static String htmlStart(String textHex, String linkHex, String linkBackHex, String linkEdgeHex,
+            String fontFamily, int fontSize, int margin) {
+        return "<html><head><style type='text/css'>"
+                + "a { color:" + linkHex + "; background-color:" + linkBackHex
+                + "; text-decoration:underline; border-bottom:1px solid " + linkEdgeHex + "; }"
+                + "</style></head><body text='" + textHex + "' link='" + linkHex + "' vlink='" + linkHex
+                + "' style='font-family:" + fontFamily + ";font-size:" + fontSize
+                + "px;margin:" + margin + "px;background-color:transparent">";
+    }
     private static String errorNews(String message) {
-        return "<html><body text='#eeeeee' link='#aaaaff' style='font-family:Verdana,Arial,sans-serif;font-size:11px;margin:24px;background-color:transparent'>"
+        return htmlStart("#eeeeee", "#aaaaff", "Verdana,Arial,sans-serif", 11, 24)
                 + "<font size='+3'><b>Launcher error</b></font><br><br>"
                 + "<p><font color='#ff9999'>" + escape(message) + "</font></p>"
                 + "<p>Offline singleplayer mode is still available from the bottom bar.</p>"
@@ -1635,7 +1650,7 @@ public final class MinecraftLauncher extends JFrame {
                 public void run() {
                     MinecraftLauncher.this.status(message);
                     if (message.indexOf("Microsoft") >= 0 || message.indexOf("login") >= 0 || message.indexOf("browser") >= 0) {
-                        setNewsHtml("<html><body text='#e8e8e8' link='#aaaaff' style='font-family:Verdana,Arial,sans-serif;font-size:11px;margin:24px;background-color:transparent'>"
+                        setNewsHtml(htmlStart("#e8e8e8", "#aaaaff", "Verdana,Arial,sans-serif", 11, 24)
                                 + "<font size='+3'><b>Microsoft Login</b></font><br><br>"
                                 + "<p>" + escape(message) + "</p>"
                                 + "<p>The launcher opens Microsoft OAuth in your default browser. "
@@ -1809,6 +1824,8 @@ public final class MinecraftLauncher extends JFrame {
         final Color splashColor;
         final String textHex;
         final String linkHex;
+        final String linkBackHex;
+        final String linkEdgeHex;
         final String mutedHex;
         final String ruleHex;
         final String fontFamily;
@@ -1830,7 +1847,7 @@ public final class MinecraftLauncher extends JFrame {
 
         EraTheme(String id, String displayName, String badgeText, Color badgeColor, Color badgeForeground,
                 Color overlayColor, Color borderColor, Color tabActive, Color tabInactive, Color tabForeground,
-                Color splashColor, String textHex, String linkHex, String mutedHex, String ruleHex,
+                Color splashColor, String textHex, String linkHex, String linkBackHex, String linkEdgeHex, String mutedHex, String ruleHex,
                 String fontFamily, String controlFont, String splashFont, String sidebarTitle, String gamesTitle,
                 String sidebarNote, String texturePath, String windowTitle, String updateTabTitle,
                 String logTabTitle, String profileTabTitle, int sidebarWidth, int sidebarFontSize,
@@ -1848,6 +1865,8 @@ public final class MinecraftLauncher extends JFrame {
             this.splashColor = splashColor;
             this.textHex = textHex;
             this.linkHex = linkHex;
+            this.linkBackHex = linkBackHex;
+            this.linkEdgeHex = linkEdgeHex;
             this.mutedHex = mutedHex;
             this.ruleHex = ruleHex;
             this.fontFamily = fontFamily;
@@ -1912,7 +1931,7 @@ public final class MinecraftLauncher extends JFrame {
             return new EraTheme("beta", "Beta news launcher", "beta", new Color(70, 95, 150), Color.WHITE,
                     new Color(0, 0, 0, 145), new Color(110, 110, 110),
                     Color.WHITE, new Color(230, 230, 230), Color.BLACK, new Color(255, 255, 85),
-                    "#e8e8e8", "#aaaaff", "#888888", "#333333",
+                    "#e8e8e8", "#aaaaff", "#111226", "#5c5fae", "#888888", "#333333",
                     "Verdana,Arial,sans-serif", "Dialog", "Dialog", "Official links:", "Try our other games!",
                     "Modern twist:<br>OAuth backstage.<br>Old vibes up front.", "/net/minecraft/themes/beta.png",
                     "Minecraft Launcher 1.6.89-j Revival", "Update Notes", "Launcher Log", "Profile Editor",
@@ -1923,7 +1942,7 @@ public final class MinecraftLauncher extends JFrame {
             return new EraTheme("alpha", "Alpha login board", "alpha", new Color(88, 130, 70), Color.WHITE,
                     new Color(24, 15, 7, 132), new Color(96, 78, 45),
                     new Color(222, 215, 196), new Color(198, 185, 150), Color.BLACK, new Color(255, 230, 80),
-                    "#f1ead2", "#c6e5ff", "#b6a985", "#5b4a2a",
+                    "#f1ead2", "#c6e5ff", "#24180a", "#7892a6", "#b6a985", "#5b4a2a",
                     "Verdana,Arial,sans-serif", "Dialog", "Dialog", "Mojang links:", "Tiny side quests!",
                     "Alpha mood:<br>rough edges.<br>big worlds.", "/net/minecraft/themes/alpha.png",
                     "Minecraft Launcher Alpha Revival", "Update Notes", "Development Console", "Profile Editor",
@@ -1934,7 +1953,7 @@ public final class MinecraftLauncher extends JFrame {
             return new EraTheme("infdev", "Infdev experiment board", "infdev", new Color(135, 96, 45), Color.WHITE,
                     new Color(8, 18, 14, 126), new Color(82, 95, 68),
                     new Color(205, 218, 188), new Color(172, 188, 150), Color.BLACK, new Color(255, 245, 120),
-                    "#e0f0d0", "#d8ff9a", "#9fb08d", "#445238",
+                    "#e0f0d0", "#d8ff9a", "#102010", "#6f8a45", "#9fb08d", "#445238",
                     "Monospaced,Verdana,sans-serif", "Dialog", "Monospaced", "Infdev links:", "Other experiments!",
                     "Build note:<br>terrain forever.<br>docs nearby.", "/net/minecraft/themes/infdev.png",
                     "Minecraft Infdev Launcher Revival", "Build Notes", "Development Console", "Profile",
@@ -1945,7 +1964,7 @@ public final class MinecraftLauncher extends JFrame {
             return new EraTheme("classic", "Classic compact launcher", "classic", new Color(105, 105, 105), Color.WHITE,
                     new Color(0, 0, 0, 112), new Color(125, 125, 125),
                     new Color(235, 235, 235), new Color(205, 205, 205), Color.BLACK, new Color(255, 255, 85),
-                    "#eeeeee", "#99ccff", "#aaaaaa", "#555555",
+                    "#eeeeee", "#99ccff", "#101820", "#5f7c99", "#aaaaaa", "#555555",
                     "Arial,Verdana,sans-serif", "Dialog", "Dialog", "Classic links:", "Blocks nearby!",
                     "Classic mode:<br>small panel.<br>big nostalgia.", "/net/minecraft/themes/classic.png",
                     "Minecraft Launcher Classic Revival", "News", "Console", "Login",
@@ -1956,7 +1975,7 @@ public final class MinecraftLauncher extends JFrame {
             return new EraTheme("preclassic", "Pre-Classic prototype", "rd", new Color(120, 70, 70), Color.WHITE,
                     new Color(18, 12, 12, 102), new Color(110, 84, 84),
                     new Color(228, 218, 218), new Color(196, 180, 180), Color.BLACK, new Color(255, 235, 110),
-                    "#f0e6e6", "#ffb8a8", "#bba0a0", "#5a3f3f",
+                    "#f0e6e6", "#ffb8a8", "#261112", "#a66c62", "#bba0a0", "#5a3f3f",
                     "Monospaced,Verdana,sans-serif", "Dialog", "Monospaced", "Prototype:", "No shop yet!",
                     "Pre-classic:<br>stone, grass,<br>and nerve.", "/net/minecraft/themes/preclassic.png",
                     "Minecraft Launcher 0.1 (Dev) Revival", "Block Notes", "Console", "Login",

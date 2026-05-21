@@ -32,7 +32,10 @@ final class VersionNotes {
     }
 
     private static String bodyStart(Style style) {
-        return "<html><body text='" + style.text + "' link='" + style.link + "' vlink='" + style.link
+        return "<html><head><style type='text/css'>"
+                + "a { color:" + style.link + "; background-color:" + style.linkBack
+                + "; text-decoration:underline; border-bottom:1px solid " + style.linkEdge + "; }"
+                + "</style></head><body text='" + style.text + "' link='" + style.link + "' vlink='" + style.link
                 + "' style='font-family:" + style.font + ";font-size:" + style.fontSize
                 + "px;margin:" + style.margin + "px;background-color:transparent'>";
     }
@@ -283,6 +286,8 @@ final class VersionNotes {
         final String subtitle;
         final String text;
         final String link;
+        final String linkBack;
+        final String linkEdge;
         final String muted;
         final String accent;
         final String rule;
@@ -294,14 +299,16 @@ final class VersionNotes {
         final int fontSize;
         final int margin;
 
-        Style(String id, String title, String subtitle, String text, String link, String muted, String accent,
-                String rule, String panel, String border, String font, String footer, String titleSize,
-                int fontSize, int margin) {
+        Style(String id, String title, String subtitle, String text, String link, String linkBack,
+                String linkEdge, String muted, String accent, String rule, String panel, String border,
+                String font, String footer, String titleSize, int fontSize, int margin) {
             this.id = id;
             this.title = title;
             this.subtitle = subtitle;
             this.text = text;
             this.link = link;
+            this.linkBack = linkBack;
+            this.linkEdge = linkEdge;
             this.muted = muted;
             this.accent = accent;
             this.rule = rule;
@@ -318,30 +325,30 @@ final class VersionNotes {
             String clean = id == null ? "beta" : id.toLowerCase();
             if ("alpha".equals(clean)) {
                 return new Style("alpha", "Minecraft Alpha News", "Chunky early-survival launcher board.",
-                        "#f1ead2", "#c6e5ff", "#b6a985", "#e3f0b8", "#5b4a2a", "#171008", "#6a5730",
+                        "#f1ead2", "#c6e5ff", "#24180a", "#7892a6", "#b6a985", "#e3f0b8", "#5b4a2a", "#171008", "#6a5730",
                         "Verdana,Arial,sans-serif", "Alpha-styled notes based on compact historical summaries.",
                         "+3", 11, 24);
             }
             if ("infdev".equals(clean)) {
                 return new Style("infdev", "Infdev Build Board", "Experimental infinite-world bulletin.",
-                        "#e0f0d0", "#d8ff9a", "#9fb08d", "#f4eaa0", "#445238", "#0b130d", "#536742",
+                        "#e0f0d0", "#d8ff9a", "#102010", "#6f8a45", "#9fb08d", "#f4eaa0", "#445238", "#0b130d", "#536742",
                         "Monospaced,Verdana,sans-serif", "Infdev-styled notes based on compact historical summaries.",
                         "+2", 11, 22);
             }
             if ("classic".equals(clean)) {
                 return new Style("classic", "Minecraft Classic", "Simple creative-era launcher panel.",
-                        "#eeeeee", "#99ccff", "#aaaaaa", "#dddddd", "#555555", "#111111", "#666666",
+                        "#eeeeee", "#99ccff", "#101820", "#5f7c99", "#aaaaaa", "#dddddd", "#555555", "#111111", "#666666",
                         "Arial,Verdana,sans-serif", "Classic-styled notes based on compact historical summaries.",
                         "+2", 11, 20);
             }
             if ("preclassic".equals(clean)) {
                 return new Style("preclassic", "Minecraft Prototype", "Pre-Classic block test panel.",
-                        "#f0e6e6", "#ffb8a8", "#bba0a0", "#ffd0a0", "#5a3f3f", "#120c0c", "#6c5050",
+                        "#f0e6e6", "#ffb8a8", "#261112", "#a66c62", "#bba0a0", "#ffd0a0", "#5a3f3f", "#120c0c", "#6c5050",
                         "Monospaced,Verdana,sans-serif", "Pre-Classic-styled notes based on compact historical summaries.",
                         "+2", 10, 18);
             }
             return new Style("beta", "Minecraft News", "News-heavy Beta-era launcher page.",
-                    "#e8e8e8", "#aaaaff", "#888888", "#b8b8ff", "#333333", "#0d0d0d", "#444444",
+                    "#e8e8e8", "#aaaaff", "#111226", "#5c5fae", "#888888", "#b8b8ff", "#333333", "#0d0d0d", "#444444",
                     "Verdana,Arial,sans-serif", "Version summaries are compact, launcher-friendly notes based on Minecraft Timeline data.",
                     "+3", 11, 24);
         }

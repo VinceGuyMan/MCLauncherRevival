@@ -1575,7 +1575,7 @@ public final class MinecraftLauncher extends JFrame {
                 + "; text-decoration:underline; border-bottom:1px solid " + linkEdgeHex + "; }"
                 + "</style></head><body text='" + textHex + "' link='" + linkHex + "' vlink='" + linkHex
                 + "' style='font-family:" + fontFamily + ";font-size:" + fontSize
-                + "px;margin:" + margin + "px;background-color:transparent">";
+                + "px;margin:" + margin + "px;background-color:transparent'>";
     }
     private static String errorNews(String message) {
         return htmlStart("#eeeeee", "#aaaaff", "Verdana,Arial,sans-serif", 11, 24)

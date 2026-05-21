@@ -9,6 +9,8 @@
 - Setup hub now preserves child script exit codes for clearer automation/package testing.
 - Improved the XSTS no-Xbox-profile message with the Xbox profile setup URL and retry steps.
 - XP mode now reports loaded local versions even when exactly one prepared version is found.
+- Microsoft browser login now requests an authorization code with `offline_access` so Microsoft
+  refresh tokens can be cached when the account flow returns them.
 
 ## v0.4.0-alpha
 

@@ -24,7 +24,7 @@ import java.util.Map;
 final class ModernAuth {
     private static final String CLIENT_ID = "00000000402b5328";
     private static final String REDIRECT_URI = "https://login.live.com/oauth20_desktop.srf";
-    private static final String SCOPE = "service::user.auth.xboxlive.com::MBI_SSL";
+    private static final String SCOPE = "XboxLive.signin offline_access";
     private static final String AUTHORIZE_URL = "https://login.live.com/oauth20_authorize.srf";
     private static final String TOKEN_URL = "https://login.live.com/oauth20_token.srf";
     private static final String XBL_AUTH_URL = "https://user.auth.xboxlive.com/user/authenticate";
@@ -63,7 +63,7 @@ final class ModernAuth {
         String loginUrl = AUTHORIZE_URL
                 + "?client_id=" + encode(CLIENT_ID)
                 + "&redirect_uri=" + encode(REDIRECT_URI)
-                + "&response_type=token"
+                + "&response_type=code"
                 + "&scope=" + encode(SCOPE)
                 + "&prompt=select_account"
                 + "&lw=1&fl=dob,easi2&xsup=1&nopa=2";
@@ -92,7 +92,7 @@ final class ModernAuth {
                         + "the launcher will also check your clipboard.\n\n"
                         + "If it changes to removed=true, try again and copy it as soon as the blank page appears.\n\n"
                         + "It should start with:\n"
-                        + REDIRECT_URI + "#access_token=");
+                        + REDIRECT_URI + "?code=");
 
         String clipboardAfter = clipboardText();
         if (!hasLoginResult(redirected) && clipboardAfter != null
@@ -106,6 +106,7 @@ final class ModernAuth {
         }
         String accessToken = queryValue(redirected.trim(), "access_token");
         if (accessToken != null && accessToken.length() > 0) {
+            status.status("Using one-time Microsoft access token from browser redirect.");
             return new MicrosoftToken(accessToken);
         }
         String code = queryValue(redirected.trim(), "code");

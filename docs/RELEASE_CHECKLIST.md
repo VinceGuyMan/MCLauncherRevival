@@ -11,7 +11,8 @@ For `v0.5.6`:
 - Confirm manual `Style:` overrides persist after restart.
 - Confirm the animated yellow splash text runs on Update Notes and pauses on Launcher Log/Profile
   Editor.
-- Confirm the `Low-end 384MB` memory preset launches with the expected `-Xmx384M` JVM setting.
+- Confirm the RAM presets launch with the expected JVM settings, especially `Air 64MB`,
+  `Potato 256MB`, and `Overkill 8192MB`.
 - Confirm `resources/net/minecraft/themes/` is included in the built jar and release ZIP.
 - Confirm Microsoft sign-in flow does not request passwords inside the app.
 - Confirm the release ZIP is used for user testing, not GitHub's source-code ZIP.

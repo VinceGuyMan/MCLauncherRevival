@@ -749,8 +749,8 @@ final class BetaLauncher {
         }
         try {
             int parsed = Integer.parseInt(digits);
-            if (parsed < 256) {
-                return "256";
+            if (parsed < 64) {
+                return "64";
             }
             return Integer.toString(parsed);
         } catch (NumberFormatException e) {

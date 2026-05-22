@@ -3,6 +3,9 @@
 ## Unreleased
 
 - Renamed the old-machine checkbox from `Low-End` to `Potato Mode!`.
+- Expanded the RAM preset dropdown: `Air 64MB`, `Rock 128MB`, `Potato 256MB`,
+  `Low-end 384MB`, `Classic 512MB`, `Comfort 1024MB`, `Modern 2048MB`,
+  `Gamer 4096MB`, `Overkill 8192MB`, and `Custom`.
 
 ## v0.5.8-alpha
 

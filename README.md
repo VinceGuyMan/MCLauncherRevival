@@ -45,6 +45,7 @@ The v0.5.0 historical style system is documented in
 - Includes convenience shortcuts for saves backups, texture pack import, logs, and local folders.
 - Includes a `Potato Mode!` toggle for older machines: 256MB memory, compact notes, no animated
   splash, and a smaller launcher window.
+- Includes RAM presets from `Air 64MB` through `Overkill 8192MB`, plus `Custom`.
 
 ## What works / what is still experimental
 

@@ -61,7 +61,7 @@ public final class MinecraftLauncher extends JFrame {
     private final JLabel eraBadge = new JLabel("Beta");
     private final JTextField offlineName = new JTextField("Player");
     private final JComboBox<String> versionBox = new JComboBox<String>(new String[] { BetaLauncher.DEFAULT_VERSION });
-    private final JComboBox<String> memoryBox = new JComboBox<String>(new String[] { "Potato 256MB", "Low-end 384MB", "Classic 512MB", "Comfort 1024MB", "Overkill 2048MB", "Custom..." });
+    private final JComboBox<String> memoryBox = new JComboBox<String>(new String[] { "Air 64MB", "Rock 128MB", "Potato 256MB", "Low-end 384MB", "Classic 512MB", "Comfort 1024MB", "Modern 2048MB", "Gamer 4096MB", "Overkill 8192MB", "Custom..." });
     private final JComboBox<String> styleBox = new JComboBox<String>(new String[] { "Auto", "Beta", "Alpha", "Infdev", "Classic", "Pre-Classic" });
     private final JButton loginButton = new FooterButton("Microsoft Login");
     private final JButton playOnlineButton = new PlayButton("Play");

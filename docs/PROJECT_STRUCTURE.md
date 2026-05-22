@@ -30,8 +30,8 @@ LICENSE                                  License for original modernization code
 ## Helper scripts
 
 ```text
-scripts/run-win7.cmd                     Windows 7-11 runtime helper
-scripts/build-win7.cmd                   Java build helper
+scripts/run-win.cmd                     Windows 7-11 runtime helper
+scripts/build-win.cmd                   Java build helper
 scripts/package-release.cmd              Normal release ZIP builder
 scripts/package-xp-release.cmd           Optional XP bundled-Java ZIP builder
 scripts/run-linux.sh                     Preliminary Linux runtime helper

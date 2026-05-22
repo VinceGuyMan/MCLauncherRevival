@@ -24,7 +24,7 @@ jobs:
 
       - name: Build launcher
         shell: cmd
-        run: echo. | scripts\build-win7.cmd
+        run: echo. | scripts\build-win.cmd
 
       - name: Upload launcher artifact
         uses: actions/upload-artifact@v4

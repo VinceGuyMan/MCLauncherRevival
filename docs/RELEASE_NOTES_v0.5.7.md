@@ -11,7 +11,7 @@ v0.5.7-alpha is a small release-prep polish update focused on the Windows comman
 - Added a cleaner retro CMD startup screen with the large MCLauncherRevival ASCII banner.
 - Added separate Windows 7+ and XP offline/classic boot cards.
 - Removed UTF-8 BOM batch-file issues that could make CMD print raw `@echo off` errors before startup.
-- Kept normal startup quiet and moved the visual startup flow into `scripts\run-win7.cmd`.
+- Kept normal startup quiet and moved the visual startup flow into `scripts\run-win.cmd`.
 - Added `MCLR_BANNER_SHOWN` so nested launcher/build calls do not duplicate the banner.
 - Simplified normal status output to short `[ OK ]`, `[WARN]`, `[INFO]`, `[ XP ]`, and `[FAIL]` messages.
 - Startup now ends with `Press Nothing. Happy Mining!` before the launcher window opens.

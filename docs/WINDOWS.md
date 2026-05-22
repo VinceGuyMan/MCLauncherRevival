@@ -14,7 +14,7 @@ Setup MCLR.cmd
 ```
 
 Then choose the Windows 7-11 normal launcher path. You can also run `Start MCLR.cmd`
-or `scripts\run-win7.cmd` directly.
+or `scripts\run-win.cmd` directly.
 
 If Java is missing, the script offers to download Eclipse Temurin 8 JDK into:
 
@@ -38,7 +38,7 @@ JDK.
 Double-click:
 
 ```bat
-scripts\build-win7.cmd
+scripts\build-win.cmd
 ```
 
 The build output is:
@@ -60,8 +60,8 @@ jar.exe
 Then run:
 
 ```bat
-scripts\build-win7.cmd
-scripts\run-win7.cmd
+scripts\build-win.cmd
+scripts\run-win.cmd
 ```
 
 ## Troubleshooting

@@ -110,7 +110,7 @@ For direct Windows 7-11 startup, run:
 Start MCLR.cmd
 ```
 
-That shortcut calls `scripts\run-win7.cmd`, which launches the packaged jar or builds it if needed.
+That shortcut calls `scripts\run-win.cmd`, which launches the packaged jar or builds it if needed.
 
 For Windows XP offline/classic mode, use:
 
@@ -156,7 +156,7 @@ See [docs/MACOS.md](docs/MACOS.md) before relying on macOS behavior.
 3. Run the build script on Windows:
 
    ```bat
-   scripts\build-win7.cmd
+   scripts\build-win.cmd
    ```
 
    Or on Linux:

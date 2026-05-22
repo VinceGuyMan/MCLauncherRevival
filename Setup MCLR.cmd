@@ -40,7 +40,7 @@ set /p "SETUP_CHOICE=Selection [1]: "
 if "%SETUP_CHOICE%"=="" set "SETUP_CHOICE=1"
 
 if /I "%SETUP_CHOICE%"=="1" goto AUTO
-if /I "%SETUP_CHOICE%"=="2" goto WIN7
+if /I "%SETUP_CHOICE%"=="2" goto WIN
 if /I "%SETUP_CHOICE%"=="3" goto XP
 if /I "%SETUP_CHOICE%"=="4" goto BUILD
 if /I "%SETUP_CHOICE%"=="5" goto NOTES
@@ -52,11 +52,11 @@ goto MENU
 
 :AUTO
 if defined IS_XP goto XP
-goto WIN7
+goto WIN
 
-:WIN7
+:WIN
 echo.
-echo Starting Windows 7-11 setup/launch path...
+echo Starting Windows setup/launch path...
 echo This path can use the Java 8 dependency helper if Java is missing.
 echo.
 call "%~dp0Start MCLR.cmd"
@@ -82,7 +82,7 @@ if defined IS_XP (
 )
 echo Starting build script...
 echo.
-call "%~dp0scripts\build-win7.cmd"
+call "%~dp0scripts\build-win.cmd"
 set "SETUP_EXIT=%ERRORLEVEL%"
 goto END
 
@@ -107,7 +107,7 @@ echo.
 echo For normal play, download the attached GitHub Releases ZIP named like:
 echo   MCLauncherRevival-v0.5.6-alpha.zip
 echo.
-echo Windows 7-11 can try to build the jar from source.
+echo Windows can try to build the jar from source.
 echo Windows XP Offline / Classic mode expects the jar to already be included.
 exit /b 0
 

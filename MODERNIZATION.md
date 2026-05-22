@@ -52,13 +52,13 @@ Prerequisites:
 Build:
 
 ```bat
-build-win7.cmd
+build-win.cmd
 ```
 
 Run:
 
 ```bat
-run-win7.cmd
+run-win.cmd
 ```
 
 If Java is missing, the scripts will offer to download the latest Eclipse Temurin 8 JDK from the
@@ -90,7 +90,7 @@ java -jar MCLauncherRevival.jar
 
 ## How to use
 
-1. Start `run-win7.cmd`.
+1. Start `run-win.cmd`.
 2. Click `Microsoft Login`.
 3. Sign in in the browser page that opens.
 4. On Windows, the launcher first opens a small browser helper and watches for the registered
@@ -146,6 +146,6 @@ Launch logs are written to:
 - `src/net/minecraft/AuthProfile.java`
 - `src/net/minecraft/Json.java`
 - `src/net/minecraft/StatusSink.java`
-- `build-win7.cmd`
-- `run-win7.cmd`
+- `build-win.cmd`
+- `run-win.cmd`
 

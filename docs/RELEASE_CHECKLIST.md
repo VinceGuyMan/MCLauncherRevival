@@ -54,8 +54,8 @@ Expected project files include:
 - `Setup MCLR.cmd`
 - `Start MCLR.cmd`
 - `Start MCLR XP.cmd`
-- `scripts/run-win7.cmd`
-- `scripts/build-win7.cmd`
+- `scripts/run-win.cmd`
+- `scripts/build-win.cmd`
 - `scripts/run-linux.sh`
 - `scripts/build-linux.sh`
 - `scripts/run-macos.sh`

@@ -20,7 +20,7 @@ if not exist "%RELEASE_ROOT%" mkdir "%RELEASE_ROOT%"
 if not exist "%STAGE_PARENT%" mkdir "%STAGE_PARENT%"
 
 echo Building launcher jar...
-call "%ROOT_DIR%\scripts\build-win7.cmd"
+call "%ROOT_DIR%\scripts\build-win.cmd"
 if errorlevel 1 (
   echo Build failed. Release package was not created.
   pause
@@ -55,10 +55,10 @@ copy /y "NOTICE.md" "%STAGE_DIR%" >nul
 copy /y "Setup MCLR.cmd" "%STAGE_DIR%" >nul
 copy /y "Start MCLR.cmd" "%STAGE_DIR%" >nul
 copy /y "Start MCLR XP.cmd" "%STAGE_DIR%" >nul
-copy /y "scripts\run-win7.cmd" "%STAGE_DIR%\scripts" >nul
-copy /y "scripts\build-win7.cmd" "%STAGE_DIR%\scripts" >nul
+copy /y "scripts\run-win.cmd" "%STAGE_DIR%\scripts" >nul
+copy /y "scripts\build-win.cmd" "%STAGE_DIR%\scripts" >nul
 copy /y "scripts\banner.txt" "%STAGE_DIR%\scripts" >nul
-copy /y "scripts\boot-card-win7.txt" "%STAGE_DIR%\scripts" >nul
+copy /y "scripts\boot-card-win.txt" "%STAGE_DIR%\scripts" >nul
 copy /y "scripts\boot-card-xp.txt" "%STAGE_DIR%\scripts" >nul
 copy /y "scripts\run-linux.sh" "%STAGE_DIR%\scripts" >nul
 copy /y "scripts\build-linux.sh" "%STAGE_DIR%\scripts" >nul
@@ -111,16 +111,16 @@ if errorlevel 1 (
   exit /b 1
 )
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "Add-Type -AssemblyName System.IO.Compression.FileSystem; $zip = [IO.Compression.ZipFile]::OpenRead('%ZIP_PATH%'); try { if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)MCLauncherRevival\.jar$' })) { exit 2 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)scripts/run-win7\.cmd$' })) { exit 3 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)scripts/banner\.txt$' })) { exit 5 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)resources/net/minecraft/themes/beta\.png$' })) { exit 4 } } finally { $zip.Dispose() }"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Add-Type -AssemblyName System.IO.Compression.FileSystem; $zip = [IO.Compression.ZipFile]::OpenRead('%ZIP_PATH%'); try { if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)MCLauncherRevival\.jar$' })) { exit 2 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)scripts/run-win\.cmd$' })) { exit 3 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)scripts/banner\.txt$' })) { exit 5 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)resources/net/minecraft/themes/beta\.png$' })) { exit 4 } } finally { $zip.Dispose() }"
 if errorlevel 1 (
   echo Release ZIP verification failed.
-  echo Expected MCLauncherRevival.jar, scripts\run-win7.cmd, scripts\banner.txt, and theme resources.
+  echo Expected MCLauncherRevival.jar, scripts\run-win.cmd, scripts\banner.txt, and theme resources.
   pause
   exit /b 1
 )
 
 echo.
-echo Release ZIP verified: MCLauncherRevival.jar, scripts\run-win7.cmd, scripts\banner.txt, and theme resources are included.
+echo Release ZIP verified: MCLauncherRevival.jar, scripts\run-win.cmd, scripts\banner.txt, and theme resources are included.
 rmdir /s /q "%STAGE_DIR%" >nul 2>nul
 if exist "%STAGE_DIR%" (
   echo [WARN] Could not remove temporary staging folder:

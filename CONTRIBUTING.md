@@ -21,7 +21,7 @@ focused, readable, and safe.
 On Windows:
 
 ```bat
-build-win7.cmd
+build-win.cmd
 ```
 
 The expected build output is:

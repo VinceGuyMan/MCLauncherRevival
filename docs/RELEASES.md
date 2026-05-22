@@ -64,8 +64,8 @@ MCLauncherRevival-v0.5.6-alpha/
   Start MCLR XP.cmd
   MCLauncherRevival.jar
   scripts/
-    run-win7.cmd
-    build-win7.cmd
+    run-win.cmd
+    build-win.cmd
     run-linux.sh
     build-linux.sh
     run-macos.sh
@@ -89,7 +89,7 @@ MCLauncherRevival-v0.5.6-alpha-xp-bundled-java/
   Start MCLR.cmd
   MCLauncherRevival.jar
   scripts/
-    run-win7.cmd
+    run-win.cmd
   resources/
     net/minecraft/themes/        recreated era layout textures
   tools/
@@ -107,7 +107,7 @@ MCLauncherRevival-v0.5.6-alpha-xp-bundled-java/
 The jar can be built locally:
 
 ```bat
-scripts\build-win7.cmd
+scripts\build-win.cmd
 ```
 
 Version-specific notes for this release are in
@@ -140,7 +140,7 @@ Version-specific notes for this release are in
 - v0.5.0 adds recreated historical launcher style layouts for Beta, Alpha, Infdev, Classic, and
   Pre-Classic modes. These are inspired by historical launcher references but use project-owned
   recreated assets instead of redistributed proprietary launcher files.
-- If the jar is missing on Windows 7 or newer, `scripts\run-win7.cmd` will attempt to build it.
+- If the jar is missing on Windows 7 or newer, `scripts\run-win.cmd` will attempt to build it.
 - If the jar is missing in XP offline mode, download the attached release ZIP instead of the
   source-code or tag ZIP.
 

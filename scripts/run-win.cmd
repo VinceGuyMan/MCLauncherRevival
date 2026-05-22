@@ -39,7 +39,7 @@ if exist MCLauncherRevival.jar (
     exit /b 1
   )
   call :Status "WARN" "Launcher jar was not found; building it now"
-  call "%ROOT_DIR%\scripts\build-win7.cmd" %*
+  call "%ROOT_DIR%\scripts\build-win.cmd" %*
   if errorlevel 1 (
     call :Status "FAIL" "Build failed."
     pause
@@ -147,8 +147,8 @@ if /I "%MCLAUNCHER_XP_MODE%"=="1" (
     echo Use downloaded versions + Play Offline
   )
 ) else (
-  if exist "%ROOT_DIR%\scripts\boot-card-win7.txt" (
-    type "%ROOT_DIR%\scripts\boot-card-win7.txt"
+  if exist "%ROOT_DIR%\scripts\boot-card-win.txt" (
+    type "%ROOT_DIR%\scripts\boot-card-win.txt"
   ) else (
     echo MCLauncherRevival Alpha
     echo Classic launcher shell. Modern auth. Old-school dirt.

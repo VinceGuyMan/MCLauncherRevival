@@ -11,7 +11,7 @@
 - Reworked the first-run welcome panel into an old launcher-style `Minecraft News` update post and removed the duplicate Indev notes sidebar link.
 - Added a cleaner retro CMD startup screen before the Swing launcher opens, including the large MCLauncherRevival ASCII banner and simple Windows/XP boot cards.
 - Removed UTF-8 BOM issues from Windows batch launchers so CMD no longer prints raw `@echo off` errors before startup.
-- Kept root starter scripts quiet and moved the visual startup flow into `scripts\run-win7.cmd`, guarded by `MCLR_BANNER_SHOWN` so nested calls do not duplicate the banner.
+- Kept root starter scripts quiet and moved the visual startup flow into `scripts\run-win.cmd`, guarded by `MCLR_BANNER_SHOWN` so nested calls do not duplicate the banner.
 - Simplified startup status output to short `[ OK ]`, `[WARN]`, `[INFO]`, `[ XP ]`, and `[FAIL]` messages ending with `Press Nothing. Happy Mining!`.
 - Added `--verbose` / `MCLR_VERBOSE=1` support for troubleshooting without making normal startup noisy.
 - Improved Windows Java detection for nested portable installs such as `tools\jdk8\jdk8u492-b09`, and made the missing-Java prompt default to downloading portable Java 8 when Enter is pressed.

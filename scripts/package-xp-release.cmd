@@ -60,9 +60,9 @@ copy /y "NOTICE.md" "%STAGE_DIR%" >nul
 copy /y "Setup MCLR.cmd" "%STAGE_DIR%" >nul
 copy /y "Start MCLR XP.cmd" "%STAGE_DIR%" >nul
 copy /y "Start MCLR.cmd" "%STAGE_DIR%" >nul
-copy /y "scripts\run-win7.cmd" "%STAGE_DIR%\scripts" >nul
+copy /y "scripts\run-win.cmd" "%STAGE_DIR%\scripts" >nul
 copy /y "scripts\banner.txt" "%STAGE_DIR%\scripts" >nul
-copy /y "scripts\boot-card-win7.txt" "%STAGE_DIR%\scripts" >nul
+copy /y "scripts\boot-card-win.txt" "%STAGE_DIR%\scripts" >nul
 copy /y "scripts\boot-card-xp.txt" "%STAGE_DIR%\scripts" >nul
 
 xcopy /e /i /y "docs" "%STAGE_DIR%\docs" >nul

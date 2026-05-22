@@ -36,13 +36,14 @@ The v0.5.0 historical style system is documented in
   animated splash text, and compact bottom controls.
 - Adds a `Style` selector with `Auto`, `Beta`, `Alpha`, `Infdev`, `Classic`, and `Pre-Classic`
   presentation modes.
-- Uses a modern browser/OAuth account flow where available.
+- Uses a modern browser/OAuth account flow where available, with browser + local callback login
+  first and fallback options only when needed.
 - Keeps offline singleplayer fallback behavior available.
 - Supports selecting and launching classic Minecraft Java versions from Beta 1.8.x downward where
   version metadata is available.
 - Stores launcher settings and local token/config data under the user's `.minecraft` folder.
 - Includes convenience shortcuts for saves backups, texture pack import, logs, and local folders.
-- Includes a Low-End mode toggle for older machines: 384MB memory, compact notes, no animated
+- Includes a Low-End mode toggle for older machines: 256MB memory, compact notes, no animated
   splash, and a smaller launcher window.
 
 ## What works / what is still experimental
@@ -52,7 +53,7 @@ The v0.5.0 historical style system is documented in
 | Classic launcher UI | Working | Preserves the old launcher feel with modernized internals. |
 | Historical era layouts | New in v0.5.0 / experimental | `Auto` maps selected versions to recreated Beta, Alpha, Infdev, Classic, or Pre-Classic launcher-inspired layouts. |
 | Offline mode | Working / needs broader testing | Intended for singleplayer and older systems. |
-| Microsoft login / OAuth flow | Experimental | Should use browser/OAuth flow. It should never ask for a Microsoft password inside the app. |
+| Microsoft login / OAuth flow | Experimental | Uses browser OAuth with local callback where possible, code login as fallback, and paste-back only as advanced fallback. It should never ask for a Microsoft password inside the app. |
 | Version selection | Working / needs broader testing | Classic versions are listed from Mojang metadata where available. |
 | Windows 7-11 support | Primary target | Java 8 is recommended, especially for old Minecraft/LWJGL behavior. |
 | Windows XP / older Windows behavior | Offline/classic only | Real XP hardware testing confirmed classic launches can work with prepared files, Java, and drivers. Performance depends on hardware. |
@@ -182,7 +183,11 @@ compatibility.
 ## Security / account safety
 
 - The launcher should never ask users to type their Microsoft password directly into the app.
-- Sign-in should happen through the browser/OAuth flow where implemented.
+- Sign-in should happen through Microsoft's browser-based OAuth flow where implemented.
+- The preferred login path opens the user's default browser, receives the OAuth authorization
+  response through a local `127.0.0.1` callback, validates state/PKCE, then continues Xbox/XSTS
+  and Minecraft services login.
+- Device-code login is a fallback. Manual paste-back is an advanced fallback only.
 - OAuth tokens/settings are stored locally under the user's `.minecraft\launcher_revive` or
   `.minecraft/launcher_revive` folder when login/config data is saved.
 - The `Forget Login` button is intended to remove saved login data.
@@ -191,6 +196,9 @@ compatibility.
 - This project is not approved, endorsed, sponsored, or reviewed by Mojang, Microsoft, or Minecraft.
 - Do not post access tokens, refresh tokens, authorization codes, or account details in public
   issues.
+
+Your password stays in your browser on Microsoft's website. MCLauncherRevival only receives the
+tokens Microsoft returns after you approve sign-in.
 
 See [SECURITY.md](SECURITY.md) and [Trust and Safety](docs/TRUST_AND_SAFETY.md) for more details.
 

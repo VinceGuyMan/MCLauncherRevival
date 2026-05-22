@@ -7,8 +7,9 @@ MCLauncherRevival keeps the old launcher look, but avoids the unsafe legacy user
 ```mermaid
 flowchart LR
     User["Player clicks Microsoft Login"]
-    Browser["Browser OAuth sign-in"]
-    MS["Microsoft OAuth authorization code"]
+    Browser["Default browser OAuth sign-in"]
+    Local["Local 127.0.0.1 callback"]
+    MS["Microsoft OAuth authorization code + PKCE"]
     MSToken["Microsoft OAuth access/refresh token"]
     XBL["Xbox Live authentication"]
     XSTS["XSTS authorization"]
@@ -17,7 +18,8 @@ flowchart LR
     Launch["Launch selected classic client"]
 
     User --> Browser
-    Browser --> MS
+    Browser --> Local
+    Local --> MS
     MS --> MSToken
     MSToken --> XBL
     XBL --> XSTS
@@ -42,12 +44,26 @@ flowchart LR
 
 ## Current browser/OAuth behavior
 
-The preferred alpha flow is browser-based Microsoft authorization-code login with `offline_access`.
+The preferred alpha flow is browser-based Microsoft authorization-code login with PKCE and
+`offline_access`.
+
+The normal path:
+
+1. Opens the user's default browser.
+2. Starts a temporary local callback listener on `127.0.0.1`.
+3. Sends a high-entropy `state` value and PKCE challenge.
+4. Receives the authorization response locally.
+5. Validates `state`.
+6. Exchanges the authorization code with the PKCE verifier.
+7. Continues Xbox Live, XSTS, Minecraft services login, and profile lookup.
+
 When Microsoft returns a refresh token, MCLauncherRevival stores it locally so future sessions can
 refresh without asking the user to sign in every time.
 
-The launcher still accepts a legacy pasted `access_token` redirect as a compatibility fallback, but
-the normal flow should be an authorization code.
+If the local callback cannot complete, the launcher offers device-code login. Manual paste-back is
+kept only as an advanced fallback.
+
+The launcher does not use embedded webviews and should never ask for a raw Microsoft password.
 
 ## Token cache
 
@@ -60,6 +76,9 @@ OAuth tokens are cached locally so the user does not need to sign in every time:
 The launcher does not ask for or store raw Microsoft passwords.
 
 Use `Forget Login` to clear cached OAuth tokens.
+
+Tokens are sensitive. They are not raw passwords, but anyone with access to them may be able to act
+as the signed-in session until the tokens expire or are revoked.
 
 ## Xbox profile requirement
 

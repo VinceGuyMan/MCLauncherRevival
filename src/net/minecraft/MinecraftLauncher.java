@@ -1974,7 +1974,8 @@ public final class MinecraftLauncher extends JFrame {
                                 + "<font size='+3'><b>Microsoft Login</b></font><br><br>"
                                 + "<p>" + escape(message) + "</p>"
                                 + "<p>The launcher opens Microsoft OAuth in your default browser. "
-                                + "After login, paste the final redirect URL back into the launcher when prompted.</p>"
+                                + "Your password stays on Microsoft's website. "
+                                + "MCLauncherRevival only receives the tokens Microsoft returns after sign-in.</p>"
                                 + "</body></html>");
                     }
                 }
@@ -2000,6 +2001,28 @@ public final class MinecraftLauncher extends JFrame {
                 });
             } catch (Exception e) {
                 return null;
+            }
+            return result[0];
+        }
+
+        public int choose(final String title, final String message, final String[] options) {
+            final int[] result = new int[] { -1 };
+            try {
+                SwingUtilities.invokeAndWait(new Runnable() {
+                    public void run() {
+                        result[0] = JOptionPane.showOptionDialog(
+                                MinecraftLauncher.this,
+                                message,
+                                title,
+                                JOptionPane.DEFAULT_OPTION,
+                                JOptionPane.PLAIN_MESSAGE,
+                                null,
+                                options,
+                                options == null || options.length == 0 ? null : options[0]);
+                    }
+                });
+            } catch (Exception e) {
+                return -1;
             }
             return result[0];
         }

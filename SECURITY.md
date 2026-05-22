@@ -9,11 +9,16 @@ The launcher should never ask users to type a Microsoft password directly into t
 
 Expected online login path where available:
 
-1. Browser-based Microsoft OAuth.
-2. Xbox Live authentication.
-3. XSTS authorization.
-4. Minecraft services login.
-5. Minecraft profile lookup.
+1. Browser-based Microsoft OAuth with a local callback and PKCE where possible.
+2. Device-code login only as a fallback.
+3. Manual paste-back only as an advanced fallback.
+4. Xbox Live authentication.
+5. XSTS authorization.
+6. Minecraft services login.
+7. Minecraft profile lookup.
+
+Your password should stay in your browser on Microsoft's website. MCLauncherRevival only receives
+the tokens Microsoft returns after sign-in approval.
 
 Cached OAuth tokens are stored locally at:
 
@@ -22,6 +27,9 @@ Cached OAuth tokens are stored locally at:
 ```
 
 Use `Forget Login` in the launcher to remove cached login data.
+
+OAuth tokens are sensitive. They are not your Microsoft password, but anyone with access to them may
+be able to act as your signed-in session until the tokens expire or are revoked.
 
 ## Reporting security issues
 

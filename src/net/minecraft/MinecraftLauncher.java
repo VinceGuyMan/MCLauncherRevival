@@ -918,32 +918,66 @@ public final class MinecraftLauncher extends JFrame {
     }
 
     private void showFirstRunGuide(boolean markSeen) {
-        switchTab("notes");
-        setNewsHtml(htmlStart("#e8e8e8", "#aaaaff", "Verdana,Arial,sans-serif", 11, 24)
-                + "<font size='+3'><b>Welcome to MCLauncherRevival</b></font><br><br>"
-                + "<p>This is a 2011-flavored launcher shell with modern Minecraft auth behind the curtain. "
-                + "It is unofficial, alpha-quality, and built for nostalgia, preservation, and learning.</p>"
-                + "<p><b>Quick start:</b><br>"
-                + "+ Choose a classic version and press <b>Play Offline</b> for singleplayer.<br>"
-                + "+ Use <b>Microsoft Login</b> only when you want online profile authentication. "
-                + "Sign-in happens in your browser; the launcher should never ask for a raw Microsoft password.<br>"
-                + "+ Use <b>Style: Auto</b> to let the launcher mimic the selected build era, or pick a style manually.<br>"
-                + "+ Toggle <b>Low-End</b> on old machines for 384MB memory, compact notes, and no splash animation.<br>"
-                + "+ Toggle <b>Patch Notes Mode!</b> for compact historical notes.<br>"
-                + "+ Use <b>Launcher Log</b> when something fails and <b>Profile Editor</b> for local folders, Java status, and maintenance shortcuts.</p>"
-                + "<p><b>Windows XP note:</b><br>"
-                + "XP mode is offline/classic focused. Fresh HTTPS downloads and modern login are best-effort or unavailable. "
-                + "Prepare version files on Windows 7 or newer, then copy them to XP when needed.</p>"
-                + "<p><font color='#ffff55'><b>Alpha build. Review source before use. Use the GitHub Releases ZIP, not the source-code ZIP, for normal play.</b></font></p>"
-                + "</body></html>");
+        setNewsHtml(firstRunWelcomeHtml());
         if (markSeen) {
             settings.putBoolean("firstRunSeen", true);
             try {
                 settings.save();
-            } catch (IOException e) {
-                appendLog("Could not save first-run state: " + e.getMessage());
+            } catch (IOException ex) {
+                appendLog("Could not save first-run guide state: " + ex.getMessage());
             }
         }
+    }
+
+    private static String firstRunWelcomeHtml() {
+        return "<html>"
+                + "<body text='#e8e8e8' link='#aaaaff' vlink='#aaaaff'"
+                + " style='font-family:Verdana,Arial,sans-serif;font-size:11px;margin:24px;background-color:transparent'>"
+                + "<table width='100%' cellpadding='0' cellspacing='0'>"
+                + "<tr>"
+                + "<td><font size='+3'><b>Minecraft News</b></font></td>"
+                + "<td align='right'><font color='#ffff55'><b>Alpha build!</b></font></td>"
+                + "</tr>"
+                + "</table>"
+                + "<br><br>"
+                + "<p><font color='#ffff55'><b>MCLauncherRevival Alpha - The First Run Update</b></font></p>"
+                + "<p>The old launcher window has been revived for nostalgia, preservation, and learning. "
+                + "It still looks like it came from another era, but the account flow has been modernized where possible.</p>"
+                + "<p><font color='#999999'>This is an unofficial alpha project. It is not the official Minecraft Launcher "
+                + "and is not affiliated with Mojang, Microsoft, Xbox, or Minecraft.</font></p>"
+                + "<p><b>+ Added:</b><br>"
+                + "+ Classic version selection for old Beta, Alpha, Infdev, Classic, and Pre-Classic builds where available.<br>"
+                + "+ Play Offline for singleplayer without signing in.<br>"
+                + "+ Microsoft Login for online profile authentication when supported.<br>"
+                + "+ Style: Auto, which lets the launcher match the selected build era.<br>"
+                + "+ Low-End mode for older machines.<br>"
+                + "+ Patch Notes Mode for compact historical notes.<br>"
+                + "+ Launcher Log for troubleshooting.<br>"
+                + "+ Profile Editor for local folders, Java status, launch settings, and maintenance shortcuts.</p>"
+                + "<p><b>+ How to play:</b><br>"
+                + "+ Pick a classic version.<br>"
+                + "+ Type a player name.<br>"
+                + "+ Press <b>Play Offline</b> for singleplayer.<br>"
+                + "+ Use <b>Microsoft Login</b> only when you want online profile authentication.<br>"
+                + "+ Sign-in happens in your browser. The launcher should never ask for your raw Microsoft password.</p>"
+                + "<p><b>+ Changed:</b><br>"
+                + "+ Low-End mode uses lighter settings for older computers.<br>"
+                + "+ Patch Notes Mode keeps version history short and readable.<br>"
+                + "+ Style: Auto changes the look without changing how the game launches.</p>"
+                + "<p><b>+ Windows XP note:</b><br>"
+                + "+ XP mode is focused on offline/classic play.<br>"
+                + "+ Modern login and fresh HTTPS downloads are best-effort or unavailable on XP.<br>"
+                + "+ Prepare version files on Windows 7 or newer, then copy them to XP when needed.</p>"
+                + "<p><b>+ Important:</b><br>"
+                + "+ Use the GitHub Releases ZIP for normal play.<br>"
+                + "+ Do not use GitHub's source-code ZIP unless you are building from source.<br>"
+                + "+ Alpha build. Review the source before using account features.</p>"
+                + "<br>"
+                + "<p>The update is available in this folder, enjoy!</p>"
+                + "<p><font color='#ffff55'><b>Happy mining from MCLauncherRevival.</b></font></p>"
+                + "<hr color='#333333'>"
+                + "<p><font color='#888888'>MCLauncherRevival Alpha. Unofficial project. Use at your own risk.</font></p>"
+                + "</body></html>";
     }
 
     private void showXpVersionGuide() {
@@ -1586,7 +1620,6 @@ public final class MinecraftLauncher extends JFrame {
                 + "<font size='+1'><b>Devlog:</b></font><br><br>"
                 + "<font color='" + theme.textHex + "'>world gen<br>terrain tests<br>client jars<br>local files</font><br><br>"
                 + sidebarLink("https://minecraft.wiki/w/Java_Edition_Infdev", "Infdev notes")
-                + sidebarLink("https://minecraft.wiki/w/Java_Edition_Indev", "Indev notes")
                 + "<br><hr color='" + theme.ruleHex + "'>"
                 + "<font color='" + theme.mutedHex + "'>Experimental:<br>rough launcher.<br>rougher worlds.</font>"
                 + "</body></html>";

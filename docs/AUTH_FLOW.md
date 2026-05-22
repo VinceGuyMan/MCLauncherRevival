@@ -8,7 +8,7 @@ MCLauncherRevival keeps the old launcher look, but avoids the unsafe legacy user
 flowchart LR
     User["Player clicks Microsoft Login"]
     Browser["Default browser OAuth sign-in"]
-    Local["Local 127.0.0.1 callback"]
+    Redirect["Registered desktop redirect"]
     MS["Microsoft OAuth authorization code + PKCE"]
     MSToken["Microsoft OAuth access/refresh token"]
     XBL["Xbox Live authentication"]
@@ -18,8 +18,8 @@ flowchart LR
     Launch["Launch selected classic client"]
 
     User --> Browser
-    Browser --> Local
-    Local --> MS
+    Browser --> Redirect
+    Redirect --> MS
     MS --> MSToken
     MSToken --> XBL
     XBL --> XSTS
@@ -44,15 +44,16 @@ flowchart LR
 
 ## Current browser/OAuth behavior
 
-The preferred alpha flow is browser-based Microsoft authorization-code login with PKCE and
-`offline_access`.
+The default alpha flow is browser-based Microsoft authorization-code login with PKCE and
+`offline_access`, using Microsoft's registered desktop redirect for the default public client ID.
 
 The normal path:
 
 1. Opens the user's default browser.
-2. Starts a temporary local callback listener on `127.0.0.1`.
-3. Sends a high-entropy `state` value and PKCE challenge.
-4. Receives the authorization response locally.
+2. Sends a high-entropy `state` value and PKCE challenge.
+3. Receives the authorization response through Microsoft's registered desktop redirect.
+4. Asks the user to paste the final Microsoft redirect URL only when needed to finish the desktop
+   OAuth handoff.
 5. Validates `state`.
 6. Exchanges the authorization code with the PKCE verifier.
 7. Continues Xbox Live, XSTS, Minecraft services login, and profile lookup.
@@ -60,8 +61,21 @@ The normal path:
 When Microsoft returns a refresh token, MCLauncherRevival stores it locally so future sessions can
 refresh without asking the user to sign in every time.
 
-If the local callback cannot complete, the launcher offers device-code login. Manual paste-back is
-kept only as an advanced fallback.
+Local `127.0.0.1` callback login can be enabled only for a custom Microsoft client ID with a
+matching loopback redirect registration:
+
+```text
+-Dmclauncher.msClientId=<registered-client-id> -Dmclauncher.oauth.loopback=true
+```
+
+or:
+
+```text
+MCLR_MICROSOFT_CLIENT_ID=<registered-client-id>
+```
+
+If the default desktop redirect cannot complete, the launcher offers device-code login and an
+advanced paste-back fallback.
 
 The launcher does not use embedded webviews and should never ask for a raw Microsoft password.
 

@@ -36,8 +36,8 @@ The v0.5.0 historical style system is documented in
   animated splash text, and compact bottom controls.
 - Adds a `Style` selector with `Auto`, `Beta`, `Alpha`, `Infdev`, `Classic`, and `Pre-Classic`
   presentation modes.
-- Uses a modern browser/OAuth account flow where available, with browser + local callback login
-  first and fallback options only when needed.
+- Uses a modern browser/OAuth account flow where available, with a browser desktop redirect by
+  default and fallback options when needed.
 - Keeps offline singleplayer fallback behavior available.
 - Supports selecting and launching classic Minecraft Java versions from Beta 1.8.x downward where
   version metadata is available.
@@ -54,7 +54,7 @@ The v0.5.0 historical style system is documented in
 | Classic launcher UI | Working | Preserves the old launcher feel with modernized internals. |
 | Historical era layouts | New in v0.5.0 / experimental | `Auto` maps selected versions to recreated Beta, Alpha, Infdev, Classic, or Pre-Classic launcher-inspired layouts. |
 | Offline mode | Working / needs broader testing | Intended for singleplayer and older systems. |
-| Microsoft login / OAuth flow | Experimental | Uses browser OAuth with local callback where possible, code login as fallback, and paste-back only as advanced fallback. It should never ask for a Microsoft password inside the app. |
+| Microsoft login / OAuth flow | Experimental | Uses browser OAuth and Microsoft's registered desktop redirect by default. Local callback can be enabled only with a custom registered client ID. It should never ask for a Microsoft password inside the app. |
 | Version selection | Working / needs broader testing | Classic versions are listed from Mojang metadata where available. |
 | Windows 7-11 support | Primary target | Java 8 is recommended, especially for old Minecraft/LWJGL behavior. |
 | Windows XP / older Windows behavior | Offline/classic only | Real XP hardware testing confirmed classic launches can work with prepared files, Java, and drivers. Performance depends on hardware. |
@@ -185,9 +185,10 @@ compatibility.
 
 - The launcher should never ask users to type their Microsoft password directly into the app.
 - Sign-in should happen through Microsoft's browser-based OAuth flow where implemented.
-- The preferred login path opens the user's default browser, receives the OAuth authorization
-  response through a local `127.0.0.1` callback, validates state/PKCE, then continues Xbox/XSTS
-  and Minecraft services login.
+- The default login path opens the user's default browser, uses Microsoft's registered desktop
+  redirect, validates state/PKCE, then continues Xbox/XSTS and Minecraft services login.
+- Local `127.0.0.1` callback login is only available when using a custom Microsoft client ID with a
+  matching loopback redirect registration.
 - Device-code login is a fallback. Manual paste-back is an advanced fallback only.
 - OAuth tokens/settings are stored locally under the user's `.minecraft\launcher_revive` or
   `.minecraft/launcher_revive` folder when login/config data is saved.

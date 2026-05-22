@@ -26,7 +26,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 final class ModernAuth {
-    private static final String CLIENT_ID = "00000000402b5328";
+    private static final String DEFAULT_CLIENT_ID = "00000000402b5328";
     private static final String DESKTOP_REDIRECT_URI = "https://login.live.com/oauth20_desktop.srf";
     private static final String LOOPBACK_HOST = "127.0.0.1";
     private static final String LOOPBACK_PATH = "/mclauncherrevival/oauth";
@@ -79,6 +79,9 @@ final class ModernAuth {
         }
         if (choice == 1) {
             return deviceCodeOrAdvanced(null);
+        }
+        if (!loopbackEnabled()) {
+            return desktopRedirectLogin(false);
         }
         try {
             return loopbackBrowserLogin();
@@ -196,10 +199,18 @@ final class ModernAuth {
     }
 
     private MicrosoftToken manualPasteBackLogin() throws IOException {
+        return desktopRedirectLogin(true);
+    }
+
+    private MicrosoftToken desktopRedirectLogin(boolean advanced) throws IOException {
         final String state = randomBase64Url(24);
         final String verifier = randomBase64Url(32);
         final String loginUrl = authorizationUrl(DESKTOP_REDIRECT_URI, state, verifier);
-        int choice = status.choose("Advanced Paste-Back Login", "Use this only if normal browser sign-in and code login failed.\n\n"
+        String title = advanced ? "Advanced Paste-Back Login" : "Microsoft Browser Login";
+        String intro = advanced
+                ? "Use this only if normal browser sign-in and code login failed.\n\n"
+                : "This compatibility login uses Microsoft's registered desktop redirect.\n\n";
+        int choice = status.choose(title, intro
                 + "After Microsoft sign-in, copy only the final redirect URL from the browser address bar and paste it into the launcher.\n\n"
                 + "Do not paste this URL into Discord, GitHub issues, screenshots, or support chats. It may contain a short-lived sign-in code.\n\n"
                 + "Your Microsoft password still belongs only on Microsoft-owned websites.", new String[] {
@@ -209,7 +220,7 @@ final class ModernAuth {
             throw new IOException("Microsoft login was cancelled.");
         }
         openBrowser(loginUrl);
-        String redirected = status.ask("Advanced Paste-Back Login",
+        String redirected = status.ask(title,
                 "Paste the final Microsoft redirect URL here.\n\n"
                         + "It should start with:\n"
                         + DESKTOP_REDIRECT_URI + "?code=\n\n"
@@ -226,7 +237,7 @@ final class ModernAuth {
 
     private MicrosoftToken deviceCodeLogin() throws IOException {
         LinkedHashMap<String, String> form = new LinkedHashMap<String, String>();
-        form.put("client_id", CLIENT_ID);
+        form.put("client_id", clientId());
         form.put("scope", SCOPE);
         HttpResult setup = postForm(DEVICE_CODE_URL, form);
         ensureSuccess(setup, "Microsoft device-code request failed");
@@ -268,7 +279,7 @@ final class ModernAuth {
         while (System.currentTimeMillis() < deadline) {
             LinkedHashMap<String, String> form = new LinkedHashMap<String, String>();
             form.put("grant_type", "urn:ietf:params:oauth:grant-type:device_code");
-            form.put("client_id", CLIENT_ID);
+            form.put("client_id", clientId());
             form.put("device_code", deviceCode);
             HttpResult result = postForm(AAD_TOKEN_URL, form);
             if (result.code >= 200 && result.code < 300) {
@@ -301,7 +312,7 @@ final class ModernAuth {
 
     private MicrosoftToken exchangeAuthorizationCode(String code, String redirectUri, String verifier, String tokenUrl) throws IOException {
         LinkedHashMap<String, String> form = new LinkedHashMap<String, String>();
-        form.put("client_id", CLIENT_ID);
+        form.put("client_id", clientId());
         form.put("code", code);
         form.put("grant_type", "authorization_code");
         form.put("redirect_uri", redirectUri);
@@ -318,7 +329,7 @@ final class ModernAuth {
             tokenUrl = TOKEN_URL;
         }
         LinkedHashMap<String, String> form = new LinkedHashMap<String, String>();
-        form.put("client_id", CLIENT_ID);
+        form.put("client_id", clientId());
         form.put("grant_type", "refresh_token");
         form.put("refresh_token", refreshToken);
         form.put("scope", SCOPE);
@@ -491,7 +502,7 @@ final class ModernAuth {
 
     private static String authorizationUrl(String redirectUri, String state, String verifier) throws IOException {
         LinkedHashMap<String, String> query = new LinkedHashMap<String, String>();
-        query.put("client_id", CLIENT_ID);
+        query.put("client_id", clientId());
         query.put("redirect_uri", redirectUri);
         query.put("response_type", "code");
         query.put("scope", SCOPE);
@@ -507,6 +518,12 @@ final class ModernAuth {
     }
 
     private static String trustMessage() {
+        String callbackText = loopbackEnabled()
+                ? "After sign-in, the browser may briefly return to a local address like:\n"
+                + "http://127.0.0.1/...\n\n"
+                + "That local address is this launcher listening on your own computer so it can finish sign-in.\n\n"
+                : "After sign-in, Microsoft may show a desktop redirect page. The launcher will ask you to paste that final Microsoft redirect URL so it can finish sign-in.\n\n"
+                + "That URL can contain a short-lived sign-in code. Do not share it in screenshots, Discord, GitHub issues, or support chats.\n\n";
         return "MCLauncherRevival will open your default browser for Microsoft sign-in.\n\n"
                 + "Check the address bar before entering anything:\n"
                 + "- login.microsoftonline.com\n"
@@ -514,10 +531,35 @@ final class ModernAuth {
                 + "- microsoft.com\n\n"
                 + "Your Microsoft password is entered only in the browser on Microsoft's website.\n"
                 + "This launcher never asks for your raw Microsoft password.\n\n"
-                + "After sign-in, the browser may briefly return to a local address like:\n"
-                + "http://127.0.0.1/...\n\n"
-                + "That local address is this launcher listening on your own computer so it can finish sign-in.\n\n"
+                + callbackText
                 + "MCLauncherRevival is unofficial and is not affiliated with Mojang, Microsoft, Xbox, or Minecraft.";
+    }
+
+    private static boolean loopbackEnabled() {
+        return booleanProperty("mclauncher.oauth.loopback")
+                && !DEFAULT_CLIENT_ID.equals(clientId());
+    }
+
+    private static String clientId() {
+        String property = System.getProperty("mclauncher.msClientId");
+        if (property != null && property.trim().length() > 0) {
+            return property.trim();
+        }
+        String env = System.getenv("MCLR_MICROSOFT_CLIENT_ID");
+        if (env != null && env.trim().length() > 0) {
+            return env.trim();
+        }
+        return DEFAULT_CLIENT_ID;
+    }
+
+    private static boolean booleanProperty(String key) {
+        String value = System.getProperty(key);
+        if (value == null) {
+            return false;
+        }
+        return "true".equalsIgnoreCase(value)
+                || "1".equals(value)
+                || "yes".equalsIgnoreCase(value);
     }
 
     private static void sendBrowserPage(HttpExchange exchange, String title, String message) throws IOException {

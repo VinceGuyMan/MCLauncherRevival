@@ -6,6 +6,9 @@
 - Expanded the RAM preset dropdown: `Air 64MB`, `Rock 128MB`, `Potato 256MB`,
   `Low-end 384MB`, `Classic 512MB`, `Comfort 1024MB`, `Modern 2048MB`,
   `Gamer 4096MB`, `Overkill 8192MB`, and `Custom`.
+- Fixed Microsoft Login opening an invalid localhost redirect with the default public client ID.
+  The default path now uses Microsoft's registered desktop redirect again; loopback callback is
+  opt-in only for custom registered client IDs.
 
 ## v0.5.8-alpha
 

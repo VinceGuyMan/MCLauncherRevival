@@ -9,13 +9,15 @@ The launcher should never ask users to type a Microsoft password directly into t
 
 Expected online login path where available:
 
-1. Browser-based Microsoft OAuth with a local callback and PKCE where possible.
-2. Device-code login only as a fallback.
-3. Manual paste-back only as an advanced fallback.
-4. Xbox Live authentication.
-5. XSTS authorization.
-6. Minecraft services login.
-7. Minecraft profile lookup.
+1. Browser-based Microsoft OAuth with PKCE.
+2. Microsoft's registered desktop redirect by default.
+3. Local callback only with a custom registered client ID.
+4. Device-code login only as a fallback.
+5. Manual paste-back only as an advanced fallback.
+6. Xbox Live authentication.
+7. XSTS authorization.
+8. Minecraft services login.
+9. Minecraft profile lookup.
 
 Your password should stay in your browser on Microsoft's website. MCLauncherRevival only receives
 the tokens Microsoft returns after sign-in approval.

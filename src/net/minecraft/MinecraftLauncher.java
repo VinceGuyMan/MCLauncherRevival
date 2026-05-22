@@ -1975,7 +1975,7 @@ public final class MinecraftLauncher extends JFrame {
                     "Verdana,Arial,sans-serif", "Dialog", "Dialog", "Minecraft links:", "Other bits!",
                     "Alpha board:<br>login first.<br>news nearby.", "/net/minecraft/themes/alpha.png",
                     "Minecraft Launcher Alpha", "News", "Console", "Profile",
-                    162, 10, 14, 15, 3);
+                    188, 10, 14, 15, 3);
         }
 
         static EraTheme infdev() {
@@ -2006,9 +2006,9 @@ public final class MinecraftLauncher extends JFrame {
                     new Color(228, 218, 218), new Color(196, 180, 180), Color.BLACK, new Color(255, 235, 110),
                     "#f0e6e6", "#ffb8a8", "#261112", "#a66c62", "#bba0a0", "#5a3f3f",
                     "Monospaced,Verdana,sans-serif", "Dialog", "Monospaced", "Proto:", "None:",
-                    "Pre-classic:<br>blocks only.<br>almost no UI.", "/net/minecraft/themes/preclassic.png",
+                    "Pre-classic:<br>blocks only.<br>tiny UI.", "/net/minecraft/themes/preclassic.png",
                     "Minecraft Launcher 0.1", "Blocks", "Console", "Login",
-                    104, 10, 6, 13, 4);
+                    132, 9, 8, 13, 4);
         }
     }
 

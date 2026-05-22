@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Fixed Alpha and Pre-Classic right-side layout spacing so the sidebar text stays inside the
+  launcher frame and the Scrolls/Cobalt logo block has enough room to sit centered.
+
 ## v0.5.6-alpha
 
 - Added exact static note entries for more launcher-visible maintenance/reupload builds so fewer

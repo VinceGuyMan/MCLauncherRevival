@@ -1528,50 +1528,105 @@ public final class MinecraftLauncher extends JFrame {
     }
 
     private static String sidebarHtml(EraTheme theme) {
-        String body = htmlStart(theme);
-        if ("classic".equals(theme.id) || "preclassic".equals(theme.id)) {
-            return body
-                    + "<font size='+1'><b>" + theme.sidebarTitle + "</b></font><br><br>"
-                    + "<a href='https://www.minecraft.net/'>Minecraft.net</a><br>"
-                    + "<a href='https://minecraft.wiki/'>Minecraft Wiki</a><br><br>"
-                    + "<hr color='" + theme.ruleHex + "'>"
-                    + "<font color='" + theme.mutedHex + "'>" + theme.sidebarNote + "</font>"
-                    + "</body></html>";
+        if ("alpha".equals(theme.id)) {
+            return alphaSidebarHtml(theme);
         }
         if ("infdev".equals(theme.id)) {
-            return body
-                    + "<font size='+1'><b>Infdev links:</b></font><br><br>"
-                    + "<a href='https://www.minecraft.net/'>Minecraft.net</a><br>"
-                    + "<a href='https://minecraft.wiki/w/Minecraft_Infdev'>Infdev history</a><br>"
-                    + "<a href='https://bugs.mojang.com/'>Bug tracker</a><br><br>"
-                    + "<hr color='" + theme.ruleHex + "'>"
-                    + "<font color='" + theme.mutedHex + "'>Infinite worlds.<br>Finite patience.</font>"
-                    + "</body></html>";
+            return infdevSidebarHtml(theme);
         }
-        return body
-                + "<font size='+2'><b>" + theme.sidebarTitle + "</b></font><br><br>"
-                + "<a href='https://www.minecraft.net/'>Minecraft.net</a><br>"
-                + "<a href='https://www.minecraft.net/realms'>Minecraft Realms</a><br>"
-                + "<a href='https://www.facebook.com/minecraft'>Minecraft on Facebook</a><br>"
-                + "<a href='https://minecraftshop.com/'>Merchandise</a><br><br>"
-                + "<a href='https://bugs.mojang.com/'>Bug tracker</a><br>"
-                + "<a href='https://help.minecraft.net/'>Account Support</a><br><br>"
-                + "<a href='https://twitter.com/Minecraft'>Mojang on Twitter</a><br>"
-                + "<a href='https://twitter.com/MojangSupport'>Support on Twitter</a><br><br>"
+        if ("classic".equals(theme.id)) {
+            return classicSidebarHtml(theme);
+        }
+        if ("preclassic".equals(theme.id)) {
+            return preclassicSidebarHtml(theme);
+        }
+        return betaSidebarHtml(theme);
+    }
 
-                + "<font size='+1'><b>" + theme.gamesTitle + "</b></font><br><br>"
-                + "<center><a href='https://www.minecraft.net/en-us/article/scrolls-now-free'><img src='" + scrollsLogoUrl() + "' width='150' height='44' border='0'></a><br>"
-                + "<a href='https://playcobalt.com/'><img src='" + cobaltLogoUrl() + "' width='130' height='38' border='0'></a></center><br>"
-
-                + "<font size='+1'><b>Community links:</b></font><br>"
-                + "<a href='https://www.minecraftforum.net/'>Minecraft Forums</a><br>"
-                + "<a href='https://minecraft.wiki/'>Minecraft Wiki</a><br><br>"
-
-                + "<hr color='" + theme.ruleHex + "'>"
-                + "<font color='" + theme.mutedHex + "'>" + theme.sidebarNote + "</font><br><br>"
+    private static String betaSidebarHtml(EraTheme theme) {
+        return sidebarStart(theme)
+                + "<font size='+2'><b>Official<br>links:</b></font><br><br>"
+                + sidebarLink("https://www.minecraft.net/", "Minecraft.net")
+                + sidebarLink("https://www.minecraft.net/en-us/realms", "Minecraft Realms")
+                + sidebarLink("https://www.facebook.com/minecraft/", "Minecraft on Facebook")
+                + sidebarLink("https://minecraftshop.com/", "Merchandise")
+                + "<br>"
+                + sidebarLink("https://bugs.mojang.com/", "Bug tracker")
+                + sidebarLink("https://help.minecraft.net/", "Account Support")
+                + "<br>"
+                + sidebarLink("https://twitter.com/Mojang", "Mojang on Twitter")
+                + sidebarLink("https://twitter.com/MojangSupport", "Support on Twitter")
+                + "<br>"
+                + "<font size='+1'><b>Try our other<br>games!</b></font><br><br>"
+                + centeredGameLogos(150, 44, 130, 38)
+                + "<br><font size='+1'><b>Community<br>links:</b></font><br>"
+                + sidebarLink("https://www.minecraftforum.net/", "Minecraft Forums")
+                + sidebarLink("https://minecraft.wiki/", "Minecraft Wiki")
+                + "<br><hr color='" + theme.ruleHex + "'>"
+                + "<font color='" + theme.mutedHex + "'>Modern updates.<br>Old vibes.<br>Still fun to live in.</font>"
                 + "</body></html>";
     }
 
+    private static String alphaSidebarHtml(EraTheme theme) {
+        return sidebarStart(theme)
+                + "<font size='+2'><b>Minecraft<br>links:</b></font><br><br>"
+                + sidebarLink("https://www.minecraft.net/", "Minecraft.net")
+                + sidebarLink("https://help.minecraft.net/", "Account help")
+                + sidebarLink("https://minecraft.wiki/", "Minecraft Wiki")
+                + "<br><br>"
+                + "<font size='+1'><b>Other bits!</b></font><br><br>"
+                + centeredGameLogos(126, 37, 112, 33)
+                + "<br><hr color='" + theme.ruleHex + "'>"
+                + "<font color='" + theme.mutedHex + "'>Alpha board:<br>login first.<br>news nearby.</font>"
+                + "</body></html>";
+    }
+
+    private static String infdevSidebarHtml(EraTheme theme) {
+        return sidebarStart(theme)
+                + "<font size='+1'><b>Devlog:</b></font><br><br>"
+                + "<font color='" + theme.textHex + "'>world gen<br>terrain tests<br>client jars<br>local files</font><br><br>"
+                + sidebarLink("https://minecraft.wiki/w/Java_Edition_Infdev", "Infdev notes")
+                + sidebarLink("https://minecraft.wiki/w/Java_Edition_Indev", "Indev notes")
+                + "<br><hr color='" + theme.ruleHex + "'>"
+                + "<font color='" + theme.mutedHex + "'>Experimental:<br>rough launcher.<br>rougher worlds.</font>"
+                + "</body></html>";
+    }
+
+    private static String classicSidebarHtml(EraTheme theme) {
+        return sidebarStart(theme)
+                + "<font size='+1'><b>Links:</b></font><br><br>"
+                + sidebarLink("https://www.minecraft.net/", "Minecraft.net")
+                + sidebarLink("https://minecraft.wiki/w/Java_Edition_Classic", "Classic Wiki")
+                + "<br><hr color='" + theme.ruleHex + "'>"
+                + "<font color='" + theme.mutedHex + "'>Classic:<br>simple frame.<br>tiny chrome.</font>"
+                + "</body></html>";
+    }
+
+    private static String preclassicSidebarHtml(EraTheme theme) {
+        return sidebarStart(theme)
+                + "<font size='+1'><b>Proto:</b></font><br><br>"
+                + "<font color='" + theme.textHex + "'>blocks<br>mouse<br>keyboard<br>test jar</font><br><br>"
+                + sidebarLink("https://minecraft.wiki/w/Java_Edition_pre-Classic", "Pre-Classic")
+                + "<br><hr color='" + theme.ruleHex + "'>"
+                + "<font color='" + theme.mutedHex + "'>No shop.<br>No feed.<br>Just blocks.</font>"
+                + "</body></html>";
+    }
+
+    private static String sidebarStart(EraTheme theme) {
+        return htmlStart(theme.textHex, theme.linkHex, theme.fontFamily, theme.sidebarFontSize, theme.sidebarMargin);
+    }
+
+    private static String sidebarLink(String href, String text) {
+        return "<a href='" + href + "'>" + text + "</a><br>";
+    }
+
+    private static String centeredGameLogos(int scrollsWidth, int scrollsHeight, int cobaltWidth, int cobaltHeight) {
+        return "<center><a href='https://www.minecraft.net/en-us/article/scrolls-now-free'><img src='"
+                + scrollsLogoUrl() + "' width='" + scrollsWidth + "' height='" + scrollsHeight
+                + "' border='0'></a><br>"
+                + "<a href='https://playcobalt.com/'><img src='" + cobaltLogoUrl() + "' width='"
+                + cobaltWidth + "' height='" + cobaltHeight + "' border='0'></a></center>";
+    }
     private String logPage() {
         java.io.File launchLog = new java.io.File(new java.io.File(new java.io.File(TokenCache.minecraftDir(), "launcher_revive"), "logs"), "last-launch.log");
         return htmlStart("#e8e8e8", "#aaaaff", "Verdana,Arial,sans-serif", 11, 24)
@@ -2132,7 +2187,7 @@ public final class MinecraftLauncher extends JFrame {
                     "Verdana,Arial,sans-serif", "Dialog", "Dialog", "Minecraft links:", "Other bits!",
                     "Alpha board:<br>login first.<br>news nearby.", "/net/minecraft/themes/alpha.png",
                     "Minecraft Launcher Alpha", "News", "Console", "Profile",
-                    188, 10, 14, 15, 3);
+                    164, 10, 16, 15, 3);
         }
 
         static EraTheme infdev() {
@@ -2143,7 +2198,7 @@ public final class MinecraftLauncher extends JFrame {
                     "Monospaced,Verdana,sans-serif", "Dialog", "Monospaced", "Build links:", "Experiments:",
                     "Prototype:<br>rough panels.<br>raw notes.", "/net/minecraft/themes/infdev.png",
                     "Minecraft Indev Launcher", "Indev Notes", "Console", "Profile",
-                    138, 10, 10, 14, 3);
+                    158, 10, 12, 14, 3);
         }
 
         static EraTheme classic() {
@@ -2154,7 +2209,7 @@ public final class MinecraftLauncher extends JFrame {
                     "Arial,Verdana,sans-serif", "Dialog", "Dialog", "Links:", "Blocks:",
                     "Classic:<br>simple frame.<br>tiny chrome.", "/net/minecraft/themes/classic.png",
                     "Minecraft Launcher Classic", "News", "Console", "Login",
-                    118, 10, 8, 14, 4);
+                    126, 10, 10, 14, 4);
         }
 
         static EraTheme preclassic() {
@@ -2165,7 +2220,7 @@ public final class MinecraftLauncher extends JFrame {
                     "Monospaced,Verdana,sans-serif", "Dialog", "Monospaced", "Proto:", "None:",
                     "Pre-classic:<br>blocks only.<br>tiny UI.", "/net/minecraft/themes/preclassic.png",
                     "Minecraft Launcher 0.1", "Blocks", "Console", "Login",
-                    132, 9, 8, 13, 4);
+                    118, 9, 9, 13, 4);
         }
     }
 
@@ -2219,5 +2274,6 @@ public final class MinecraftLauncher extends JFrame {
         }
     }
 }
+
 
 

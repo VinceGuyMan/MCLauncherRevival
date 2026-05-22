@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Tightened historical era layouts so the right sidebar is modular by selected style instead of
+  sharing one modern link stack. Beta keeps the full news/links/games rail, Alpha is a shorter
+  login-board style rail, Indev/Infdev reads more like a devlog panel, Classic has only a tiny
+  early-web link box, and Pre-Classic is reduced to a prototype test panel.
 - Added more precise Microsoft/Xbox auth error text for common XSTS failures, including missing
   Xbox profile setup, child/family-managed accounts, region/account issues, and missing Java
   Edition profile ownership.

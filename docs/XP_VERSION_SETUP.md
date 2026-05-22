@@ -79,7 +79,7 @@ version needs.
 7. Start MCLauncherRevival on XP:
 
    ```bat
-   Start MCLauncherRevival XP Offline.cmd
+   Start MCLR XP.cmd
    ```
 
 8. Select or type the prepared version and click `Play Offline`.

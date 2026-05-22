@@ -10,7 +10,7 @@ XP mode is intended for offline/classic play only.
 ## Start here on XP
 
 1. Use the attached GitHub Releases ZIP, not GitHub's source-code ZIP.
-2. Run `Setup MCLauncherRevival.cmd`.
+2. Run `Setup MCLR.cmd`.
 3. Choose `Windows XP Offline / Classic mode`.
 4. Make sure Java 7 or an XP-compatible Java 8 runtime is installed or extracted at
    `tools\java7`.
@@ -25,13 +25,13 @@ see [XP Version Setup](XP_VERSION_SETUP.md).
 Double-click:
 
 ```bat
-Start MCLauncherRevival XP Offline.cmd
+Start MCLR XP.cmd
 ```
 
 You can also run:
 
 ```bat
-Setup MCLauncherRevival.cmd
+Setup MCLR.cmd
 ```
 
 and choose `Windows XP Offline / Classic mode` from the menu.
@@ -144,7 +144,7 @@ Bundled Java is third-party software under its own license/readme files. Old Jav
 secure for general browsing or production use; use them only for this offline/classic launcher
 scenario.
 
-The normal `Start MCLauncherRevival.cmd` path can still be used on Windows 7 through Windows 11.
+The normal `Start MCLR.cmd` path can still be used on Windows 7 through Windows 11.
 
 ## Troubleshooting
 
@@ -189,7 +189,7 @@ Recommended workflow:
 6. Start:
 
    ```bat
-   Start MCLauncherRevival XP Offline.cmd
+   Start MCLR XP.cmd
    ```
 
 7. Select or type the prepared version and use `Play Offline`.

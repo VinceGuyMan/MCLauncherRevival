@@ -59,7 +59,7 @@ echo.
 echo Starting Windows 7-11 setup/launch path...
 echo This path can use the Java 8 dependency helper if Java is missing.
 echo.
-call "%~dp0Start MCLauncherRevival.cmd"
+call "%~dp0Start MCLR.cmd"
 set "SETUP_EXIT=%ERRORLEVEL%"
 goto END
 
@@ -69,7 +69,7 @@ echo Starting Windows XP Offline / Classic path...
 echo XP mode does not try modern Java or Minecraft HTTPS downloads by default.
 echo Use prepared .minecraft version files for best results.
 echo.
-call "%~dp0Start MCLauncherRevival XP Offline.cmd"
+call "%~dp0Start MCLR XP.cmd"
 set "SETUP_EXIT=%ERRORLEVEL%"
 goto END
 

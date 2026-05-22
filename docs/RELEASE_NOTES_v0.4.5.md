@@ -28,7 +28,7 @@ not include `MCLauncherRevival.jar`.
 
 ## Highlights
 
-- Added `Setup MCLauncherRevival.cmd` as the recommended Windows first-run hub.
+- Added `Setup MCLR.cmd` as the recommended Windows first-run hub.
 - Hardened `Redownload Version` so it can only delete the selected folder directly under
   `.minecraft\versions`.
 - Windows scripts now preserve Java launcher failure exit codes for better setup/package checks.
@@ -46,7 +46,7 @@ XP remains offline/classic only. Real XP hardware testing has shown old Minecraf
 right Java runtime, version files, and graphics drivers are present, but performance is strongly
 hardware-dependent.
 
-Use `Setup MCLauncherRevival.cmd`, choose XP Offline / Classic mode, and prepare Minecraft files on
+Use `Setup MCLR.cmd`, choose XP Offline / Classic mode, and prepare Minecraft files on
 Windows 7 or newer if XP cannot download them.
 
 ## Windows 7 and newer
@@ -79,19 +79,19 @@ Offline Play remains available when online authentication fails.
 After extracting the release ZIP on Windows, run:
 
 ```bat
-Setup MCLauncherRevival.cmd
+Setup MCLR.cmd
 ```
 
 For direct Windows 7-11 startup:
 
 ```bat
-Start MCLauncherRevival.cmd
+Start MCLR.cmd
 ```
 
 For Windows XP offline/classic mode:
 
 ```bat
-Start MCLauncherRevival XP Offline.cmd
+Start MCLR XP.cmd
 ```
 
 For preliminary Linux testing:

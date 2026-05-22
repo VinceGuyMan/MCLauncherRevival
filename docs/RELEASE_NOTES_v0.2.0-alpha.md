@@ -72,13 +72,13 @@ Offline Play remains available when online authentication fails.
 After extracting the release ZIP, run:
 
 ```bat
-Start MCLauncherRevival.cmd
+Start MCLR.cmd
 ```
 
 For Windows XP offline/classic mode:
 
 ```bat
-Start MCLauncherRevival XP Offline.cmd
+Start MCLR XP.cmd
 ```
 
 ## Disclaimer

@@ -17,9 +17,9 @@ tools/                       Dependency helper scripts and optional local Java p
 ## Important root files
 
 ```text
-Setup MCLauncherRevival.cmd              Recommended setup/launcher hub
-Start MCLauncherRevival.cmd              Friendly Windows entrypoint
-Start MCLauncherRevival XP Offline.cmd   XP offline/classic entrypoint
+Setup MCLR.cmd              Recommended setup/launcher hub
+Start MCLR.cmd              Friendly Windows entrypoint
+Start MCLR XP.cmd   XP offline/classic entrypoint
 README.md                                Main GitHub project page
 MODERNIZATION.md                         Technical modernization notes
 SECURITY.md                              Auth/token safety notes

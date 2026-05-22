@@ -49,7 +49,7 @@ Oracle archive downloads may require an Oracle account and license acceptance.
 4. Start MCLauncherRevival with:
 
    ```bat
-   Start MCLauncherRevival XP Offline.cmd
+   Start MCLR XP.cmd
    ```
 
 The XP launcher checks `JAVA_HOME` and `java.exe` on `PATH`, so a normal Java install should be
@@ -80,7 +80,7 @@ fallback for users who already have an XP-compatible Java 8 runtime, but new XP 
 Then run:
 
 ```bat
-Start MCLauncherRevival XP Offline.cmd
+Start MCLR XP.cmd
 ```
 
 If the launcher uses this folder, it should print:

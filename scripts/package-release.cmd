@@ -52,9 +52,9 @@ copy /y "README.md" "%STAGE_DIR%" >nul
 copy /y "CHANGELOG.md" "%STAGE_DIR%" >nul
 copy /y "LICENSE" "%STAGE_DIR%" >nul
 copy /y "NOTICE.md" "%STAGE_DIR%" >nul
-copy /y "Setup MCLauncherRevival.cmd" "%STAGE_DIR%" >nul
-copy /y "Start MCLauncherRevival.cmd" "%STAGE_DIR%" >nul
-copy /y "Start MCLauncherRevival XP Offline.cmd" "%STAGE_DIR%" >nul
+copy /y "Setup MCLR.cmd" "%STAGE_DIR%" >nul
+copy /y "Start MCLR.cmd" "%STAGE_DIR%" >nul
+copy /y "Start MCLR XP.cmd" "%STAGE_DIR%" >nul
 copy /y "scripts\run-win7.cmd" "%STAGE_DIR%\scripts" >nul
 copy /y "scripts\build-win7.cmd" "%STAGE_DIR%\scripts" >nul
 copy /y "scripts\banner.txt" "%STAGE_DIR%\scripts" >nul
@@ -81,13 +81,13 @@ copy /y "tools\download-temurin8-jdk.ps1" "%STAGE_DIR%\tools" >nul
   echo Do not confuse this package with GitHub source-code or tag ZIP archives.
   echo.
   echo Recommended first run:
-  echo   Setup MCLauncherRevival.cmd
+  echo   Setup MCLR.cmd
   echo.
   echo Start on Windows 7-11:
-  echo   Start MCLauncherRevival.cmd
+  echo   Start MCLR.cmd
   echo.
   echo Start on Windows XP offline/classic mode:
-  echo   Start MCLauncherRevival XP Offline.cmd
+  echo   Start MCLR XP.cmd
   echo.
   echo Internal helper scripts live under scripts\.
   echo.

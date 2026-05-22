@@ -6,9 +6,9 @@ This alpha keeps the launcher behavior from v0.4.5 and focuses on repository/rel
 
 - Moved build, run, and packaging helpers into `scripts/` so the GitHub root is easier to scan.
 - Kept the double-click Windows entrypoints in the repo root for normal users:
-  - `Setup MCLauncherRevival.cmd`
-  - `Start MCLauncherRevival.cmd`
-  - `Start MCLauncherRevival XP Offline.cmd`
+  - `Setup MCLR.cmd`
+  - `Start MCLR.cmd`
+  - `Start MCLR XP.cmd`
 - Updated root launchers so they call the moved helper scripts safely.
 - Updated release packaging so runnable ZIPs include helper scripts under `scripts/`.
 - Updated documentation and GitHub Actions paths for the new script location.

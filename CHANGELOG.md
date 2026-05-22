@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Renamed the user-facing Windows launcher shortcuts to shorter MCLR filenames: `Setup MCLR.cmd`, `Start MCLR.cmd`, and `Start MCLR XP.cmd`.
 ## v0.5.7-alpha
 
 - Added a cleaner retro CMD startup screen before the Swing launcher opens, including the large MCLauncherRevival ASCII banner and simple Windows/XP boot cards.
@@ -98,7 +99,7 @@
 
 ## v0.4.5-alpha
 
-- Added `Setup MCLauncherRevival.cmd`, a single Windows setup hub that auto-detects or asks for the
+- Added `Setup MCLR.cmd`, a single Windows setup hub that auto-detects or asks for the
   right path, then routes users to Windows 7-11 normal launch, XP Offline / Classic mode, source
   builds, or setup notes.
 - Included the setup hub in standard and XP bundled-Java release package staging.

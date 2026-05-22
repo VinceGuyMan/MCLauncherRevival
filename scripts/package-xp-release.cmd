@@ -57,9 +57,9 @@ copy /y "MCLauncherRevival.jar" "%STAGE_DIR%" >nul
 copy /y "README.md" "%STAGE_DIR%" >nul
 copy /y "LICENSE" "%STAGE_DIR%" >nul
 copy /y "NOTICE.md" "%STAGE_DIR%" >nul
-copy /y "Setup MCLauncherRevival.cmd" "%STAGE_DIR%" >nul
-copy /y "Start MCLauncherRevival XP Offline.cmd" "%STAGE_DIR%" >nul
-copy /y "Start MCLauncherRevival.cmd" "%STAGE_DIR%" >nul
+copy /y "Setup MCLR.cmd" "%STAGE_DIR%" >nul
+copy /y "Start MCLR XP.cmd" "%STAGE_DIR%" >nul
+copy /y "Start MCLR.cmd" "%STAGE_DIR%" >nul
 copy /y "scripts\run-win7.cmd" "%STAGE_DIR%\scripts" >nul
 copy /y "scripts\banner.txt" "%STAGE_DIR%\scripts" >nul
 copy /y "scripts\boot-card-win7.txt" "%STAGE_DIR%\scripts" >nul
@@ -80,10 +80,10 @@ if defined HAS_JAVA_INSTALLERS xcopy /e /i /y "tools\java-installers" "%STAGE_DI
   echo If tools\java-installers is present, the XP launcher can ask before running a bundled installer.
   echo.
   echo Recommended first run:
-  echo   Setup MCLauncherRevival.cmd
+  echo   Setup MCLR.cmd
   echo.
   echo Start XP offline/classic mode:
-  echo   Start MCLauncherRevival XP Offline.cmd
+  echo   Start MCLR XP.cmd
   echo.
   echo Internal helper scripts live under scripts\.
   echo.

@@ -51,9 +51,9 @@ Expected project files include:
 - `resources/`
 - `docs/`
 - `.github/workflows/build.yml`
-- `Setup MCLauncherRevival.cmd`
-- `Start MCLauncherRevival.cmd`
-- `Start MCLauncherRevival XP Offline.cmd`
+- `Setup MCLR.cmd`
+- `Start MCLR.cmd`
+- `Start MCLR XP.cmd`
 - `scripts/run-win7.cmd`
 - `scripts/build-win7.cmd`
 - `scripts/run-linux.sh`

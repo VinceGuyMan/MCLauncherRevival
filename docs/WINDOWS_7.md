@@ -10,10 +10,10 @@ supported.
 Double-click:
 
 ```bat
-Setup MCLauncherRevival.cmd
+Setup MCLR.cmd
 ```
 
-Then choose the Windows 7-11 normal launcher path. You can also run `Start MCLauncherRevival.cmd`
+Then choose the Windows 7-11 normal launcher path. You can also run `Start MCLR.cmd`
 or `scripts\run-win7.cmd` directly.
 
 If Java is missing, the script offers to download Eclipse Temurin 8 JDK into:

@@ -108,13 +108,13 @@ Windows remains the primary supported target.
 After extracting the release ZIP on Windows, run:
 
 ```bat
-Start MCLauncherRevival.cmd
+Start MCLR.cmd
 ```
 
 For Windows XP offline/classic mode:
 
 ```bat
-Start MCLauncherRevival XP Offline.cmd
+Start MCLR XP.cmd
 ```
 
 For preliminary Linux testing:

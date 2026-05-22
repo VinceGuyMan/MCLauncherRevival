@@ -53,7 +53,7 @@ The preferred XP workflow remains:
 
 1. Prepare/download the desired version on Windows 7 or newer.
 2. Copy `.minecraft\versions`, `.minecraft\libraries`, and `.minecraft\assets` to the XP machine.
-3. Run `Start MCLauncherRevival XP Offline.cmd`.
+3. Run `Start MCLR XP.cmd`.
 
 Use only Minecraft files you own or otherwise have the right to use.
 
@@ -69,13 +69,13 @@ Offline Play remains available when online authentication fails.
 After extracting the release ZIP on Windows, run:
 
 ```bat
-Start MCLauncherRevival.cmd
+Start MCLR.cmd
 ```
 
 For Windows XP offline/classic mode:
 
 ```bat
-Start MCLauncherRevival XP Offline.cmd
+Start MCLR XP.cmd
 ```
 
 For preliminary Linux testing:

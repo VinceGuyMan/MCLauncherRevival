@@ -69,7 +69,7 @@ The preferred method remains:
 
 1. Prepare/download the desired version on Windows 7 or newer.
 2. Copy `.minecraft\versions`, `.minecraft\libraries`, and `.minecraft\assets` to the XP machine.
-3. Use `Start MCLauncherRevival XP Offline.cmd`.
+3. Use `Start MCLR XP.cmd`.
 
 MCVersions.net is documented only as an optional convenience for locating old client jars served
 from Mojang. It does not replace the required JSON metadata, libraries, natives, and assets.
@@ -111,13 +111,13 @@ Offline Play remains available when online authentication fails.
 After extracting the release ZIP on Windows, run:
 
 ```bat
-Start MCLauncherRevival.cmd
+Start MCLR.cmd
 ```
 
 For Windows XP offline/classic mode:
 
 ```bat
-Start MCLauncherRevival XP Offline.cmd
+Start MCLR XP.cmd
 ```
 
 For preliminary Linux testing:

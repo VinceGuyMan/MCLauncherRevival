@@ -1,3 +1,10 @@
+## [Unreleased]
+### Retro CMD startup polish
+
+- Removed UTF-8 BOM issues from Windows batch launchers so CMD no longer prints `???@echo off` before startup.
+- Added a quiet retro boot screen with an ASCII launcher banner, OS-specific boot cards, and short status lines before the Swing window opens.
+- Added `--verbose` / `MCLR_VERBOSE=1` support for troubleshooting without making normal startup noisy.
+
 # Changelog
 
 ## Unreleased

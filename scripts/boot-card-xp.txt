@@ -1,0 +1,5 @@
+      +------+                                            +------+
+      |####..|   MCLauncherRevival Alpha                  |..####|
+      |..####|   Windows XP offline/classic mode          |####..|
+      |####..|   Use downloaded versions + Play Offline   |..####|
+      +------+                                            +------+

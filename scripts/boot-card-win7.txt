@@ -1,0 +1,5 @@
+      +------+                                            +------+
+      |####..|   MCLauncherRevival Alpha                  |..####|
+      |..####|   Classic launcher shell. Modern auth.     |####..|
+      |####..|   Old-school dirt.                         |..####|
+      +------+                                            +------+

@@ -1,8 +1,7 @@
-﻿@echo off
+@echo off
 setlocal
 cd /d "%~dp0"
-title MCLauncherRevival
-call "%~dp0scripts\run-win7.cmd"
+call "%~dp0scripts\run-win7.cmd" %*
 set "LAUNCH_EXIT=%ERRORLEVEL%"
 if not "%LAUNCH_EXIT%"=="0" (
   echo.

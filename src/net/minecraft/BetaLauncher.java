@@ -221,10 +221,52 @@ final class BetaLauncher {
         return Json.object(Json.parse(readString(jsonFile)));
     }
 
+    private static File localVersionJar(File versionDir, String version) {
+        File exact = new File(versionDir, version + ".jar");
+        if (exact.exists()) {
+            return exact;
+        }
+        return singleFileWithExtension(versionDir, ".jar");
+    }
+
+    private static File localVersionJson(File versionDir, String version) {
+        File exact = new File(versionDir, version + ".json");
+        if (exact.exists()) {
+            return exact;
+        }
+        return singleFileWithExtension(versionDir, ".json");
+    }
+
+    private static File singleFileWithExtension(File dir, String extension) {
+        if (dir == null || !dir.isDirectory()) {
+            return null;
+        }
+        File[] files = dir.listFiles();
+        if (files == null) {
+            return null;
+        }
+        File found = null;
+        String lowerExtension = extension.toLowerCase(Locale.ENGLISH);
+        for (int i = 0; i < files.length; i++) {
+            File file = files[i];
+            if (file == null || !file.isFile()) {
+                continue;
+            }
+            String name = file.getName().toLowerCase(Locale.ENGLISH);
+            if (!name.endsWith(lowerExtension)) {
+                continue;
+            }
+            if (found != null) {
+                return null;
+            }
+            found = file;
+        }
+        return found;
+    }
     private Map<String, Object> loadLocalVersionJsonForXp(File versionDir, File librariesDir) throws IOException {
-        File jarFile = new File(versionDir, version + ".jar");
-        File jsonFile = new File(versionDir, version + ".json");
-        if (!jarFile.exists() || !jsonFile.exists()) {
+        File jarFile = localVersionJar(versionDir, version);
+        File jsonFile = localVersionJson(versionDir, version);
+        if (jarFile == null || !jarFile.exists() || jsonFile == null || !jsonFile.exists()) {
             File versionsDir = versionDir.getParentFile();
             File looseJar = versionsDir == null ? null : new File(versionsDir, version + ".jar");
             if (looseJar != null && looseJar.exists()) {
@@ -278,7 +320,8 @@ final class BetaLauncher {
     }
 
     private File downloadClientJar(Map<String, Object> versionJson, File versionDir) throws IOException {
-        File jar = new File(versionDir, version + ".jar");
+        File localJar = localVersionJar(versionDir, version);
+        File jar = localJar == null ? new File(versionDir, version + ".jar") : localJar;
         Map<String, Object> downloads = Json.object(versionJson.get("downloads"));
         Map<String, Object> client = Json.object(downloads == null ? null : downloads.get("client"));
         String url = Json.string(client, "url");

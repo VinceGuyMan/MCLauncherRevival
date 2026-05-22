@@ -20,11 +20,14 @@ When that happens, the safest fix is to prepare the files on a newer PC and copy
 
 ## Why only `b1.7.3` may appear
 
-If XP cannot load Mojang's modern version manifest, MCLauncherRevival falls back to `b1.7.3` so the
-launcher still opens.
+If XP cannot load Mojang's modern version manifest, MCLauncherRevival scans the local
+`.minecraft\versions` folder and then falls back to `b1.7.3` so the launcher still opens.
 
 You can type a version manually in the version box, but it will only launch if the matching files
 already exist locally.
+
+If a copied version does not appear in the dropdown, the folder usually does not contain both a jar
+and matching JSON metadata file.
 
 ## Loose jars are not enough
 
@@ -45,6 +48,16 @@ MCLauncherRevival expects the Mojang launcher-style layout:
 
 The `.json` file tells the launcher which main class, arguments, libraries, natives, and assets the
 version needs.
+
+The launcher can also detect a copied version folder when it contains exactly one `.jar` and exactly
+one `.json`, even if the filenames are not perfect:
+
+```text
+.minecraft\versions\b1.7.3\client.jar
+.minecraft\versions\b1.7.3\metadata.json
+```
+
+Loose jars directly inside `.minecraft\versions` are still not enough.
 
 ## Preferred method: prepare on Windows 7 or newer
 

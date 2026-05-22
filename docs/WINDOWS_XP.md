@@ -107,6 +107,7 @@ Recommended XP in-game settings:
 - Particles: Minimal
 - Lower resolution if the laptop struggles.
 - Limit background programs.
+- Enable `Low-End mode` in the launcher for the extra-conservative `Potato 256MB` preset.
 - Use already-downloaded versions where possible.
 - Try Beta 1.7.3 or nearby versions if one build performs poorly.
 
@@ -202,6 +203,18 @@ Expected layout:
 .minecraft\libraries\
 .minecraft\assets\
 ```
+
+MCLauncherRevival also accepts copied version folders that contain exactly one `.jar` and exactly
+one `.json`, even if the filenames do not match the folder name perfectly. Keep both files inside
+the version folder:
+
+```text
+.minecraft\versions\b1.7.3\client.jar
+.minecraft\versions\b1.7.3\metadata.json
+```
+
+If a copied version still does not appear in the version dropdown, check that it is not only a loose
+jar and that the matching JSON metadata file is present in the same version folder.
 
 If you only have:
 

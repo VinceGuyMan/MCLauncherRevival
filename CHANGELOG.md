@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Made XP/old-machine Low-End mode more aggressive with a `Potato 256MB` preset and improved local version-folder scanning for copied XP builds.
 ## v0.5.7-alpha
 
 - Renamed the user-facing Windows launcher shortcuts to shorter MCLR filenames: `Setup MCLR.cmd`, `Start MCLR.cmd`, and `Start MCLR XP.cmd`.

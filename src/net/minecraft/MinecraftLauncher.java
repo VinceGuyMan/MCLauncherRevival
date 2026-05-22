@@ -61,7 +61,7 @@ public final class MinecraftLauncher extends JFrame {
     private final JLabel eraBadge = new JLabel("Beta");
     private final JTextField offlineName = new JTextField("Player");
     private final JComboBox<String> versionBox = new JComboBox<String>(new String[] { BetaLauncher.DEFAULT_VERSION });
-    private final JComboBox<String> memoryBox = new JComboBox<String>(new String[] { "Low-end 384MB", "Classic 512MB", "Comfort 1024MB", "Overkill 2048MB", "Custom..." });
+    private final JComboBox<String> memoryBox = new JComboBox<String>(new String[] { "Potato 256MB", "Low-end 384MB", "Classic 512MB", "Comfort 1024MB", "Overkill 2048MB", "Custom..." });
     private final JComboBox<String> styleBox = new JComboBox<String>(new String[] { "Auto", "Beta", "Alpha", "Infdev", "Classic", "Pre-Classic" });
     private final JButton loginButton = new FooterButton("Microsoft Login");
     private final JButton playOnlineButton = new PlayButton("Play");
@@ -435,15 +435,15 @@ public final class MinecraftLauncher extends JFrame {
             updateSplashAnimation();
             return;
         }
-        if (!"Low-end 384MB".equals(String.valueOf(memoryBox.getSelectedItem()))) {
-            memoryBox.setSelectedItem("Low-end 384MB");
+        if (!"Potato 256MB".equals(String.valueOf(memoryBox.getSelectedItem()))) {
+            memoryBox.setSelectedItem("Potato 256MB");
         }
         if (!compactNewsBox.isSelected()) {
             compactNewsBox.setSelected(true);
         }
         if (resizeWindow) {
             setSize(854, 560);
-            appendLog("Low-end mode active: 384MB memory, compact notes, splash animation paused.");
+            appendLog("Low-end mode active: 256MB memory, compact notes, splash animation paused.");
         }
         updateSplashAnimation();
     }
@@ -469,7 +469,7 @@ public final class MinecraftLauncher extends JFrame {
         playOfflineButton.setToolTipText("Launch singleplayer without Microsoft login.");
         playOnlineButton.setToolTipText("Launch with the current Microsoft/Minecraft session when available.");
         compactNewsBox.setToolTipText("Switch the news panel into concise patch-style notes.");
-        lowEndModeBox.setToolTipText("Old-machine bundle: 384MB RAM, compact notes, no splash animation, and a smaller window.");
+        lowEndModeBox.setToolTipText("Old-machine bundle: 256MB RAM, compact notes, no splash animation, and a smaller window.");
         redownloadButton.setToolTipText("Delete and re-fetch only the selected version folder.");
         loginButton.setToolTipText("Sign in through browser OAuth. The launcher should never ask for your Microsoft password.");
         signOutButton.setToolTipText("Remove cached local login tokens/settings.");
@@ -1036,8 +1036,8 @@ public final class MinecraftLauncher extends JFrame {
         String version = selectedVersion();
         java.io.File minecraftDir = TokenCache.minecraftDir();
         java.io.File versionDir = new java.io.File(new java.io.File(minecraftDir, "versions"), version);
-        java.io.File jarFile = new java.io.File(versionDir, version + ".jar");
-        java.io.File jsonFile = new java.io.File(versionDir, version + ".json");
+        java.io.File jarFile = localVersionJar(versionDir, version);
+        java.io.File jsonFile = localVersionJson(versionDir, version);
         java.io.File librariesDir = new java.io.File(minecraftDir, "libraries");
         java.io.File nativeDir = new java.io.File(versionDir, "natives");
 
@@ -1405,6 +1405,48 @@ public final class MinecraftLauncher extends JFrame {
         return text.length() == 0 ? "Auto" : text;
     }
 
+    private static java.io.File localVersionJar(java.io.File versionDir, String id) {
+        java.io.File exact = new java.io.File(versionDir, id + ".jar");
+        if (exact.exists()) {
+            return exact;
+        }
+        return singleFileWithExtension(versionDir, ".jar");
+    }
+
+    private static java.io.File localVersionJson(java.io.File versionDir, String id) {
+        java.io.File exact = new java.io.File(versionDir, id + ".json");
+        if (exact.exists()) {
+            return exact;
+        }
+        return singleFileWithExtension(versionDir, ".json");
+    }
+
+    private static java.io.File singleFileWithExtension(java.io.File dir, String extension) {
+        if (dir == null || !dir.isDirectory()) {
+            return null;
+        }
+        java.io.File[] files = dir.listFiles();
+        if (files == null) {
+            return null;
+        }
+        java.io.File found = null;
+        String lowerExtension = extension.toLowerCase(java.util.Locale.ENGLISH);
+        for (int i = 0; i < files.length; i++) {
+            java.io.File file = files[i];
+            if (file == null || !file.isFile()) {
+                continue;
+            }
+            String name = file.getName().toLowerCase(java.util.Locale.ENGLISH);
+            if (!name.endsWith(lowerExtension)) {
+                continue;
+            }
+            if (found != null) {
+                return null;
+            }
+            found = file;
+        }
+        return found;
+    }
     private int loadLocalVersions() {
         java.io.File versionsDir = new java.io.File(TokenCache.minecraftDir(), "versions");
         if (!versionsDir.exists() || !versionsDir.isDirectory()) {
@@ -1421,16 +1463,20 @@ public final class MinecraftLauncher extends JFrame {
                 continue;
             }
             String id = folder.getName();
-            java.io.File jar = new java.io.File(folder, id + ".jar");
-            java.io.File json = new java.io.File(folder, id + ".json");
-            if (jar.exists() && json.exists()) {
+            java.io.File jar = localVersionJar(folder, id);
+            java.io.File json = localVersionJson(folder, id);
+            if (jar != null && jar.exists() && json != null && json.exists()) {
                 found.add(id);
             }
         }
         if (found.size() == 0) {
             return 0;
         }
-        java.util.Collections.sort(found);
+        java.util.Collections.sort(found, new java.util.Comparator<String>() {
+            public int compare(String left, String right) {
+                return left.compareToIgnoreCase(right);
+            }
+        });
         String selected = settings.get("version", selectedVersion());
         versionBox.removeAllItems();
         for (int i = 0; i < found.size(); i++) {
@@ -1440,8 +1486,8 @@ public final class MinecraftLauncher extends JFrame {
             versionBox.addItem(BetaLauncher.DEFAULT_VERSION);
         }
         versionBox.setSelectedItem(selected);
-        allVersions = found;
-        appendLog("Loaded " + found.size() + " local version(s) from " + versionsDir.getAbsolutePath() + ".");
+        allVersions = new java.util.ArrayList<String>(found);
+        appendLog("Loaded " + found.size() + " local version(s) from " + versionsDir.getAbsolutePath() + ". Folders with a single jar/json pair are accepted even if filenames differ from the folder name.");
         updateRedownloadVisibility();
         return found.size();
     }
@@ -1751,7 +1797,7 @@ public final class MinecraftLauncher extends JFrame {
                 + "<tr><td><b>Selected version</b></td><td>" + escape(selectedVersion()) + "</td></tr>"
                 + "<tr><td><b>Version files</b></td><td>" + escape(readiness.label) + "</td></tr>"
                 + "<tr><td><b>Memory preset</b></td><td>" + escape(String.valueOf(memoryBox.getSelectedItem())) + "</td></tr>"
-                + "<tr><td><b>Low-end mode</b></td><td>" + (lowEndModeBox.isSelected() ? "On" : "Off") + "</td></tr>"
+                + "<tr><td><b>Low-end mode</b></td><td>" + (lowEndModeBox.isSelected() ? "On, Potato 256MB" : "Off") + "</td></tr>"
                 + "<tr><td><b>Style mode</b></td><td>" + escape(selectedStyleMode()) + "</td></tr>"
                 + "<tr><td><b>Resolved layout</b></td><td>" + escape(activeTheme.displayName) + "</td></tr>"
                 + "<tr><td><b>Splash animation</b></td><td>" + ("notes".equals(activeTab) ? "Active on Update Notes" : "Paused off Update Notes") + "</td></tr>"

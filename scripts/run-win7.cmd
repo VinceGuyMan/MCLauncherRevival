@@ -47,13 +47,15 @@ if /I "%MCLAUNCHER_XP_MODE%"=="1" (
 
 echo Java is required to run this launcher.
 echo.
+echo I looked in bundled Java folders, JAVA_HOME, PATH, and common Program Files Java folders.
 echo I can download a portable Eclipse Temurin 8 JDK from Adoptium now.
 echo It will be stored locally in:
 echo   %ROOT_DIR%\tools\jdk8
 echo.
 set "DOWNLOAD_JDK="
-set /p "DOWNLOAD_JDK=Download Java JDK 8 now? [Y/N] "
-if /I not "%DOWNLOAD_JDK%"=="Y" (
+set /p "DOWNLOAD_JDK=Download Java JDK 8 now? [Y/n] "
+if "%DOWNLOAD_JDK%"=="" set "DOWNLOAD_JDK=Y"
+if /I "%DOWNLOAD_JDK%"=="N" (
   echo Launch cancelled. Install Java 8 manually, then run this again.
   pause
   exit /b 1
@@ -158,9 +160,24 @@ if not defined JAVA_EXE (
     if exist "%JAVA_HOME%\bin\java.exe" set "JAVA_EXE=%JAVA_HOME%\bin\java.exe"
   )
 )
+if not defined JAVA_EXE call :FindInstalledJava "%ProgramFiles%\Java"
+if not defined JAVA_EXE call :FindInstalledJava "%ProgramFiles(x86)%\Java"
 if not defined JAVA_EXE (
   for %%P in (java.exe) do (
     if not "%%~$PATH:P"=="" set "JAVA_EXE=%%~$PATH:P"
+  )
+)
+exit /b 0
+
+:FindInstalledJava
+set "JAVA_SCAN_ROOT=%~1"
+if "%JAVA_SCAN_ROOT%"=="" exit /b 0
+if not exist "%JAVA_SCAN_ROOT%" exit /b 0
+for /d %%D in ("%JAVA_SCAN_ROOT%\jdk*" "%JAVA_SCAN_ROOT%\jre*" "%JAVA_SCAN_ROOT%\*") do (
+  if not defined JAVA_EXE if exist "%%~fD\bin\java.exe" (
+    set "JAVA_HOME=%%~fD"
+    set "PATH=%%~fD\bin;%PATH%"
+    set "JAVA_EXE=%%~fD\bin\java.exe"
   )
 )
 exit /b 0

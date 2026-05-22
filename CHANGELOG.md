@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Improved Windows Java detection in the run/build scripts. They now check bundled Java folders,
+  `JAVA_HOME`, PATH, and common `Program Files\Java` install folders before offering the portable
+  Temurin 8 JDK download, which now defaults to yes on Windows 7+ when Java is still missing.
 - Fixed the setup hub closing immediately after choosing an option by keeping the setup window open
   at the end and preserving visible exit codes from the Windows launcher shortcuts.
 - Tightened historical era layouts so the right sidebar is modular by selected style instead of

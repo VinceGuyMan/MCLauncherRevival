@@ -39,6 +39,10 @@ final class VersionNotes {
                 + ".muted { color: " + style.muted + "; }"
                 + ".exact { color: #88dd88; font-weight: bold; }"
                 + ".fallback { color: #ffcc66; font-weight: bold; }"
+                + ".badge { font-size: 9px; border: 1px solid #dddddd; padding: 0 5px; }"
+                + ".badgeExact { background: #76d36b; border-color: #b8f0b0; }"
+                + ".badgeFallback { background: #f0a33a; border-color: #ffd080; }"
+                + ".legend { font-size: 10px; color: " + style.muted + "; text-align: right; }"
                 + ".box { border: 1px solid " + style.border + "; padding: 9px; margin: 8px 0 16px 0; background: " + style.box + "; }"
                 + ".small { font-size: 11px; color: " + style.muted + "; }"
                 + "hr { border: 0; border-top: 1px solid " + style.border + "; margin: 18px 0; }"
@@ -51,7 +55,8 @@ final class VersionNotes {
 
     private static String eraLead(VersionNoteData.Note note) {
         StringBuilder html = new StringBuilder(1024);
-        html.append("<h2><a href='").append(escape(note.primaryUrl())).append("'>").append(escape(note.title)).append("</a></h2>");
+        html.append("<h2><font color='").append(note.exact ? "#76d36b" : "#f0a33a").append("'>&#9632;</font> ");
+        html.append("<a href='").append(escape(note.primaryUrl())).append("'>").append(escape(note.title)).append("</a></h2>");
         html.append("<p><b>Selected version:</b> ").append(escape(note.versionId)).append("<br>");
         if (note.releaseDate.length() > 0) {
             html.append("<b>Release date:</b> ").append(escape(note.releaseDate)).append("<br>");
@@ -143,6 +148,10 @@ final class VersionNotes {
         html.append("<p>The launcher now uses static, version-aware notes researched from public historical sources. "
                 + "The goal is to be useful inside a small old launcher panel without pretending to be a full wiki page.</p>");
         html.append("<p class='small'>MCLauncherRevival Alpha. Unofficial project. Vibe-Coded with Codex.</p>");
+        html.append("<table width='100%' cellpadding='2' cellspacing='0'><tr><td align='right' class='legend'>");
+        html.append("<font color='#76d36b'>&#9632;</font> exact version note ");
+        html.append("<font color='#f0a33a'>&#9632;</font> nearest verified era summary");
+        html.append("</td></tr></table>");
     }
 
     private static String clean(String value) {
@@ -203,16 +212,16 @@ final class VersionNotes {
             String theme = themeId == null ? "" : themeId.toLowerCase();
             String fam = family == null ? "" : family.toLowerCase();
             if (theme.indexOf("pre") >= 0 || fam.indexOf("pre-classic") >= 0) {
-                return new Style("Minecraft Pre-Classic News", "#101010", "#eeeeee", "#ffffff", "#bbbbbb", "#3355ff", "#555555", "#181818", 26, 34, 13);
+                return new Style("Minecraft Pre-Classic News", "#101010", "#eeeeee", "#ffffff", "#bbbbbb", "#3355ff", "#555555", "#181818", 18, 28, 12);
             }
             if (theme.indexOf("classic") >= 0 || fam.indexOf("classic") >= 0) {
-                return new Style("Minecraft Classic News", "#151515", "#eeeeee", "#ffffff", "#c6c6c6", "#3355ff", "#666666", "#202020", 28, 34, 13);
+                return new Style("Minecraft Classic News", "#151515", "#eeeeee", "#ffffff", "#c6c6c6", "#3355ff", "#666666", "#202020", 22, 30, 12);
             }
             if (theme.indexOf("inf") >= 0 || fam.indexOf("infdev") >= 0) {
-                return new Style("Minecraft Indev News", "#111111", "#eeeeee", "#ffffff", "#c4c4c4", "#3355ff", "#666666", "#1d1d1d", 30, 36, 13);
+                return new Style("Minecraft Indev News", "#111111", "#eeeeee", "#ffffff", "#c4c4c4", "#3355ff", "#666666", "#1d1d1d", 24, 32, 12);
             }
             if (theme.indexOf("alpha") >= 0 || fam.indexOf("alpha") >= 0) {
-                return new Style("Minecraft Alpha News", "#120f0b", "#f1f1f1", "#ffffff", "#c8c8c8", "#3355ff", "#6b5c43", "#1b160f", 32, 38, 14);
+                return new Style("Minecraft Alpha News", "#120f0b", "#f1f1f1", "#ffffff", "#c8c8c8", "#3355ff", "#6b5c43", "#1b160f", 28, 34, 13);
             }
             if (theme.indexOf("beta") >= 0 || fam.indexOf("beta") >= 0) {
                 return new Style("Minecraft Beta News", "#111111", "#f2f2f2", "#ffffff", "#bdbdbd", "#3355ff", "#777777", "#181818", 34, 38, 14);

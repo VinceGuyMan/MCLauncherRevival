@@ -135,6 +135,7 @@ public final class MinecraftLauncher extends JFrame {
         warnIfJavaUnusual();
         setOfflineHead();
         wireActions();
+        applyToolTips();
         maybeShowFirstRunWelcome();
         versionBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -419,7 +420,23 @@ public final class MinecraftLauncher extends JFrame {
             backupSaves();
         } else if ("launcher:import-texture-pack".equals(action)) {
             importTexturePack();
+        } else if ("launcher:first-run-guide".equals(action)) {
+            showFirstRunGuide(false);
         }
+    }
+
+    private void applyToolTips() {
+        offlineName.setToolTipText("Offline/singleplayer profile name. Microsoft passwords never go here.");
+        versionBox.setToolTipText("Choose or type a classic Minecraft version.");
+        styleBox.setToolTipText("Auto follows the selected version era; manual styles override the look.");
+        memoryBox.setToolTipText("Choose how much RAM the Minecraft client may use.");
+        randomVersionButton.setToolTipText("Pick a random loaded classic version.");
+        playOfflineButton.setToolTipText("Launch singleplayer without Microsoft login.");
+        playOnlineButton.setToolTipText("Launch with the current Microsoft/Minecraft session when available.");
+        compactNewsBox.setToolTipText("Switch the news panel into concise patch-style notes.");
+        redownloadButton.setToolTipText("Delete and re-fetch only the selected version folder.");
+        loginButton.setToolTipText("Sign in through browser OAuth. The launcher should never ask for your Microsoft password.");
+        signOutButton.setToolTipText("Remove cached local login tokens/settings.");
     }
 
     private void backupSaves() {
@@ -857,23 +874,34 @@ public final class MinecraftLauncher extends JFrame {
         if (settings.getBoolean("firstRunSeen", false)) {
             return;
         }
+        showFirstRunGuide(true);
+    }
+
+    private void showFirstRunGuide(boolean markSeen) {
         switchTab("notes");
         setNewsHtml(htmlStart("#e8e8e8", "#aaaaff", "Verdana,Arial,sans-serif", 11, 24)
                 + "<font size='+3'><b>Welcome to MCLauncherRevival</b></font><br><br>"
-                + "<p>This is a 2011-flavored launcher shell with modern Minecraft auth behind the curtain.</p>"
+                + "<p>This is a 2011-flavored launcher shell with modern Minecraft auth behind the curtain. "
+                + "It is unofficial, alpha-quality, and built for nostalgia, preservation, and learning.</p>"
                 + "<p><b>Quick start:</b><br>"
-                + "+ Use <b>Microsoft Login</b> for online profile auth.<br>"
-                + "+ Use <b>Play Offline</b> for singleplayer without logging in.<br>"
-                + "+ Pick old versions from Beta 1.8.x down through Alpha, Infdev, Classic, and Pre-Classic.<br>"
-                + "+ Press <b>Random</b> when you want the launcher to choose chaos.<br>"
-                + "+ Use <b>Patch Notes Mode!</b>, <b>Launcher Log</b>, and <b>Profile Editor</b> for useful details.</p>"
-                + "<p><font color='#ffff55'><b>Alpha build. Review source before use.</b></font></p>"
+                + "+ Choose a classic version and press <b>Play Offline</b> for singleplayer.<br>"
+                + "+ Use <b>Microsoft Login</b> only when you want online profile authentication. "
+                + "Sign-in happens in your browser; the launcher should never ask for a raw Microsoft password.<br>"
+                + "+ Use <b>Style: Auto</b> to let the launcher mimic the selected build era, or pick a style manually.<br>"
+                + "+ Toggle <b>Patch Notes Mode!</b> for compact historical notes.<br>"
+                + "+ Use <b>Launcher Log</b> when something fails and <b>Profile Editor</b> for local folders, Java status, and maintenance shortcuts.</p>"
+                + "<p><b>Windows XP note:</b><br>"
+                + "XP mode is offline/classic focused. Fresh HTTPS downloads and modern login are best-effort or unavailable. "
+                + "Prepare version files on Windows 7 or newer, then copy them to XP when needed.</p>"
+                + "<p><font color='#ffff55'><b>Alpha build. Review source before use. Use the GitHub Releases ZIP, not the source-code ZIP, for normal play.</b></font></p>"
                 + "</body></html>");
-        settings.putBoolean("firstRunSeen", true);
-        try {
-            settings.save();
-        } catch (IOException e) {
-            appendLog("Could not save first-run state: " + e.getMessage());
+        if (markSeen) {
+            settings.putBoolean("firstRunSeen", true);
+            try {
+                settings.save();
+            } catch (IOException e) {
+                appendLog("Could not save first-run state: " + e.getMessage());
+            }
         }
     }
 
@@ -1501,6 +1529,7 @@ public final class MinecraftLauncher extends JFrame {
                 + "<a href='" + fileUrl(backupsDir) + "'>Open backups folder</a><br>"
                 + "<a href='" + fileUrl(selectedVersionDir) + "'>Open selected version folder</a></p>"
                 + "<p><b>Maintenance:</b><br>"
+                + "<a href='launcher:first-run-guide'>Open first-run guide</a><br>"
                 + "<a href='launcher:backup-saves'>Backup saves now</a><br>"
                 + "<a href='launcher:import-texture-pack'>Import texture pack .zip</a><br>"
                 + "Use <b>Redownload Version</b> in the bottom-right to delete only the selected version folder and fetch it again on next launch.</p>"
@@ -1939,47 +1968,47 @@ public final class MinecraftLauncher extends JFrame {
         }
 
         static EraTheme alpha() {
-            return new EraTheme("alpha", "Alpha login board", "alpha", new Color(88, 130, 70), Color.WHITE,
-                    new Color(24, 15, 7, 132), new Color(96, 78, 45),
+            return new EraTheme("alpha", "Alpha compact login board", "alpha", new Color(88, 130, 70), Color.WHITE,
+                    new Color(24, 15, 7, 118), new Color(96, 78, 45),
                     new Color(222, 215, 196), new Color(198, 185, 150), Color.BLACK, new Color(255, 230, 80),
                     "#f1ead2", "#c6e5ff", "#24180a", "#7892a6", "#b6a985", "#5b4a2a",
-                    "Verdana,Arial,sans-serif", "Dialog", "Dialog", "Mojang links:", "Tiny side quests!",
-                    "Alpha mood:<br>rough edges.<br>big worlds.", "/net/minecraft/themes/alpha.png",
-                    "Minecraft Launcher Alpha Revival", "Update Notes", "Development Console", "Profile Editor",
-                    188, 10, 16, 15, 3);
+                    "Verdana,Arial,sans-serif", "Dialog", "Dialog", "Minecraft links:", "Other bits!",
+                    "Alpha board:<br>login first.<br>news nearby.", "/net/minecraft/themes/alpha.png",
+                    "Minecraft Launcher Alpha", "News", "Console", "Profile",
+                    162, 10, 14, 15, 3);
         }
 
         static EraTheme infdev() {
-            return new EraTheme("infdev", "Infdev experiment board", "infdev", new Color(135, 96, 45), Color.WHITE,
-                    new Color(8, 18, 14, 126), new Color(82, 95, 68),
+            return new EraTheme("infdev", "Indev/Infdev prototype panel", "indev", new Color(135, 96, 45), Color.WHITE,
+                    new Color(8, 18, 14, 110), new Color(82, 95, 68),
                     new Color(205, 218, 188), new Color(172, 188, 150), Color.BLACK, new Color(255, 245, 120),
                     "#e0f0d0", "#d8ff9a", "#102010", "#6f8a45", "#9fb08d", "#445238",
-                    "Monospaced,Verdana,sans-serif", "Dialog", "Monospaced", "Infdev links:", "Other experiments!",
-                    "Build note:<br>terrain forever.<br>docs nearby.", "/net/minecraft/themes/infdev.png",
-                    "Minecraft Infdev Launcher Revival", "Build Notes", "Development Console", "Profile",
-                    176, 10, 14, 14, 3);
+                    "Monospaced,Verdana,sans-serif", "Dialog", "Monospaced", "Build links:", "Experiments:",
+                    "Prototype:<br>rough panels.<br>raw notes.", "/net/minecraft/themes/infdev.png",
+                    "Minecraft Indev Launcher", "Indev Notes", "Console", "Profile",
+                    138, 10, 10, 14, 3);
         }
 
         static EraTheme classic() {
-            return new EraTheme("classic", "Classic compact launcher", "classic", new Color(105, 105, 105), Color.WHITE,
-                    new Color(0, 0, 0, 112), new Color(125, 125, 125),
+            return new EraTheme("classic", "Classic minimal launcher", "classic", new Color(105, 105, 105), Color.WHITE,
+                    new Color(0, 0, 0, 96), new Color(125, 125, 125),
                     new Color(235, 235, 235), new Color(205, 205, 205), Color.BLACK, new Color(255, 255, 85),
                     "#eeeeee", "#99ccff", "#101820", "#5f7c99", "#aaaaaa", "#555555",
-                    "Arial,Verdana,sans-serif", "Dialog", "Dialog", "Classic links:", "Blocks nearby!",
-                    "Classic mode:<br>small panel.<br>big nostalgia.", "/net/minecraft/themes/classic.png",
-                    "Minecraft Launcher Classic Revival", "News", "Console", "Login",
-                    156, 10, 12, 14, 4);
+                    "Arial,Verdana,sans-serif", "Dialog", "Dialog", "Links:", "Blocks:",
+                    "Classic:<br>simple frame.<br>tiny chrome.", "/net/minecraft/themes/classic.png",
+                    "Minecraft Launcher Classic", "News", "Console", "Login",
+                    118, 10, 8, 14, 4);
         }
 
         static EraTheme preclassic() {
-            return new EraTheme("preclassic", "Pre-Classic prototype", "rd", new Color(120, 70, 70), Color.WHITE,
-                    new Color(18, 12, 12, 102), new Color(110, 84, 84),
+            return new EraTheme("preclassic", "Pre-Classic stripped prototype", "rd", new Color(120, 70, 70), Color.WHITE,
+                    new Color(18, 12, 12, 86), new Color(110, 84, 84),
                     new Color(228, 218, 218), new Color(196, 180, 180), Color.BLACK, new Color(255, 235, 110),
                     "#f0e6e6", "#ffb8a8", "#261112", "#a66c62", "#bba0a0", "#5a3f3f",
-                    "Monospaced,Verdana,sans-serif", "Dialog", "Monospaced", "Prototype:", "No shop yet!",
-                    "Pre-classic:<br>stone, grass,<br>and nerve.", "/net/minecraft/themes/preclassic.png",
-                    "Minecraft Launcher 0.1 (Dev) Revival", "Block Notes", "Console", "Login",
-                    138, 10, 10, 13, 4);
+                    "Monospaced,Verdana,sans-serif", "Dialog", "Monospaced", "Proto:", "None:",
+                    "Pre-classic:<br>blocks only.<br>almost no UI.", "/net/minecraft/themes/preclassic.png",
+                    "Minecraft Launcher 0.1", "Blocks", "Console", "Login",
+                    104, 10, 6, 13, 4);
         }
     }
 

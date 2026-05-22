@@ -466,6 +466,249 @@ final class VersionNoteData {
                 "Before survival, before crafting, before almost everything: just blocks and a beginning.",
                 wiki("Java_Edition_pre-Classic_rd-132211")));
 
+        exactMaintenance("b1.6.5", "Beta 1.6.5 maintenance", "May 28, 2011", "Beta 1.6",
+                "Beta 1.6.5 is one of the rapid maintenance builds in the Map Update line. Maps, trapdoors, tall grass, and dead bushes define the larger era; this exact build is best treated as a stabilization checkpoint.",
+                "Continued stabilizing the Beta 1.6 Map Update line.",
+                "Bug fixes in the fast b1.6.x patch sequence; check the source page for exact issue details.",
+                "Exact compact notes for this build are sparse compared with b1.6 and b1.6.6.",
+                "It helps preserve the repair trail between the first map release and the more settled b1.6.6 build.",
+                "A small map-era repair build, now labeled exactly instead of folded into a generic fallback.",
+                "Java_Edition_Beta_1.6.5");
+
+        exactMaintenance("b1.6.4", "Beta 1.6.4 maintenance", "May 27, 2011", "Beta 1.6",
+                "Beta 1.6.4 belongs to the short run of Map Update hotfixes. It sits in the same exploration/map-making era while narrowing issues from the initial b1.6 release.",
+                "Continued the Map Update feature set from b1.6.",
+                "Bug fixes in the b1.6.x maintenance sequence; check the source page for exact issue details.",
+                "Exact compact notes for this build are sparse, so this entry avoids inventing a full changelog.",
+                "It shows how quickly Mojang was patching the Map Update after release.",
+                "Another tiny step in the cartographer repair march.",
+                "Java_Edition_Beta_1.6.4");
+
+        exactMaintenance("b1.6.3", "Beta 1.6.3 maintenance", "May 26, 2011", "Beta 1.6",
+                "Beta 1.6.3 is part of the same-day maintenance rush after the Map Update. Its value is mostly preservation of the exact patch sequence.",
+                "Continued the b1.6 Map Update feature set.",
+                "Bug fixes in the b1.6.x maintenance sequence; check the source page for exact issue details.",
+                "Exact compact notes for this build are sparse.",
+                "The many b1.6 patch IDs tell the story of a large update being stabilized in public.",
+                "A same-day repair notch in the old Beta timeline.",
+                "Java_Edition_Beta_1.6.3");
+
+        exactMaintenance("b1.6.2", "Beta 1.6.2 maintenance", "May 26, 2011", "Beta 1.6",
+                "Beta 1.6.2 is another immediate Map Update repair build. It belongs to the same maps/trapdoors/tall-grass release family rather than a separate feature moment.",
+                "Continued the b1.6 Map Update feature set.",
+                "Bug fixes in the b1.6.x maintenance sequence; check the source page for exact issue details.",
+                "Exact compact notes for this build are sparse.",
+                "It matters as a historical exact build, especially for users testing old-version behavior.",
+                "Still map season, still patching fast.",
+                "Java_Edition_Beta_1.6.2");
+
+        exactMaintenance("b1.6.1", "Beta 1.6.1 maintenance", "May 26, 2011", "Beta 1.6",
+                "Beta 1.6.1 was the first quick follow-up in the Map Update patch line. It is historically tied to b1.6 rather than a new feature release.",
+                "Continued the b1.6 Map Update feature set.",
+                "Bug fixes in the b1.6.x maintenance sequence; check the source page for exact issue details.",
+                "Exact compact notes for this build are sparse.",
+                "It is useful for reproducing the first Map Update repair step.",
+                "A first aid kit for the map update.",
+                "Java_Edition_Beta_1.6.1");
+
+        exactMaintenance("b1.2_01", "Beta 1.2 quick repair", "January 14, 2011", "Beta 1.2",
+                "Beta 1.2_01 was a quick repair build after the large dyes, squid, lapis, note-block, and dispenser update.",
+                "Continued the Beta 1.2 feature set.",
+                "Bug fixes from the Beta 1.2 release; check the source page for exact issue details.",
+                "Exact compact notes are thinner than the headline b1.2 and b1.2_02 pages.",
+                "It sits between one of early Beta's biggest content drops and the later skin/launcher packaging fix.",
+                "A small January patch between color, sound, squid, and launcher plumbing.",
+                "Java_Edition_Beta_1.2_01");
+
+        exactMaintenance("b1.1_01", "Beta 1.1 maintenance", "December 22, 2010", "Beta 1.1",
+                "Beta 1.1_01 belongs to the very short Beta 1.1 maintenance sequence just after Minecraft entered Beta.",
+                "Continued the first-Beta baseline.",
+                "Small early-Beta fixes; check the source page for exact issue details.",
+                "Sparse documentation compared with larger feature updates.",
+                "It helps preserve the first days of Beta without overstating what changed.",
+                "A small checkpoint near the start of the Beta label.",
+                "Java_Edition_Beta_1.1_01");
+
+        exactMaintenance("b1.0_01", "First Beta launch-day patch", "December 20, 2010", "Beta 1.0",
+                "Beta 1.0_01 was a launch-day follow-up to the first Beta release. It belongs to the transition out of Alpha and into the early Beta baseline.",
+                "Continued the first Beta feature set.",
+                "Launch-day fixes around the Beta 1.0 release; check the source page for exact issue details.",
+                "Sparse compact notes; it is not a separate feature update from b1.0.",
+                "It preserves the rough first landing of Minecraft's Beta era.",
+                "A tiny patch tucked under a huge version-label change.",
+                "Java_Edition_Beta_1.0_01");
+
+        exactMaintenance("a1.2.5", "Alpha 1.2.5 maintenance", "December 1, 2010", "Alpha 1.2",
+                "Alpha v1.2.5 is a late Halloween Update maintenance build shortly before the final Alpha release.",
+                "Continued the Alpha 1.2 Nether and biome feature set.",
+                "Bug fixes in the late Alpha 1.2 line; check the source page for exact issue details.",
+                "Exact compact notes are sparse compared with the major a1.2.0 and a1.2.6 pages.",
+                "It shows the Halloween Update era settling down before Minecraft entered Beta.",
+                "Late Alpha patchwork, one stop before the final Alpha build.",
+                "Java_Edition_Alpha_v1.2.5");
+
+        exactMaintenance("a1.2.4_01", "Alpha 1.2.4_01 maintenance", "November 30, 2010", "Alpha 1.2",
+                "Alpha v1.2.4_01 is part of the post-Halloween Update maintenance run.",
+                "Continued the Alpha 1.2 Nether and biome era.",
+                "Bug fixes in the Alpha 1.2 line; check the source page for exact issue details.",
+                "Sparse exact notes and old launcher metadata caveats apply.",
+                "It is a precise historical stop between the Halloween Update and final Alpha.",
+                "A small haunted-era repair build.",
+                "Java_Edition_Alpha_v1.2.4_01");
+
+        exactMaintenance("a1.2.3_04", "Alpha 1.2.3_04 maintenance", "November 26, 2010", "Alpha 1.2",
+                "Alpha v1.2.3_04 is one of several post-Halloween Update repairs.",
+                "Continued the Alpha 1.2 Nether and biome era.",
+                "Bug fixes in the Alpha 1.2.3 sequence; check the source page for exact issue details.",
+                "Sparse exact notes; the a1.2.3 line has several closely spaced builds.",
+                "It is useful for exact-version testing in the messy late-Alpha repair trail.",
+                "Another small brick in the Nether-era patch wall.",
+                "Java_Edition_Alpha_v1.2.3_04");
+
+        exactMaintenance("a1.2.3_02", "Alpha 1.2.3_02 maintenance", "November 25, 2010", "Alpha 1.2",
+                "Alpha v1.2.3_02 belongs to the cluster of Alpha 1.2.3 maintenance builds.",
+                "Continued the Alpha 1.2 Nether and biome era.",
+                "Bug fixes in the Alpha 1.2.3 sequence; check the source page for exact issue details.",
+                "Sparse exact notes; this is a narrow maintenance entry.",
+                "It keeps the launcher honest about exact build IDs instead of merging everything into one era note.",
+                "A Thanksgiving-era patch crumb from old Alpha.",
+                "Java_Edition_Alpha_v1.2.3_02");
+
+        exactMaintenance("a1.2.3_01", "Alpha 1.2.3_01 maintenance", "November 24, 2010", "Alpha 1.2",
+                "Alpha v1.2.3_01 is a quick follow-up in the Alpha 1.2.3 line.",
+                "Continued the Alpha 1.2 Nether and biome era.",
+                "Bug fixes in the Alpha 1.2.3 sequence; check the source page for exact issue details.",
+                "Sparse exact notes; this is not a separate feature headline.",
+                "It matters mainly as an exact historical patch point.",
+                "Small version, real place in the timeline.",
+                "Java_Edition_Alpha_v1.2.3_01");
+
+        exactMaintenance("a1.2.3", "Alpha 1.2.3 maintenance", "November 24, 2010", "Alpha 1.2",
+                "Alpha v1.2.3 belongs to the post-Halloween Update stabilization period.",
+                "Continued the Alpha 1.2 Nether and biome era.",
+                "Bug fixes in the post-Halloween line; check the source page for exact details.",
+                "Exact compact notes are narrower than the major Halloween Update pages.",
+                "It helps preserve the messy middle of Alpha 1.2, where the new Nether-era Minecraft was settling down.",
+                "Halloween had happened; now the haunted paperwork began.",
+                "Java_Edition_Alpha_v1.2.3");
+
+        exactMaintenance("a1.2.2b", "Alpha 1.2.2b maintenance", "November 10, 2010", "Alpha 1.2",
+                "Alpha v1.2.2b is a launcher-visible maintenance/reupload-style entry in the Halloween Update era.",
+                "Continued the Alpha 1.2 Nether and biome era.",
+                "Bug fixes or reupload details in the Alpha 1.2.2 sequence; check the source page for exact details.",
+                "Sparse exact notes and archival caveats apply.",
+                "It is useful for preserving exact old launcher-visible IDs.",
+                "A tiny suffix from a very busy Alpha month.",
+                "Java_Edition_Alpha_v1.2.2b");
+
+        exactMaintenance("a1.2.2a", "Alpha 1.2.2a maintenance", "November 10, 2010", "Alpha 1.2",
+                "Alpha v1.2.2a is a maintenance/reupload-style entry in the Halloween Update era.",
+                "Continued the Alpha 1.2 Nether and biome era.",
+                "Bug fixes or reupload details in the Alpha 1.2.2 sequence; check the source page for exact details.",
+                "Sparse exact notes and archival caveats apply.",
+                "It records one more exact build in the late-Alpha patch trail.",
+                "The kind of suffix only old-version explorers learn to love.",
+                "Java_Edition_Alpha_v1.2.2a");
+
+        exactMaintenance("a1.2.1_01", "Alpha 1.2.1_01 maintenance", "November 5, 2010", "Alpha 1.2",
+                "Alpha v1.2.1_01 is an early post-Halloween Update repair build.",
+                "Continued the Alpha 1.2 Nether and biome era.",
+                "Bug fixes in the Alpha 1.2.1 sequence; check the source page for exact details.",
+                "Sparse exact notes; nearby Alpha 1.2 builds are tightly clustered.",
+                "It shows the first wave of fixes after the Nether arrived.",
+                "A quick patch after the portal smoke cleared.",
+                "Java_Edition_Alpha_v1.2.1_01");
+
+        exactMaintenance("a1.2.1", "Alpha 1.2.1 maintenance", "November 5, 2010", "Alpha 1.2",
+                "Alpha v1.2.1 is part of the first post-Halloween Update fix wave.",
+                "Continued the Alpha 1.2 Nether and biome era.",
+                "Bug fixes in the Alpha 1.2 line; check the source page for exact details.",
+                "Sparse exact notes compared with the headline Halloween Update.",
+                "It matters as the first settling step after Minecraft gained the Nether.",
+                "The Nether was new; the bug list was awake.",
+                "Java_Edition_Alpha_v1.2.1");
+
+        exactMaintenance("a1.2.0_02", "Alpha 1.2.0_02 reupload", "October 30, 2010", "Alpha 1.2",
+                "Alpha v1.2.0_02 is tied to the Halloween Update release day and later launcher-visible file identity.",
+                "Continued the Halloween Update feature set.",
+                "Release-day repair/reupload details; check the source page for exact issue details.",
+                "The official launcher's a1.2.0 entry can point at later reupload behavior, so file identity can be confusing.",
+                "It is one of the builds that makes old Alpha preservation more archival than simple.",
+                "Same spooky update day, different file-history wrinkle.",
+                "Java_Edition_Alpha_v1.2.0_02");
+
+        exactMaintenance("a1.2.0_01", "Alpha 1.2.0_01 reupload", "October 30, 2010", "Alpha 1.2",
+                "Alpha v1.2.0_01 is a release-day follow-up/reupload from the Halloween Update.",
+                "Continued the Halloween Update feature set.",
+                "Release-day repair/reupload details; check the source page for exact issue details.",
+                "Old Alpha file identity and launcher metadata can be confusing around this release.",
+                "It belongs to one of Minecraft's biggest Alpha-era jumps.",
+                "A portal opened, then the patch suffixes arrived.",
+                "Java_Edition_Alpha_v1.2.0_01");
+
+        exactMaintenance("a1.0.17_02", "Alpha 1.0.17_02 maintenance", "August 20, 2010", "Alpha 1.0",
+                "Alpha v1.0.17_02 belongs to the Seecret Friday / early Alpha period.",
+                "Continued the Alpha 1.0 feature line.",
+                "Bug fixes or reupload details in the Alpha 1.0.17 sequence; check the source page for exact details.",
+                "Sparse exact notes and old reupload caveats apply.",
+                "It helps preserve the exact path through Alpha's rapid public iteration.",
+                "A small Alpha checkpoint, carefully kept modest.",
+                "Java_Edition_Alpha_v1.0.17_02");
+
+        exactMaintenance("a1.0.15", "Alpha 1.0.15 maintenance", "August 4, 2010", "Alpha 1.0",
+                "Alpha v1.0.15 is an early Alpha build from the fast Seecret Friday development period.",
+                "Continued early Alpha survival/multiplayer-era behavior.",
+                "Bug fixes or feature-line changes in the Alpha 1.0 sequence; check the source page for exact details.",
+                "Sparse exact notes compared with larger named moments.",
+                "It captures Alpha while Minecraft's survival identity was still forming.",
+                "Early Alpha, still changing under your feet.",
+                "Java_Edition_Alpha_v1.0.15");
+
+        exactMaintenance("a1.0.14", "Alpha 1.0.14 maintenance", "July 30, 2010", "Alpha 1.0",
+                "Alpha v1.0.14 sits in the early Alpha Seecret Friday period.",
+                "Continued early Alpha feature development.",
+                "Bug fixes or feature-line changes in the Alpha 1.0 sequence; check the source page for exact details.",
+                "Sparse exact notes; this is a cautious compact summary.",
+                "It is part of the fast public iteration that made Alpha feel alive week to week.",
+                "Another Friday-flavored Alpha marker.",
+                "Java_Edition_Alpha_v1.0.14");
+
+        exactMaintenance("a1.0.5_01", "Alpha 1.0.5_01 maintenance", "July 13, 2010", "Alpha 1.0",
+                "Alpha v1.0.5_01 is an early Alpha maintenance/reupload-style build.",
+                "Continued the early Alpha feature set.",
+                "Bug fixes or reupload details in the Alpha 1.0.5 sequence; check the source page for exact details.",
+                "Sparse exact notes and reupload caveats apply.",
+                "It helps fill the exact build trail between Infdev and later Alpha.",
+                "A small suffix from Minecraft's bright-green-grass days.",
+                "Java_Edition_Alpha_v1.0.5_01");
+
+        exactMaintenance("a1.0.4", "Alpha 1.0.4 maintenance", "July 9, 2010", "Alpha 1.0",
+                "Alpha v1.0.4 is one of the earliest launcher-visible Alpha builds after Infdev.",
+                "Early Alpha world and survival behavior.",
+                "Bug fixes or early Alpha changes; check the source page for exact details.",
+                "Sparse exact notes; early Alpha documentation is thinner than later Beta pages.",
+                "It marks Minecraft becoming Alpha rather than Infdev, with survival still taking shape.",
+                "Early Alpha: rough, bright, and moving quickly.",
+                "Java_Edition_Alpha_v1.0.4");
+
+        exactMaintenance("rd-160052", "Pre-Classic prototype", "May 16, 2009", "Pre-Classic",
+                "rd-160052 is a pre-Classic prototype build from Minecraft's first public days. It is much closer to a block-placement experiment than a later survival game.",
+                "Prototype block-world behavior.|Rapid early development changes around terrain and block interaction.",
+                "",
+                "",
+                "It matters because it shows Minecraft before Classic had fully formed.",
+                "A very early block sandbox with the paint still wet.",
+                "Java_Edition_pre-Classic_rd-160052");
+
+        exactMaintenance("rd-132328", "Pre-Classic build-step prototype", "May 13, 2009", "Pre-Classic",
+                "rd-132328 is part of the tiny pre-Classic prototype sequence from Minecraft's first public development days.",
+                "Prototype block interaction.|Early prototype iteration around world and control behavior.",
+                "",
+                "Sparse documentation and launcher archival caveats apply.",
+                "It matters as a snapshot of Minecraft before Classic and before survival concepts existed.",
+                "A build number from before the game had learned to explain itself.",
+                "Java_Edition_pre-Classic_rd-132328");
+
         family("b1.8", fallback("b1.8.x", "Adventure Update era", "September 2011", "Beta 1.8",
                 "This fallback covers the Adventure Update Beta builds when an exact entry is missing. Hunger, sprinting, Creative mode, villages, strongholds, mineshafts, ravines, and Endermen define this era.",
                 "Adventure Update systems such as hunger, sprinting, Creative mode, and new world structures.",
@@ -689,6 +932,13 @@ final class VersionNoteData {
 
     private static void family(String key, Note note) {
         FAMILY.put(key, note);
+    }
+
+    private static void exactMaintenance(String versionId, String title, String releaseDate, String family,
+                                         String summary, String changed, String fixed,
+                                         String quirks, String why, String commentary, String page) {
+        exact(n(versionId, title, releaseDate, family, summary, "",
+                changed, fixed, "", quirks, why, commentary, wiki(page)));
     }
 
     private static Note n(String versionId, String title, String releaseDate, String family,

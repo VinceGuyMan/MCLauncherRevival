@@ -73,13 +73,13 @@ Those source archives are useful for reading or building the code, but they may 
 The current alpha package is:
 
 ```text
-MCLauncherRevival-v0.5.5-alpha.zip
+MCLauncherRevival-v0.5.6-alpha.zip
 ```
 
 If an XP bundled-Java package is published, it should be named like:
 
 ```text
-MCLauncherRevival-v0.5.5-alpha-xp-bundled-java.zip
+MCLauncherRevival-v0.5.6-alpha-xp-bundled-java.zip
 ```
 
 That XP package is for offline/classic use only. It may include a maintainer-provided
@@ -286,4 +286,5 @@ styles used by the historical theme system:
 
 These are project-owned visual interpretations, not bundled original Mojang/Microsoft launcher
 assets.
+
 

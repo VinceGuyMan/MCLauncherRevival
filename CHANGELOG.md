@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.5.6-alpha
+
+- Added exact static note entries for more launcher-visible maintenance/reupload builds so fewer
+  selected versions need broad family fallbacks.
+- Tightened historical era presentation: Alpha is more compact/login-board flavored, Indev/Infdev
+  is more prototype/dev-note flavored, and Classic / Pre-Classic use smaller, simpler chrome.
+- Expanded the first-run guide with clearer online/offline/XP/release-ZIP guidance.
+- Added a Profile Editor link to reopen the first-run guide.
+- Added small control tooltips for Microsoft Login, Play Offline, Style, memory, redownload, and
+  token-clearing actions without changing the classic visual layout.
+
 ## v0.5.5-alpha
 
 - Expanded the animated splash text pool with 50 additional nostalgia/auth/old-Java themed phrases.

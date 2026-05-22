@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Added more precise Microsoft/Xbox auth error text for common XSTS failures, including missing
+  Xbox profile setup, child/family-managed accounts, region/account issues, and missing Java
+  Edition profile ownership.
+- Added a Low-End mode toggle for older machines. It applies 384MB memory, compact notes, disables
+  the animated splash, and uses a smaller launcher window size.
 - Removed the exact/fallback color squares from the historical notes panel now that the
   launcher-visible version notes have been filled in.
 - Added clearer selected-version readiness text so the launcher can distinguish missing

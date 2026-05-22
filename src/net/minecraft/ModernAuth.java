@@ -216,12 +216,8 @@ final class ModernAuth {
         if (result.code == 401) {
             Map<String, Object> error = Json.object(Json.parse(result.body));
             String xerr = Json.string(error, "XErr");
-            if ("2148916233".equals(xerr)) {
-                throw new IOException("This Microsoft account has no Xbox profile yet. Open https://start.ui.xboxlive.com/, finish Xbox profile setup, then click Forget Login and try Microsoft Login again.");
-            }
-            if ("2148916238".equals(xerr)) {
-                throw new IOException("This account is a child account and needs family approval for Xbox Live.");
-            }
+            String redirect = Json.string(error, "Redirect");
+            throw new IOException(friendlyXstsError(xerr, redirect));
         }
         ensureSuccess(result, "XSTS authorization failed");
         return readXboxToken(result.body);
@@ -231,6 +227,10 @@ final class ModernAuth {
         String identityToken = "XBL3.0 x=" + userHash + ";" + xstsToken;
         String json = "{\"identityToken\":" + Json.quote(identityToken) + "}";
         HttpResult result = postJson(MC_LOGIN_URL, json, null);
+        if (result.code == 401 || result.code == 403) {
+            throw new IOException("Minecraft services rejected the Xbox token. Click Forget Login and try Microsoft Login again. "
+                    + "If this keeps happening, confirm the same Microsoft account owns Minecraft Java Edition and that Xbox account settings are complete.");
+        }
         ensureSuccess(result, "Minecraft services login failed");
         Map<String, Object> object = Json.object(Json.parse(result.body));
         String accessToken = Json.string(object, "access_token");
@@ -244,7 +244,9 @@ final class ModernAuth {
     private AuthProfile fetchProfile(String minecraftAccessToken) throws IOException {
         HttpResult result = get(MC_PROFILE_URL, minecraftAccessToken);
         if (result.code == 404) {
-            throw new IOException("This Microsoft account does not appear to own Minecraft Java Edition.");
+            throw new IOException("Minecraft profile lookup did not find a Java Edition profile for this Microsoft account. "
+                    + "Make sure you are signing in with the account that owns Minecraft Java Edition or has the right Game Pass entitlement. "
+                    + "Offline Play remains available for local singleplayer testing.");
         }
         ensureSuccess(result, "Minecraft profile lookup failed");
         Map<String, Object> object = Json.object(Json.parse(result.body));
@@ -254,6 +256,36 @@ final class ModernAuth {
             throw new IOException("Minecraft profile response did not include name and UUID.");
         }
         return AuthProfile.online(name, id, minecraftAccessToken);
+    }
+
+    private static String friendlyXstsError(String xerr, String redirect) {
+        if ("2148916233".equals(xerr)) {
+            return "XSTS authorization failed because this Microsoft account does not have an Xbox profile yet. "
+                    + "Open https://start.ui.xboxlive.com/, finish Xbox profile setup, then click Forget Login and try Microsoft Login again. "
+                    + "Offline Play remains available.";
+        }
+        if ("2148916238".equals(xerr)) {
+            return "XSTS authorization failed because this appears to be a child or family-managed account. "
+                    + "Ask the family organizer to allow Xbox online services for this account, then click Forget Login and try Microsoft Login again. "
+                    + "Offline Play remains available.";
+        }
+        if ("2148916235".equals(xerr) || "2148916236".equals(xerr) || "2148916237".equals(xerr)) {
+            return "XSTS authorization failed because Xbox services rejected this account or region. "
+                    + "Check the account region, age/verification requirements, and Xbox profile setup in a browser, then click Forget Login and try again. "
+                    + redirectText(redirect);
+        }
+        return "XSTS authorization failed"
+                + (xerr == null || xerr.length() == 0 ? "." : " with XErr " + xerr + ".")
+                + " This usually means Xbox account setup, family settings, region, or account entitlement needs attention. "
+                + "Click Forget Login after fixing the account and try Microsoft Login again. "
+                + redirectText(redirect);
+    }
+
+    private static String redirectText(String redirect) {
+        if (redirect == null || redirect.length() == 0) {
+            return "Offline Play remains available.";
+        }
+        return "Microsoft/Xbox suggested this page: " + redirect + " Offline Play remains available.";
     }
 
     private XboxToken readXboxToken(String body) throws IOException {

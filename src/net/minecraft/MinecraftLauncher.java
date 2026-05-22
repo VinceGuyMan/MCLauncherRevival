@@ -70,6 +70,7 @@ public final class MinecraftLauncher extends JFrame {
     private final JButton signOutButton = new FooterButton("Forget Login");
     private final JButton redownloadButton = new FooterButton("Redownload Version");
     private final JCheckBox compactNewsBox = new JCheckBox("Patch Notes Mode!");
+    private final JCheckBox lowEndModeBox = new JCheckBox("Low-End");
     private final TabLabel updateTab = new TabLabel("Update Notes", true);
     private final TabLabel logTab = new TabLabel("Launcher Log", false);
     private final TabLabel profileTab = new TabLabel("Profile Editor", false);
@@ -112,7 +113,11 @@ public final class MinecraftLauncher extends JFrame {
         setMinimumSize(new Dimension(854, 560));
         setIconImage(loadImage("/net/minecraft/favicon.png"));
         buildUi();
-        setSize(900, 590);
+        if (settings.getBoolean("lowEndMode", false)) {
+            setSize(854, 560);
+        } else {
+            setSize(900, 590);
+        }
         setLocationRelativeTo(null);
     }
 
@@ -312,6 +317,9 @@ public final class MinecraftLauncher extends JFrame {
 
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 4, 0));
         buttons.setOpaque(false);
+        lowEndModeBox.setOpaque(false);
+        lowEndModeBox.setFont(new Font("Dialog", Font.PLAIN, 11));
+        buttons.add(lowEndModeBox);
         compactNewsBox.setOpaque(false);
         compactNewsBox.setFont(new Font("Dialog", Font.PLAIN, 11));
         buttons.add(compactNewsBox);
@@ -378,6 +386,13 @@ public final class MinecraftLauncher extends JFrame {
                 refreshActiveTab();
             }
         });
+        lowEndModeBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                applyLowEndMode(true);
+                saveSettingsOnly();
+                refreshActiveTab();
+            }
+        });
         styleBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 saveSettingsOnly();
@@ -415,6 +430,24 @@ public final class MinecraftLauncher extends JFrame {
         saveSettingsOnly();
     }
 
+    private void applyLowEndMode(boolean resizeWindow) {
+        if (!lowEndModeBox.isSelected()) {
+            updateSplashAnimation();
+            return;
+        }
+        if (!"Low-end 384MB".equals(String.valueOf(memoryBox.getSelectedItem()))) {
+            memoryBox.setSelectedItem("Low-end 384MB");
+        }
+        if (!compactNewsBox.isSelected()) {
+            compactNewsBox.setSelected(true);
+        }
+        if (resizeWindow) {
+            setSize(854, 560);
+            appendLog("Low-end mode active: 384MB memory, compact notes, splash animation paused.");
+        }
+        updateSplashAnimation();
+    }
+
     private void handleLauncherAction(String action) {
         if ("launcher:backup-saves".equals(action)) {
             backupSaves();
@@ -436,6 +469,7 @@ public final class MinecraftLauncher extends JFrame {
         playOfflineButton.setToolTipText("Launch singleplayer without Microsoft login.");
         playOnlineButton.setToolTipText("Launch with the current Microsoft/Minecraft session when available.");
         compactNewsBox.setToolTipText("Switch the news panel into concise patch-style notes.");
+        lowEndModeBox.setToolTipText("Old-machine bundle: 384MB RAM, compact notes, no splash animation, and a smaller window.");
         redownloadButton.setToolTipText("Delete and re-fetch only the selected version folder.");
         loginButton.setToolTipText("Sign in through browser OAuth. The launcher should never ask for your Microsoft password.");
         signOutButton.setToolTipText("Remove cached local login tokens/settings.");
@@ -799,7 +833,7 @@ public final class MinecraftLauncher extends JFrame {
     }
 
     private void updateSplashAnimation() {
-        boolean notesVisible = "notes".equals(activeTab) && isDisplayable() && isVisible();
+        boolean notesVisible = "notes".equals(activeTab) && !lowEndModeBox.isSelected() && isDisplayable() && isVisible();
         splashLabel.setAnimationActive(notesVisible);
         splashLabel.setVisible(notesVisible);
     }
@@ -828,6 +862,8 @@ public final class MinecraftLauncher extends JFrame {
         memoryBox.setSelectedItem(memory);
         styleBox.setSelectedItem(settings.get("theme.mode", "Auto"));
         compactNewsBox.setSelected(settings.getBoolean("compactNews", false));
+        lowEndModeBox.setSelected(settings.getBoolean("lowEndMode", false));
+        applyLowEndMode(false);
         updateLastPlayedLabel();
         updateEraBadge();
     }
@@ -838,6 +874,7 @@ public final class MinecraftLauncher extends JFrame {
         settings.put("memory", String.valueOf(memoryBox.getSelectedItem()));
         settings.put("theme.mode", selectedStyleMode());
         settings.putBoolean("compactNews", compactNewsBox.isSelected());
+        settings.putBoolean("lowEndMode", lowEndModeBox.isSelected());
         try {
             settings.save();
         } catch (IOException e) {
@@ -891,6 +928,7 @@ public final class MinecraftLauncher extends JFrame {
                 + "+ Use <b>Microsoft Login</b> only when you want online profile authentication. "
                 + "Sign-in happens in your browser; the launcher should never ask for a raw Microsoft password.<br>"
                 + "+ Use <b>Style: Auto</b> to let the launcher mimic the selected build era, or pick a style manually.<br>"
+                + "+ Toggle <b>Low-End</b> on old machines for 384MB memory, compact notes, and no splash animation.<br>"
                 + "+ Toggle <b>Patch Notes Mode!</b> for compact historical notes.<br>"
                 + "+ Use <b>Launcher Log</b> when something fails and <b>Profile Editor</b> for local folders, Java status, and maintenance shortcuts.</p>"
                 + "<p><b>Windows XP note:</b><br>"
@@ -1625,6 +1663,7 @@ public final class MinecraftLauncher extends JFrame {
                 + "<tr><td><b>Selected version</b></td><td>" + escape(selectedVersion()) + "</td></tr>"
                 + "<tr><td><b>Version files</b></td><td>" + escape(readiness.label) + "</td></tr>"
                 + "<tr><td><b>Memory preset</b></td><td>" + escape(String.valueOf(memoryBox.getSelectedItem())) + "</td></tr>"
+                + "<tr><td><b>Low-end mode</b></td><td>" + (lowEndModeBox.isSelected() ? "On" : "Off") + "</td></tr>"
                 + "<tr><td><b>Style mode</b></td><td>" + escape(selectedStyleMode()) + "</td></tr>"
                 + "<tr><td><b>Resolved layout</b></td><td>" + escape(activeTheme.displayName) + "</td></tr>"
                 + "<tr><td><b>Splash animation</b></td><td>" + ("notes".equals(activeTab) ? "Active on Update Notes" : "Paused off Update Notes") + "</td></tr>"

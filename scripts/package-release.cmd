@@ -5,7 +5,7 @@ for %%I in ("%ROOT_DIR%") do set "ROOT_DIR=%%~fI"
 cd /d "%ROOT_DIR%"
 
 set "RELEASE_VERSION=%~1"
-if "%RELEASE_VERSION%"=="" set "RELEASE_VERSION=v0.5.6-alpha"
+if "%RELEASE_VERSION%"=="" set "RELEASE_VERSION=v0.5.7-alpha"
 
 set "PACKAGE_NAME=MCLauncherRevival-%RELEASE_VERSION%"
 set "RELEASE_ROOT=%ROOT_DIR%\..\release"
@@ -48,6 +48,9 @@ copy /y "Start MCLauncherRevival.cmd" "%STAGE_DIR%" >nul
 copy /y "Start MCLauncherRevival XP Offline.cmd" "%STAGE_DIR%" >nul
 copy /y "scripts\run-win7.cmd" "%STAGE_DIR%\scripts" >nul
 copy /y "scripts\build-win7.cmd" "%STAGE_DIR%\scripts" >nul
+copy /y "scripts\banner.txt" "%STAGE_DIR%\scripts" >nul
+copy /y "scripts\boot-card-win7.txt" "%STAGE_DIR%\scripts" >nul
+copy /y "scripts\boot-card-xp.txt" "%STAGE_DIR%\scripts" >nul
 copy /y "scripts\run-linux.sh" "%STAGE_DIR%\scripts" >nul
 copy /y "scripts\build-linux.sh" "%STAGE_DIR%\scripts" >nul
 copy /y "scripts\run-macos.sh" "%STAGE_DIR%\scripts" >nul
@@ -99,16 +102,16 @@ if errorlevel 1 (
   exit /b 1
 )
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "Add-Type -AssemblyName System.IO.Compression.FileSystem; $zip = [IO.Compression.ZipFile]::OpenRead('%ZIP_PATH%'); try { if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)MCLauncherRevival\.jar$' })) { exit 2 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)scripts/run-win7\.cmd$' })) { exit 3 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)resources/net/minecraft/themes/beta\.png$' })) { exit 4 } } finally { $zip.Dispose() }"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Add-Type -AssemblyName System.IO.Compression.FileSystem; $zip = [IO.Compression.ZipFile]::OpenRead('%ZIP_PATH%'); try { if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)MCLauncherRevival\.jar$' })) { exit 2 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)scripts/run-win7\.cmd$' })) { exit 3 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)scripts/banner\.txt$' })) { exit 5 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)resources/net/minecraft/themes/beta\.png$' })) { exit 4 } } finally { $zip.Dispose() }"
 if errorlevel 1 (
   echo Release ZIP verification failed.
-  echo Expected MCLauncherRevival.jar, scripts\run-win7.cmd, and theme resources.
+  echo Expected MCLauncherRevival.jar, scripts\run-win7.cmd, scripts\banner.txt, and theme resources.
   pause
   exit /b 1
 )
 
 echo.
-echo Release ZIP verified: MCLauncherRevival.jar, scripts\run-win7.cmd, and theme resources are included.
+echo Release ZIP verified: MCLauncherRevival.jar, scripts\run-win7.cmd, scripts\banner.txt, and theme resources are included.
 echo Created:
 echo   %ZIP_PATH%
 pause

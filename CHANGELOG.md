@@ -2,9 +2,15 @@
 
 ## Unreleased
 
+## v0.5.8-alpha
+
 - Reworked Microsoft Login trust UX: the primary path now opens the default browser with a local
   callback + PKCE flow, device-code login is a fallback, and manual paste-back is advanced-only.
 - Made XP/old-machine Low-End mode more aggressive with a `Potato 256MB` preset and improved local version-folder scanning for copied XP builds.
+- Renamed active Windows helper scripts and docs from `win7` naming to general `win` naming:
+  `scripts\run-win.cmd`, `scripts\build-win.cmd`, `scripts\boot-card-win.txt`, and
+  `docs\WINDOWS.md`.
+
 ## v0.5.7-alpha
 
 - Renamed the user-facing Windows launcher shortcuts to shorter MCLR filenames: `Setup MCLR.cmd`, `Start MCLR.cmd`, and `Start MCLR XP.cmd`.

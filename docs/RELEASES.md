@@ -17,13 +17,13 @@ Those source archives are useful for reading or building the code, but they may 
 For `v0.5.6`, download:
 
 ```text
-MCLauncherRevival-v0.5.6-alpha.zip
+MCLauncherRevival-v0.5.8-alpha.zip
 ```
 
 If an XP bundled-Java package is published, it should be named:
 
 ```text
-MCLauncherRevival-v0.5.6-alpha-xp-bundled-java.zip
+MCLauncherRevival-v0.5.8-alpha-xp-bundled-java.zip
 ```
 
 That package is only for XP offline/classic use. It may include a maintainer-provided Java runtime
@@ -58,7 +58,7 @@ Start MCLR XP.cmd
 Recommended release zip layout:
 
 ```text
-MCLauncherRevival-v0.5.6-alpha/
+MCLauncherRevival-v0.5.8-alpha/
   Setup MCLR.cmd
   Start MCLR.cmd
   Start MCLR XP.cmd
@@ -83,7 +83,7 @@ MCLauncherRevival-v0.5.6-alpha/
 Recommended XP bundled-Java release zip layout:
 
 ```text
-MCLauncherRevival-v0.5.6-alpha-xp-bundled-java/
+MCLauncherRevival-v0.5.8-alpha-xp-bundled-java/
   Setup MCLR.cmd
   Start MCLR XP.cmd
   Start MCLR.cmd

@@ -422,6 +422,8 @@ public final class MinecraftLauncher extends JFrame {
             importTexturePack();
         } else if ("launcher:first-run-guide".equals(action)) {
             showFirstRunGuide(false);
+        } else if ("launcher:xp-version-guide".equals(action)) {
+            showXpVersionGuide();
         }
     }
 
@@ -621,6 +623,7 @@ public final class MinecraftLauncher extends JFrame {
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
                             setBusy(false);
+                            updateRedownloadVisibility();
                         }
                     });
                 }
@@ -905,6 +908,36 @@ public final class MinecraftLauncher extends JFrame {
         }
     }
 
+    private void showXpVersionGuide() {
+        VersionReadiness readiness = selectedVersionReadiness();
+        setNewsHtml(htmlStart("#e8e8e8", "#aaaaff", "Verdana,Arial,sans-serif", 11, 24)
+                + "<font size='+3'><b>Preparing Minecraft versions for XP</b></font><br><br>"
+                + "<p><b>Selected version:</b> " + escape(selectedVersion()) + "<br>"
+                + "<b>Current local status:</b> " + escape(readiness.label) + "</p>"
+                + "<p>Windows XP Offline mode runs best when the selected version is already prepared locally. "
+                + "Offline means no Microsoft login; it does not remove the need for the version jar, JSON metadata, "
+                + "libraries, natives, and sometimes assets.</p>"
+                + "<p><b>Preferred method:</b><br>"
+                + "1. On Windows 7 or newer, run MCLauncherRevival.<br>"
+                + "2. Select the same classic version and click <b>Play Offline</b> once.<br>"
+                + "3. Copy these folders from the newer PC:<br>"
+                + "%APPDATA%\\.minecraft\\versions<br>"
+                + "%APPDATA%\\.minecraft\\libraries<br>"
+                + "%APPDATA%\\.minecraft\\assets<br><br>"
+                + "4. Paste them on XP at:<br>"
+                + "C:\\Documents and Settings\\&lt;User&gt;\\Application Data\\.minecraft\\versions<br>"
+                + "C:\\Documents and Settings\\&lt;User&gt;\\Application Data\\.minecraft\\libraries<br>"
+                + "C:\\Documents and Settings\\&lt;User&gt;\\Application Data\\.minecraft\\assets</p>"
+                + "<p><b>Loose jar warning:</b><br>"
+                + "A loose .minecraft\\versions\\" + escape(selectedVersion()) + ".jar is not enough. "
+                + "MCLauncherRevival expects .minecraft\\versions\\" + escape(selectedVersion()) + "\\"
+                + escape(selectedVersion()) + ".jar plus the matching JSON metadata and support folders.</p>"
+                + "<p><font color='#ffff55'><b>Use only Minecraft files you own or otherwise have the right to use. "
+                + "This project is unofficial and does not bypass ownership checks.</b></font></p>"
+                + "</body></html>");
+        appendLog("Opened XP version setup help for " + selectedVersion() + ".");
+    }
+
     private void updateEraBadge() {
         EraTheme theme = EraTheme.resolve(selectedStyleMode(), selectedVersion());
         eraBadge.setText(theme.badgeText);
@@ -917,14 +950,95 @@ public final class MinecraftLauncher extends JFrame {
         if (redownloadButton == null || versionBox == null) {
             return;
         }
-        java.io.File versionDir = new java.io.File(new java.io.File(TokenCache.minecraftDir(), "versions"), selectedVersion());
-        boolean downloaded = versionDir.exists();
-        redownloadButton.setVisible(downloaded);
+        VersionReadiness readiness = selectedVersionReadiness();
+        redownloadButton.setVisible(readiness.folderExists);
         if (versionStatusLabel != null) {
-            versionStatusLabel.setText("Version files: " + (downloaded ? "downloaded" : "not downloaded yet"));
-            versionStatusLabel.setForeground(downloaded ? new Color(45, 95, 45) : new Color(90, 90, 90));
+            versionStatusLabel.setText("Version files: " + readiness.label);
+            versionStatusLabel.setForeground(readiness.color);
+            versionStatusLabel.setToolTipText(readiness.tooltip);
         }
-        versionBox.setToolTipText(downloaded ? "Selected version is downloaded." : "Selected version will download on launch.");
+        versionBox.setToolTipText(readiness.tooltip);
+    }
+
+    private VersionReadiness selectedVersionReadiness() {
+        String version = selectedVersion();
+        java.io.File minecraftDir = TokenCache.minecraftDir();
+        java.io.File versionDir = new java.io.File(new java.io.File(minecraftDir, "versions"), version);
+        java.io.File jarFile = new java.io.File(versionDir, version + ".jar");
+        java.io.File jsonFile = new java.io.File(versionDir, version + ".json");
+        java.io.File librariesDir = new java.io.File(minecraftDir, "libraries");
+        java.io.File nativeDir = new java.io.File(versionDir, "natives");
+
+        if (!versionDir.exists()) {
+            return new VersionReadiness("not downloaded yet",
+                    "Selected version will download on launch when downloads are available.",
+                    new Color(90, 90, 90), false);
+        }
+        if (!jarFile.exists() && !jsonFile.exists()) {
+            return new VersionReadiness("missing jar/json",
+                    "The selected version folder exists, but the client jar and JSON metadata are missing.",
+                    new Color(145, 70, 30), true);
+        }
+        if (!jarFile.exists()) {
+            return new VersionReadiness("missing jar",
+                    "The selected version folder is missing " + version + ".jar.",
+                    new Color(145, 70, 30), true);
+        }
+        if (!jsonFile.exists()) {
+            return new VersionReadiness("missing json",
+                    "The selected version folder is missing " + version + ".json.",
+                    new Color(145, 70, 30), true);
+        }
+        if (!hasAnyFile(librariesDir)) {
+            return new VersionReadiness("needs libraries",
+                    "The selected version has jar/json files, but the shared .minecraft libraries folder looks empty.",
+                    new Color(145, 70, 30), true);
+        }
+        if (!hasAnyFile(nativeDir)) {
+            return new VersionReadiness("needs natives",
+                    "The selected version has jar/json files, but extracted LWJGL natives were not found yet.",
+                    new Color(145, 70, 30), true);
+        }
+        return new VersionReadiness("ready",
+                "Selected version has local jar, JSON metadata, libraries, and extracted natives.",
+                new Color(45, 95, 45), true);
+    }
+
+    private static boolean hasAnyFile(java.io.File dir) {
+        return hasAnyFile(dir, 0);
+    }
+
+    private static boolean hasAnyFile(java.io.File dir, int depth) {
+        if (dir == null || !dir.exists() || depth > 8) {
+            return false;
+        }
+        java.io.File[] files = dir.listFiles();
+        if (files == null) {
+            return false;
+        }
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].isFile()) {
+                return true;
+            }
+            if (files[i].isDirectory() && hasAnyFile(files[i], depth + 1)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static final class VersionReadiness {
+        final String label;
+        final String tooltip;
+        final Color color;
+        final boolean folderExists;
+
+        VersionReadiness(String label, String tooltip, Color color, boolean folderExists) {
+            this.label = label;
+            this.tooltip = tooltip;
+            this.color = color;
+            this.folderExists = folderExists;
+        }
     }
 
     private void pickRandomVersion() {
@@ -961,6 +1075,7 @@ public final class MinecraftLauncher extends JFrame {
             deleteRecursive(versionDir);
             status("Deleted selected version folder for re-download: " + version);
             appendLog("Next launch will re-download " + version + ".");
+            updateRedownloadVisibility();
         } catch (IOException e) {
             showError(e);
         }
@@ -1492,6 +1607,7 @@ public final class MinecraftLauncher extends JFrame {
         String mode = currentProfile == null ? "No Microsoft profile loaded for this session" : "Logged in as " + currentProfile.name;
         String uuid = currentProfile == null ? "(not loaded)" : currentProfile.uuid;
         String tokenState = tokenCache.hasRefreshToken() ? "OAuth refresh token cached" : "No cached Microsoft refresh token";
+        VersionReadiness readiness = selectedVersionReadiness();
         String minecraftDir = TokenCache.minecraftDir().getAbsolutePath();
         String savesDir = new java.io.File(TokenCache.minecraftDir(), "saves").getAbsolutePath();
         String modsDir = new java.io.File(TokenCache.minecraftDir(), "mods").getAbsolutePath();
@@ -1507,6 +1623,7 @@ public final class MinecraftLauncher extends JFrame {
                 + "<table cellpadding='6' cellspacing='0' bgcolor='#0d0d0d' style='border:1px solid #444444'>"
                 + "<tr><td><b>Offline name</b></td><td>" + escape(offlineName.getText()) + "</td></tr>"
                 + "<tr><td><b>Selected version</b></td><td>" + escape(selectedVersion()) + "</td></tr>"
+                + "<tr><td><b>Version files</b></td><td>" + escape(readiness.label) + "</td></tr>"
                 + "<tr><td><b>Memory preset</b></td><td>" + escape(String.valueOf(memoryBox.getSelectedItem())) + "</td></tr>"
                 + "<tr><td><b>Style mode</b></td><td>" + escape(selectedStyleMode()) + "</td></tr>"
                 + "<tr><td><b>Resolved layout</b></td><td>" + escape(activeTheme.displayName) + "</td></tr>"
@@ -1530,6 +1647,7 @@ public final class MinecraftLauncher extends JFrame {
                 + "<a href='" + fileUrl(selectedVersionDir) + "'>Open selected version folder</a></p>"
                 + "<p><b>Maintenance:</b><br>"
                 + "<a href='launcher:first-run-guide'>Open first-run guide</a><br>"
+                + "<a href='launcher:xp-version-guide'>XP version setup help</a><br>"
                 + "<a href='launcher:backup-saves'>Backup saves now</a><br>"
                 + "<a href='launcher:import-texture-pack'>Import texture pack .zip</a><br>"
                 + "Use <b>Redownload Version</b> in the bottom-right to delete only the selected version folder and fetch it again on next launch.</p>"

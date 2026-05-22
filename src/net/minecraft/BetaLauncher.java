@@ -272,7 +272,8 @@ final class BetaLauncher {
 
     private static void requireXpFile(File file) throws IOException {
         if (file == null || !file.exists()) {
-            throw new IOException(xpVersionFilesMessage());
+            String path = file == null ? "(unknown file)" : file.getAbsolutePath();
+            throw new IOException("Missing required Minecraft file:\n" + path + "\n\n" + xpVersionFilesMessage());
         }
     }
 
@@ -286,9 +287,14 @@ final class BetaLauncher {
             if (xpCompatibilityMode() && jar.exists()) {
                 return jar;
             }
-            throw new IOException("Version metadata did not include a client jar URL.");
+            throw missingGameFile("client jar", jar,
+                    new IOException("Version metadata did not include a client jar URL."));
         }
-        downloadFile(url, jar, sha1);
+        try {
+            downloadFile(url, jar, sha1);
+        } catch (IOException ex) {
+            throw missingGameFile("client jar", jar, ex);
+        }
         return jar;
     }
 
@@ -313,11 +319,19 @@ final class BetaLauncher {
             Map<String, Object> artifact = Json.object(downloads == null ? null : downloads.get("artifact"));
             if (artifact != null) {
                 File artifactFile = libraryFile(librariesDir, artifact, Json.string(library, "name"), null);
-                downloadFile(artifactUrl(library, artifact, null), artifactFile, Json.string(artifact, "sha1"));
+                try {
+                    downloadFile(artifactUrl(library, artifact, null), artifactFile, Json.string(artifact, "sha1"));
+                } catch (IOException ex) {
+                    throw missingGameFile("library", artifactFile, ex);
+                }
                 classpath.add(artifactFile);
             } else if (Json.object(library.get("natives")) == null && Json.string(library, "name") != null) {
                 File artifactFile = libraryFile(librariesDir, null, Json.string(library, "name"), null);
-                downloadFile(artifactUrl(library, null, null), artifactFile, null);
+                try {
+                    downloadFile(artifactUrl(library, null, null), artifactFile, null);
+                } catch (IOException ex) {
+                    throw missingGameFile("library", artifactFile, ex);
+                }
                 classpath.add(artifactFile);
             }
 
@@ -332,11 +346,15 @@ final class BetaLauncher {
                             Json.object(classifiers == null ? null : classifiers.get(classifier));
                     File nativeJar =
                             libraryFile(librariesDir, nativeArtifact, Json.string(library, "name"), classifier);
-                    downloadFile(
-                            artifactUrl(library, nativeArtifact, classifier),
-                            nativeJar,
-                            Json.string(nativeArtifact, "sha1"));
-                    extractNatives(nativeJar, nativeDir);
+                    try {
+                        downloadFile(
+                                artifactUrl(library, nativeArtifact, classifier),
+                                nativeJar,
+                                Json.string(nativeArtifact, "sha1"));
+                        extractNatives(nativeJar, nativeDir);
+                    } catch (IOException ex) {
+                        throw missingGameFile("native", nativeJar, ex);
+                    }
                 }
             }
         }
@@ -362,6 +380,22 @@ final class BetaLauncher {
             }
         }
         return allowed;
+    }
+
+    private IOException missingGameFile(String kind, File file, IOException cause) {
+        String path = file == null ? "(unknown file)" : file.getAbsolutePath();
+        StringBuilder message = new StringBuilder();
+        message.append("Missing or unavailable Minecraft ").append(kind).append(" file:\n");
+        message.append(path).append("\n\n");
+        message.append("Minecraft ").append(version).append(" needs its client jar, JSON metadata, libraries, ");
+        message.append("LWJGL natives, and sometimes assets to be present before launch.\n\n");
+        message.append("If this PC is online and supported, try Play or Redownload Version again. ");
+        message.append("On Windows XP, prepare this version on Windows 7 or newer, then copy your ");
+        message.append(".minecraft versions, libraries, and assets folders to the XP machine.");
+        if (cause != null && cause.getMessage() != null && cause.getMessage().length() > 0) {
+            message.append("\n\nOriginal reason: ").append(cause.getMessage());
+        }
+        return new IOException(message.toString(), cause);
     }
 
     private static File libraryFile(
@@ -489,7 +523,7 @@ final class BetaLauncher {
             throw new IOException(xpVersionFilesMessage());
         }
         if (url == null || url.length() == 0) {
-            throw new IOException("Missing download URL for " + file.getName());
+            throw new IOException("Missing download URL for Minecraft file: " + file.getAbsolutePath());
         }
         File parent = file.getParentFile();
         if (parent != null && !parent.exists()) {

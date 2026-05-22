@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Removed the exact/fallback color squares from the historical notes panel now that the
+  launcher-visible version notes have been filled in.
+- Added clearer selected-version readiness text so the launcher can distinguish missing
+  jar/json files, libraries, natives, and ready-to-run local versions.
+- Added an XP version preparation help link in the Profile Editor and improved missing
+  library/native diagnostics during launch preparation.
 - Fixed Alpha and Pre-Classic right-side layout spacing so the sidebar text stays inside the
   launcher frame and the Scrolls/Cobalt logo block has enough room to sit centered.
 

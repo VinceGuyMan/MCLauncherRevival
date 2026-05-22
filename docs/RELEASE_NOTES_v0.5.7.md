@@ -4,6 +4,10 @@ v0.5.7-alpha is a small release-prep polish update focused on the Windows comman
 
 ## Highlights
 
+- Renamed the user-facing Windows launcher shortcuts to shorter MCLR filenames: `Setup MCLR.cmd`, `Start MCLR.cmd`, and `Start MCLR XP.cmd`.
+
+- Reworked the first-run welcome panel into an old launcher-style `Minecraft News` update post and removed the duplicate Indev notes sidebar link.
+
 - Added a cleaner retro CMD startup screen with the large MCLauncherRevival ASCII banner.
 - Added separate Windows 7+ and XP offline/classic boot cards.
 - Removed UTF-8 BOM batch-file issues that could make CMD print raw `@echo off` errors before startup.

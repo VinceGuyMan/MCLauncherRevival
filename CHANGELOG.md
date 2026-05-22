@@ -2,10 +2,10 @@
 
 ## Unreleased
 
-- Reworked the first-run welcome panel into an old launcher-style `Minecraft News` update post and removed the duplicate Indev notes sidebar link.
-- Renamed the user-facing Windows launcher shortcuts to shorter MCLR filenames: `Setup MCLR.cmd`, `Start MCLR.cmd`, and `Start MCLR XP.cmd`.
 ## v0.5.7-alpha
 
+- Renamed the user-facing Windows launcher shortcuts to shorter MCLR filenames: `Setup MCLR.cmd`, `Start MCLR.cmd`, and `Start MCLR XP.cmd`.
+- Reworked the first-run welcome panel into an old launcher-style `Minecraft News` update post and removed the duplicate Indev notes sidebar link.
 - Added a cleaner retro CMD startup screen before the Swing launcher opens, including the large MCLauncherRevival ASCII banner and simple Windows/XP boot cards.
 - Removed UTF-8 BOM issues from Windows batch launchers so CMD no longer prints raw `@echo off` errors before startup.
 - Kept root starter scripts quiet and moved the visual startup flow into `scripts\run-win7.cmd`, guarded by `MCLR_BANNER_SHOWN` so nested calls do not duplicate the banner.

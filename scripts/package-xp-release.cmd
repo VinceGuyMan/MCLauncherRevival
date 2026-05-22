@@ -9,7 +9,8 @@ if "%RELEASE_VERSION%"=="" set "RELEASE_VERSION=v0.5.7-alpha"
 
 set "PACKAGE_NAME=MCLauncherRevival-%RELEASE_VERSION%-xp-bundled-java"
 set "DIST_DIR=%ROOT_DIR%\dist"
-set "STAGE_DIR=%DIST_DIR%\%PACKAGE_NAME%"
+set "STAGE_PARENT=%DIST_DIR%\_staging"
+set "STAGE_DIR=%STAGE_PARENT%\%PACKAGE_NAME%"
 set "ZIP_PATH=%DIST_DIR%\%PACKAGE_NAME%.zip"
 
 echo Preparing %PACKAGE_NAME%
@@ -38,7 +39,15 @@ if not exist "%ROOT_DIR%\MCLauncherRevival.jar" (
 )
 
 if not exist "%DIST_DIR%" mkdir "%DIST_DIR%"
+if not exist "%STAGE_PARENT%" mkdir "%STAGE_PARENT%"
 if exist "%STAGE_DIR%" rmdir /s /q "%STAGE_DIR%"
+if exist "%STAGE_DIR%" (
+  echo XP release staging folder is locked:
+  echo   %STAGE_DIR%
+  echo Close any Explorer windows or terminals inside that folder, then try again.
+  pause
+  exit /b 1
+)
 if exist "%ZIP_PATH%" del /q "%ZIP_PATH%"
 mkdir "%STAGE_DIR%"
 mkdir "%STAGE_DIR%\scripts"
@@ -111,6 +120,11 @@ if errorlevel 1 (
 
 echo.
 echo XP bundled-Java ZIP verified.
+rmdir /s /q "%STAGE_DIR%" >nul 2>nul
+if exist "%STAGE_DIR%" (
+  echo [WARN] Could not remove temporary staging folder:
+  echo        %STAGE_DIR%
+)
 echo Created:
 echo   %ZIP_PATH%
 pause

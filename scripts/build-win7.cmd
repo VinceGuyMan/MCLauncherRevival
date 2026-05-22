@@ -80,7 +80,7 @@ if errorlevel 1 (
 )
 xcopy /E /I /Y resources build\classes >nul
 if exist MCLauncherRevival.jar del MCLauncherRevival.jar
-"%JAR_EXE%" cfe MCLauncherRevival.jar net.minecraft.BetaLauncher -C build\classes .
+"%JAR_EXE%" cfe MCLauncherRevival.jar net.minecraft.MinecraftLauncher -C build\classes .
 if errorlevel 1 (
   call :Status "FAIL" "Jar packaging failed."
   pause

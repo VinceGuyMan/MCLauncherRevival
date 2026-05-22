@@ -14,6 +14,8 @@ v0.5.7-alpha is a small release-prep polish update focused on the Windows comman
 - Added `--verbose` and `MCLR_VERBOSE=1` troubleshooting support.
 - Improved Windows Java detection for nested portable JDK folders, including layouts such as `tools\jdk8\jdk8u492-b09`.
 - If Java is missing on Windows 7+, pressing Enter at the prompt now defaults to downloading the portable Java 8 JDK into `tools\jdk8`.
+- Fixed the release jar manifest so `java -jar MCLauncherRevival.jar` starts the real Swing launcher entrypoint instead of the backend launch helper.
+- Updated release packaging to use a private temporary staging folder so Explorer locks on extracted release folders do not corrupt or confuse new ZIP builds.
 
 ## Included package
 

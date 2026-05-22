@@ -10,6 +10,8 @@
 - Simplified startup status output to short `[ OK ]`, `[WARN]`, `[INFO]`, `[ XP ]`, and `[FAIL]` messages ending with `Press Nothing. Happy Mining!`.
 - Added `--verbose` / `MCLR_VERBOSE=1` support for troubleshooting without making normal startup noisy.
 - Improved Windows Java detection for nested portable installs such as `tools\jdk8\jdk8u492-b09`, and made the missing-Java prompt default to downloading portable Java 8 when Enter is pressed.
+- Fixed the release jar manifest so `java -jar MCLauncherRevival.jar` starts the real Swing launcher entrypoint instead of the backend launch helper.
+- Updated release packaging to use a private temporary staging folder so Explorer locks on extracted release folders do not corrupt or confuse new ZIP builds.
 - Improved Windows Java detection in the run/build scripts. They now check bundled Java folders,
   `JAVA_HOME`, PATH, and common `Program Files\Java` install folders before offering the portable
   Temurin 8 JDK download, which now defaults to yes on Windows 7+ when Java is still missing.

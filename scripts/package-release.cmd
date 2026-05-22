@@ -9,13 +9,15 @@ if "%RELEASE_VERSION%"=="" set "RELEASE_VERSION=v0.5.7-alpha"
 
 set "PACKAGE_NAME=MCLauncherRevival-%RELEASE_VERSION%"
 set "RELEASE_ROOT=%ROOT_DIR%\..\release"
-set "STAGE_DIR=%RELEASE_ROOT%\%PACKAGE_NAME%"
+set "STAGE_PARENT=%RELEASE_ROOT%\_staging"
+set "STAGE_DIR=%STAGE_PARENT%\%PACKAGE_NAME%"
 set "ZIP_PATH=%RELEASE_ROOT%\%PACKAGE_NAME%.zip"
 
 echo Preparing %PACKAGE_NAME%
 echo.
 
 if not exist "%RELEASE_ROOT%" mkdir "%RELEASE_ROOT%"
+if not exist "%STAGE_PARENT%" mkdir "%STAGE_PARENT%"
 
 echo Building launcher jar...
 call "%ROOT_DIR%\scripts\build-win7.cmd"
@@ -33,6 +35,13 @@ if not exist "%ROOT_DIR%\MCLauncherRevival.jar" (
 )
 
 if exist "%STAGE_DIR%" rmdir /s /q "%STAGE_DIR%"
+if exist "%STAGE_DIR%" (
+  echo Release staging folder is locked:
+  echo   %STAGE_DIR%
+  echo Close any Explorer windows or terminals inside that folder, then try again.
+  pause
+  exit /b 1
+)
 if exist "%ZIP_PATH%" del /q "%ZIP_PATH%"
 mkdir "%STAGE_DIR%"
 mkdir "%STAGE_DIR%\scripts"
@@ -112,6 +121,11 @@ if errorlevel 1 (
 
 echo.
 echo Release ZIP verified: MCLauncherRevival.jar, scripts\run-win7.cmd, scripts\banner.txt, and theme resources are included.
+rmdir /s /q "%STAGE_DIR%" >nul 2>nul
+if exist "%STAGE_DIR%" (
+  echo [WARN] Could not remove temporary staging folder:
+  echo        %STAGE_DIR%
+)
 echo Created:
 echo   %ZIP_PATH%
 pause

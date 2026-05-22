@@ -70,7 +70,7 @@ public final class MinecraftLauncher extends JFrame {
     private final JButton signOutButton = new FooterButton("Forget Login");
     private final JButton redownloadButton = new FooterButton("Redownload Version");
     private final JCheckBox compactNewsBox = new JCheckBox("Patch Notes Mode!");
-    private final JCheckBox lowEndModeBox = new JCheckBox("Low-End");
+    private final JCheckBox lowEndModeBox = new JCheckBox("Potato Mode!");
     private final TabLabel updateTab = new TabLabel("Update Notes", true);
     private final TabLabel logTab = new TabLabel("Launcher Log", false);
     private final TabLabel profileTab = new TabLabel("Profile Editor", false);
@@ -443,7 +443,7 @@ public final class MinecraftLauncher extends JFrame {
         }
         if (resizeWindow) {
             setSize(854, 560);
-            appendLog("Low-end mode active: 256MB memory, compact notes, splash animation paused.");
+            appendLog("Potato Mode active: 256MB memory, compact notes, splash animation paused.");
         }
         updateSplashAnimation();
     }
@@ -469,7 +469,7 @@ public final class MinecraftLauncher extends JFrame {
         playOfflineButton.setToolTipText("Launch singleplayer without Microsoft login.");
         playOnlineButton.setToolTipText("Launch with the current Microsoft/Minecraft session when available.");
         compactNewsBox.setToolTipText("Switch the news panel into concise patch-style notes.");
-        lowEndModeBox.setToolTipText("Old-machine bundle: 256MB RAM, compact notes, no splash animation, and a smaller window.");
+        lowEndModeBox.setToolTipText("Potato Mode!: 256MB RAM, compact notes, no splash animation, and a smaller window.");
         redownloadButton.setToolTipText("Delete and re-fetch only the selected version folder.");
         loginButton.setToolTipText("Sign in through browser OAuth. The launcher should never ask for your Microsoft password.");
         signOutButton.setToolTipText("Remove cached local login tokens/settings.");
@@ -950,7 +950,7 @@ public final class MinecraftLauncher extends JFrame {
                 + "+ Play Offline for singleplayer without signing in.<br>"
                 + "+ Microsoft Login for online profile authentication when supported.<br>"
                 + "+ Style: Auto, which lets the launcher match the selected build era.<br>"
-                + "+ Low-End mode for older machines.<br>"
+                + "+ Potato Mode! for older machines.<br>"
                 + "+ Patch Notes Mode for compact historical notes.<br>"
                 + "+ Launcher Log for troubleshooting.<br>"
                 + "+ Profile Editor for local folders, Java status, launch settings, and maintenance shortcuts.</p>"
@@ -961,7 +961,7 @@ public final class MinecraftLauncher extends JFrame {
                 + "+ Use <b>Microsoft Login</b> only when you want online profile authentication.<br>"
                 + "+ Sign-in happens in your browser. The launcher should never ask for your raw Microsoft password.</p>"
                 + "<p><b>+ Changed:</b><br>"
-                + "+ Low-End mode uses lighter settings for older computers.<br>"
+                + "+ Potato Mode! uses lighter settings for older computers.<br>"
                 + "+ Patch Notes Mode keeps version history short and readable.<br>"
                 + "+ Style: Auto changes the look without changing how the game launches.</p>"
                 + "<p><b>+ Windows XP note:</b><br>"
@@ -1797,7 +1797,7 @@ public final class MinecraftLauncher extends JFrame {
                 + "<tr><td><b>Selected version</b></td><td>" + escape(selectedVersion()) + "</td></tr>"
                 + "<tr><td><b>Version files</b></td><td>" + escape(readiness.label) + "</td></tr>"
                 + "<tr><td><b>Memory preset</b></td><td>" + escape(String.valueOf(memoryBox.getSelectedItem())) + "</td></tr>"
-                + "<tr><td><b>Low-end mode</b></td><td>" + (lowEndModeBox.isSelected() ? "On, Potato 256MB" : "Off") + "</td></tr>"
+                + "<tr><td><b>Potato Mode!</b></td><td>" + (lowEndModeBox.isSelected() ? "On, Potato 256MB" : "Off") + "</td></tr>"
                 + "<tr><td><b>Style mode</b></td><td>" + escape(selectedStyleMode()) + "</td></tr>"
                 + "<tr><td><b>Resolved layout</b></td><td>" + escape(activeTheme.displayName) + "</td></tr>"
                 + "<tr><td><b>Splash animation</b></td><td>" + ("notes".equals(activeTab) ? "Active on Update Notes" : "Paused off Update Notes") + "</td></tr>"

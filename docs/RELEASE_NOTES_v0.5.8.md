@@ -11,9 +11,9 @@ v0.5.8-alpha is a small trust, XP, and packaging cleanup release.
 - The launcher messaging is clearer that Microsoft passwords stay in the browser on Microsoft's
   website, and MCLauncherRevival only receives returned OAuth tokens after sign-in approval.
 
-## XP and low-end machines
+## XP and older machines
 
-- Low-End mode is more aggressive and now uses the `Potato 256MB` memory preset.
+- The old-machine mode is more aggressive and now uses the `Potato 256MB` memory preset.
 - XP/local version scanning is more forgiving for copied version folders.
 - The launcher can now detect a local version folder containing exactly one `.jar` and exactly one
   `.json`, even if the filenames do not match the folder name perfectly.

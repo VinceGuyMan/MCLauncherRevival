@@ -43,7 +43,7 @@ The v0.5.0 historical style system is documented in
   version metadata is available.
 - Stores launcher settings and local token/config data under the user's `.minecraft` folder.
 - Includes convenience shortcuts for saves backups, texture pack import, logs, and local folders.
-- Includes a Low-End mode toggle for older machines: 256MB memory, compact notes, no animated
+- Includes a `Potato Mode!` toggle for older machines: 256MB memory, compact notes, no animated
   splash, and a smaller launcher window.
 
 ## What works / what is still experimental

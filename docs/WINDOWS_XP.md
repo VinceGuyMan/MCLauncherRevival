@@ -107,7 +107,7 @@ Recommended XP in-game settings:
 - Particles: Minimal
 - Lower resolution if the laptop struggles.
 - Limit background programs.
-- Enable `Low-End mode` in the launcher for the extra-conservative `Potato 256MB` preset.
+- Enable `Potato Mode!` in the launcher for the extra-conservative `Potato 256MB` preset.
 - Use already-downloaded versions where possible.
 - Try Beta 1.7.3 or nearby versions if one build performs poorly.
 

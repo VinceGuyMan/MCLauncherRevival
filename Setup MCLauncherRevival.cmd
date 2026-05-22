@@ -128,6 +128,9 @@ if "%SETUP_EXIT%"=="0" (
 ) else (
   echo Setup finished with exit code %SETUP_EXIT%.
 )
+echo.
+echo Press any key to close this setup window.
+pause >nul
 endlocal & exit /b %SETUP_EXIT%
 
 

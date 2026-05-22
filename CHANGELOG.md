@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fixed the setup hub closing immediately after choosing an option by keeping the setup window open
+  at the end and preserving visible exit codes from the Windows launcher shortcuts.
 - Tightened historical era layouts so the right sidebar is modular by selected style instead of
   sharing one modern link stack. Beta keeps the full news/links/games rail, Alpha is a shorter
   login-board style rail, Indev/Infdev reads more like a devlog panel, Classic has only a tiny

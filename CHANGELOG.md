@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Fixed macOS/Linux shell helpers so source checkouts no longer fail on UTF-8 BOM shebang bytes or
+  incorrect build-script paths.
+- Added a macOS Temurin 8 helper for local Java 7-compatible builds, including Apple Silicon
+  Rosetta guidance and release-package inclusion.
+- Improved macOS launcher startup under local JDK 8 by pointing Java at macOS system font
+  directories and making Swing HTML panes honor the launcher fonts.
+
 ## v0.5.8.1-alpha
 
 - Renamed the old-machine checkbox from `Low-End` to `Potato Mode!`.

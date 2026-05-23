@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env sh
+#!/usr/bin/env sh
 set -eu
 
 cd "$(dirname "$0")/.."
@@ -35,7 +35,7 @@ if [ ! -f MCLauncherRevival.jar ]; then
     echo "MCLauncherRevival.jar was not found."
     echo "For normal use, download the attached GitHub Releases ZIP instead of GitHub's source-code ZIP."
     echo "Building from source now; this requires a JDK."
-    sh ./build-macos.sh
+    sh ./scripts/build-macos.sh
     JAVA="$(find_java || true)"
 fi
 
@@ -46,4 +46,5 @@ if [ -z "$JAVA" ]; then
 fi
 
 echo "Java runtime found: $JAVA"
-exec "$JAVA" ${MCLAUNCHER_JAVA_OPTS:-} -jar MCLauncherRevival.jar
+MAC_FONT_PATH_OPT="-Dsun.java2d.fontpath=/System/Library/Fonts:/Library/Fonts"
+exec "$JAVA" "$MAC_FONT_PATH_OPT" ${MCLAUNCHER_JAVA_OPTS:-} -jar MCLauncherRevival.jar

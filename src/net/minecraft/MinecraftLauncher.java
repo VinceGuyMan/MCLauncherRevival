@@ -202,6 +202,7 @@ public final class MinecraftLauncher extends JFrame {
         news.setOpaque(false);
         news.setContentType("text/html");
         news.setFont(new Font("Verdana", Font.PLAIN, 12));
+        news.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
         news.addHyperlinkListener(new HyperlinkListener() {
             public void hyperlinkUpdate(HyperlinkEvent e) {
                 if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
@@ -1556,6 +1557,8 @@ public final class MinecraftLauncher extends JFrame {
         pane.setEditable(false);
         pane.setOpaque(false);
         pane.setContentType("text/html");
+        pane.setFont(new Font("Dialog", Font.PLAIN, 11));
+        pane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
         pane.setText(html);
         pane.addHyperlinkListener(new HyperlinkListener() {
             public void hyperlinkUpdate(HyperlinkEvent e) {
@@ -2376,6 +2379,5 @@ public final class MinecraftLauncher extends JFrame {
         }
     }
 }
-
 
 

@@ -172,6 +172,18 @@ See [docs/MACOS.md](docs/MACOS.md) before relying on macOS behavior.
    ./scripts/build-macos.sh
    ```
 
+   On macOS, if only a modern JDK is installed and the build says Java 7-compatible bytecode is not
+   supported, install a local JDK 8 into this repo:
+
+   ```sh
+   chmod +x tools/download-temurin8-jdk-macos.sh
+   ./tools/download-temurin8-jdk-macos.sh
+   ./scripts/build-macos.sh
+   ```
+
+   On Apple Silicon, that helper uses the x64 Temurin 8 JDK through Rosetta because Adoptium does
+   not provide a macOS ARM64 JDK 8 package.
+
 4. The build output is:
 
    ```text
@@ -298,5 +310,4 @@ styles used by the historical theme system:
 
 These are project-owned visual interpretations, not bundled original Mojang/Microsoft launcher
 assets.
-
 

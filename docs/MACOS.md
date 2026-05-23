@@ -38,6 +38,8 @@ Primary launch log path:
 - A macOS desktop session.
 - Java 8 is the best first test for old Beta/Alpha Minecraft behavior.
 - Modern Java may be unreliable for old clients.
+- Building Java 7-compatible bytecode requires a JDK that still supports that target. Very new JDKs,
+  such as JDK 26, do not.
 - A full JDK is required only when building from source.
 - On newer macOS versions, Gatekeeper may warn about downloaded scripts or jars from an unsigned
   project.
@@ -65,6 +67,18 @@ Install a JDK, then run:
 chmod +x scripts/build-macos.sh
 ./scripts/build-macos.sh
 ```
+
+If your Mac only has a modern JDK and the build reports that Java 7-compatible bytecode is not
+supported, install a local Temurin 8 JDK into `tools/jdk8`:
+
+```sh
+chmod +x tools/download-temurin8-jdk-macos.sh
+./tools/download-temurin8-jdk-macos.sh
+./scripts/build-macos.sh
+```
+
+On Apple Silicon, the helper uses the x64 Temurin 8 JDK through Rosetta because Adoptium does not
+provide a macOS ARM64 JDK 8 package. It does not install Java system-wide.
 
 The output is:
 

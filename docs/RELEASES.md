@@ -73,6 +73,8 @@ MCLauncherRevival-v0.5.8.1-alpha/
   resources/
     net/minecraft/themes/        recreated era layout textures
   tools/
+    download-temurin8-jdk.ps1
+    download-temurin8-jdk-macos.sh
   docs/
   README.md
   CHANGELOG.md
@@ -143,5 +145,4 @@ Version-specific notes for this release are in
 - If the jar is missing on Windows 7 or newer, `scripts\run-win.cmd` will attempt to build it.
 - If the jar is missing in XP offline mode, download the attached release ZIP instead of the
   source-code or tag ZIP.
-
 

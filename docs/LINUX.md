@@ -36,6 +36,8 @@ Primary launch log path:
 
 - A desktop Linux session with X11 or Wayland available.
 - Java 8 is recommended for old Beta/Alpha Minecraft behavior.
+- Building Java 7-compatible bytecode requires a JDK that still supports that target. Very new JDKs
+  may run the launcher jar but refuse to compile it from source.
 - A full JDK is required only when building from source.
 - Browser opening first uses Java `Desktop.browse`, then best-effort Linux fallbacks such as
   `xdg-open`, `gio open`, or `sensible-browser` when available.
@@ -63,6 +65,10 @@ Install a JDK, then run:
 chmod +x scripts/build-linux.sh
 ./scripts/build-linux.sh
 ```
+
+If you keep a portable JDK 8 under `tools/jdk8`, the Linux build script will use it before system
+Java. This helps source builds stay compatible even on machines where the default JDK is too new to
+compile Java 7 bytecode.
 
 The output is:
 

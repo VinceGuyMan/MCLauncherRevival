@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env sh
+#!/usr/bin/env sh
 set -eu
 
 cd "$(dirname "$0")/.."
@@ -29,7 +29,7 @@ JAVA="$(find_java || true)"
 
 if [ ! -f MCLauncherRevival.jar ]; then
     echo "MCLauncherRevival.jar was not found; building from source."
-    ./build-linux.sh
+    sh ./scripts/build-linux.sh
     JAVA="$(find_java || true)"
 fi
 

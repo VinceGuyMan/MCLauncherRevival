@@ -73,6 +73,7 @@ xcopy /e /i /y "docs" "%STAGE_DIR%\docs" >nul
 xcopy /e /i /y "resources" "%STAGE_DIR%\resources" >nul
 mkdir "%STAGE_DIR%\tools"
 copy /y "tools\download-temurin8-jdk.ps1" "%STAGE_DIR%\tools" >nul
+if exist "tools\download-temurin8-jdk-macos.sh" copy /y "tools\download-temurin8-jdk-macos.sh" "%STAGE_DIR%\tools" >nul
 
 (
   echo MCLauncherRevival %RELEASE_VERSION%

@@ -1,14 +1,10 @@
-﻿#!/usr/bin/env sh
+#!/usr/bin/env sh
 set -eu
 
 cd "$(dirname "$0")/.."
 
 find_tool() {
     name="$1"
-    if [ -n "${JAVA_HOME:-}" ] && [ -x "$JAVA_HOME/bin/$name" ]; then
-        printf '%s\n' "$JAVA_HOME/bin/$name"
-        return 0
-    fi
     if [ -x "./tools/jdk8/bin/$name" ]; then
         printf '%s\n' "./tools/jdk8/bin/$name"
         return 0
@@ -19,6 +15,10 @@ find_tool() {
             return 0
         fi
     done
+    if [ -n "${JAVA_HOME:-}" ] && [ -x "$JAVA_HOME/bin/$name" ]; then
+        printf '%s\n' "$JAVA_HOME/bin/$name"
+        return 0
+    fi
     if command -v "$name" >/dev/null 2>&1; then
         command -v "$name"
         return 0
@@ -41,12 +41,29 @@ if [ -n "$JAVA" ]; then
 fi
 echo "Java compiler found: $JAVAC"
 
+COMPILE_TARGET_ARGS=""
+mkdir -p build/toolcheck
+printf '%s\n' 'class TargetCheck {}' > build/toolcheck/TargetCheck.java
+if "$JAVAC" --release 7 -d build/toolcheck build/toolcheck/TargetCheck.java >/dev/null 2>&1; then
+    COMPILE_TARGET_ARGS="--release 7"
+elif "$JAVAC" -source 1.7 -target 1.7 -d build/toolcheck build/toolcheck/TargetCheck.java >/dev/null 2>&1; then
+    COMPILE_TARGET_ARGS="-source 1.7 -target 1.7 -Xlint:-options"
+else
+    rm -rf build/toolcheck
+    "$JAVAC" -version
+    echo "This javac cannot compile Java 7-compatible bytecode."
+    echo "Install a JDK 8, set JAVA_HOME to it, or extract one at tools/jdk8."
+    exit 1
+fi
+rm -rf build/toolcheck
+
 mkdir -p build/classes
 rm -rf build/classes
 mkdir -p build/classes
 
 find src -name '*.java' | sort > build/sources.txt
-"$JAVAC" -source 1.7 -target 1.7 -encoding UTF-8 -d build/classes @build/sources.txt
+# shellcheck disable=SC2086
+"$JAVAC" $COMPILE_TARGET_ARGS -encoding UTF-8 -d build/classes @build/sources.txt
 
 if [ -d resources ]; then
     cp -R resources/. build/classes/

@@ -12,6 +12,7 @@
 /tools/java-installers/
 /tools/jdk8/
 /tools/temurin8-jdk.zip
+/tools/temurin8-jdk*.tar.gz
 *.zip
 
 # Local legacy VCS metadata from the recovered launcher archive

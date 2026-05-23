@@ -14,16 +14,16 @@ Do not use these files for normal play:
 Those source archives are useful for reading or building the code, but they may not include
 `MCLauncherRevival.jar`. The attached release asset is the runnable package.
 
-For `v0.7.0`, download:
+For `v0.7.1`, download:
 
 ```text
-MCLauncherRevival-v0.7.0-alpha.zip
+MCLauncherRevival-v0.7.1-alpha.zip
 ```
 
 If an XP bundled-Java package is published, it should be named:
 
 ```text
-MCLauncherRevival-v0.7.0-alpha-xp-bundled-java.zip
+MCLauncherRevival-v0.7.1-alpha-xp-bundled-java.zip
 ```
 
 That package is only for XP offline/classic use. It may include a maintainer-provided Java runtime
@@ -58,7 +58,7 @@ Start MCLR XP.cmd
 Recommended release zip layout:
 
 ```text
-MCLauncherRevival-v0.7.0-alpha/
+MCLauncherRevival-v0.7.1-alpha/
   Setup MCLR.cmd
   Start MCLR.cmd
   Start MCLR XP.cmd
@@ -89,7 +89,7 @@ MCLauncherRevival-v0.7.0-alpha/
 Optional unsigned macOS app artifact layout for manual testing:
 
 ```text
-MCLauncherRevival-macos-unsigned-v0.7.0-alpha.zip
+MCLauncherRevival-macos-unsigned-v0.7.1-alpha.zip
   MCLauncherRevival.app/
     Contents/
       Info.plist
@@ -108,7 +108,7 @@ notarized app unless a future signing/notarization pass has actually completed.
 Recommended XP bundled-Java release zip layout:
 
 ```text
-MCLauncherRevival-v0.7.0-alpha-xp-bundled-java/
+MCLauncherRevival-v0.7.1-alpha-xp-bundled-java/
   Setup MCLR.cmd
   Start MCLR XP.cmd
   Start MCLR.cmd
@@ -136,7 +136,7 @@ scripts\build-win.cmd
 ```
 
 Version-specific notes for this release are in
-[RELEASE_NOTES_v0.7.0.md](RELEASE_NOTES_v0.7.0.md).
+[RELEASE_NOTES_v0.7.1.md](RELEASE_NOTES_v0.7.1.md).
 
 ## Notes
 

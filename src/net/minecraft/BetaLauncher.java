@@ -164,6 +164,7 @@ final class BetaLauncher {
         ArrayList<File> classpath = new ArrayList<File>();
         classpath.add(downloadClientJar(versionJson, versionDir));
         downloadLibraries(versionJson, librariesDir, nativeDir, classpath);
+        ensureMacNativeAliases(nativeDir);
 
         String minecraftArguments = Json.string(versionJson, "minecraftArguments");
         if (minecraftArguments == null || minecraftArguments.trim().length() == 0) {
@@ -594,7 +595,7 @@ final class BetaLauncher {
         }
     }
 
-    private static void ensureMacNativeAliases(File nativeDir) throws IOException {
+    static void ensureMacNativeAliases(File nativeDir) throws IOException {
         if (!"osx".equals(osName()) || nativeDir == null) {
             return;
         }

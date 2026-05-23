@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## v0.7.1-alpha
+
+- Fixed macOS `.app` game launches for cached Beta/Alpha versions whose extracted LWJGL natives
+  still used the old `.jnilib` filenames. The launcher now repairs the expected `.dylib` aliases on
+  every launch prep, not only during first native extraction.
+- Extended the smoke test to validate the macOS native alias repair path.
+
 ## v0.7.0-alpha
 
 - Fixed macOS/Linux shell helpers so source checkouts no longer fail on UTF-8 BOM shebang bytes or

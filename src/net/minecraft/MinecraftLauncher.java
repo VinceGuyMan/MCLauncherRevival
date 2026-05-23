@@ -137,9 +137,11 @@ public final class MinecraftLauncher extends JFrame {
         boolean logo = resourceAvailable("/net/minecraft/logo.png");
         boolean dirt = resourceAvailable("/net/minecraft/dirt.png");
         boolean block = resourceAvailable("/net/minecraft/Block.png");
+        boolean macNativeAliases = verifyMacNativeAliasRepair();
         System.out.println("Resources: logo=" + logo + ", dirt=" + dirt + ", block=" + block);
-        if (!logo || !dirt || !block) {
-            System.out.println("Smoke test failed: required launcher resources are missing.");
+        System.out.println("macOS native aliases: " + macNativeAliases);
+        if (!logo || !dirt || !block || !macNativeAliases) {
+            System.out.println("Smoke test failed: required launcher resources or native repairs are missing.");
             return 1;
         }
         System.out.println("Smoke test passed.");
@@ -148,6 +150,47 @@ public final class MinecraftLauncher extends JFrame {
 
     private static boolean resourceAvailable(String path) {
         return MinecraftLauncher.class.getResource(path) != null;
+    }
+
+    private static boolean verifyMacNativeAliasRepair() {
+        if (!macOs()) {
+            return true;
+        }
+        java.io.File dir = null;
+        try {
+            dir = java.io.File.createTempFile("mclr-native-alias", "");
+            if (!dir.delete() || !dir.mkdirs()) {
+                return false;
+            }
+            java.io.File source = new java.io.File(dir, "liblwjgl.jnilib");
+            java.io.FileOutputStream out = new java.io.FileOutputStream(source);
+            try {
+                out.write(new byte[] { 0, 1, 2, 3 });
+            } finally {
+                out.close();
+            }
+            BetaLauncher.ensureMacNativeAliases(dir);
+            return new java.io.File(dir, "liblwjgl.dylib").isFile();
+        } catch (Exception e) {
+            return false;
+        } finally {
+            deleteRecursively(dir);
+        }
+    }
+
+    private static void deleteRecursively(java.io.File file) {
+        if (file == null || !file.exists()) {
+            return;
+        }
+        if (file.isDirectory()) {
+            java.io.File[] children = file.listFiles();
+            if (children != null) {
+                for (int i = 0; i < children.length; i++) {
+                    deleteRecursively(children[i]);
+                }
+            }
+        }
+        file.delete();
     }
 
     private MinecraftLauncher() {

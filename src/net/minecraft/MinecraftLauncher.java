@@ -905,11 +905,6 @@ public final class MinecraftLauncher extends JFrame {
     }
 
     private void launch(final AuthProfile profile) {
-        if (macOs() && !confirmMacLaunch()) {
-            status("macOS launch cancelled.");
-            appendLog("User cancelled launch after macOS compatibility warning.");
-            return;
-        }
         if (macOs()) {
             appendLog("macOS experimental launch: old LWJGL clients may open blank or fail to render.");
         }
@@ -2151,22 +2146,6 @@ public final class MinecraftLauncher extends JFrame {
                 + "</td></tr></table><br>";
     }
 
-    private boolean confirmMacLaunch() {
-        int choice = JOptionPane.showOptionDialog(
-                this,
-                "MCLauncherRevival can open on macOS, but launching old Beta/Alpha Minecraft clients is experimental. "
-                        + "Some versions may open a blank window, fail to render, or hang because of old "
-                        + "LWJGL/OpenGL/Java native compatibility. If the game does not load, check the Launcher Log "
-                        + "tab and the last-launch.log file.",
-                "macOS compatibility warning",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.WARNING_MESSAGE,
-                null,
-                new Object[] { "Continue", "Cancel" },
-                "Cancel");
-        return choice == JOptionPane.YES_OPTION;
-    }
-
     private static String htmlStart(EraTheme theme) {
         return htmlStart(theme.textHex, theme.linkHex, theme.linkBackHex, theme.linkEdgeHex,
                 theme.fontFamily, theme.sidebarFontSize, theme.sidebarMargin);
@@ -2324,6 +2303,19 @@ public final class MinecraftLauncher extends JFrame {
         });
     }
 
+    private static void ensureDialogFits(javax.swing.JDialog dialog) {
+        Dimension preferred = dialog.getSize();
+        int width = Math.max(preferred.width, 720);
+        int height = Math.max(preferred.height + 24, 500);
+        try {
+            Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+            width = Math.min(width, Math.max(520, screen.width - 80));
+            height = Math.min(height, Math.max(420, screen.height - 80));
+        } catch (Throwable ignored) {
+        }
+        dialog.setSize(width, height);
+    }
+
     private final class SwingStatus implements StatusSink {
         public void status(final String message) {
             SwingUtilities.invokeLater(new Runnable() {
@@ -2360,7 +2352,7 @@ public final class MinecraftLauncher extends JFrame {
                         accessible(instructions, "Microsoft login instructions", "Explains what redirect URL to copy from the browser.");
                         panel.add(instructions, BorderLayout.NORTH);
 
-                        final javax.swing.JTextArea input = new javax.swing.JTextArea(6, 58);
+                        final javax.swing.JTextArea input = new javax.swing.JTextArea(5, 58);
                         input.setLineWrap(true);
                         input.setWrapStyleWord(false);
                         input.setFont(new Font("Monospaced", Font.PLAIN, 12));
@@ -2373,6 +2365,7 @@ public final class MinecraftLauncher extends JFrame {
                         panel.add(inputScroll, BorderLayout.CENTER);
 
                         final JLabel feedback = new JLabel(" ");
+                        feedback.setHorizontalAlignment(SwingConstants.RIGHT);
                         feedback.setFont(new Font("Dialog", Font.PLAIN, 11));
 
                         JButton pasteButton = new JButton("Paste from Clipboard");
@@ -2431,18 +2424,23 @@ public final class MinecraftLauncher extends JFrame {
                             }
                         });
 
-                        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 6, 0));
-                        buttons.add(feedback);
+                        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 6, 4));
                         buttons.add(pasteButton);
                         buttons.add(continueButton);
                         buttons.add(cancelButton);
-                        panel.add(buttons, BorderLayout.SOUTH);
+
+                        JPanel bottom = new JPanel(new BorderLayout(0, 4));
+                        bottom.setBorder(new EmptyBorder(2, 0, 2, 0));
+                        bottom.add(feedback, BorderLayout.NORTH);
+                        bottom.add(buttons, BorderLayout.SOUTH);
+                        panel.add(bottom, BorderLayout.SOUTH);
 
                         dialog.setContentPane(panel);
                         dialog.getRootPane().setDefaultButton(continueButton);
                         installEscapeToClose(dialog);
                         dialog.setAlwaysOnTop(true);
                         dialog.pack();
+                        ensureDialogFits(dialog);
                         dialog.setLocationRelativeTo(MinecraftLauncher.this);
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {

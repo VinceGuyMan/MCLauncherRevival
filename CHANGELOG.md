@@ -20,6 +20,10 @@
 - Improved Swing accessibility and Mac usability with accessible names/descriptions, mnemonics,
   Enter-to-play behavior for key fields, Escape support in the redirect dialog, and a simple menu
   for opening the Minecraft folder, launcher log, account-safety help, and About.
+- Removed the extra macOS game-launch compatibility confirmation now that the warning is documented
+  in the Launcher Log and macOS docs.
+- Fixed the Microsoft redirect paste dialog layout so the clipboard status and action buttons no
+  longer get clipped on macOS.
 
 ## v0.5.8.1-alpha
 

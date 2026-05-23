@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.7.0-alpha
+
 - Fixed macOS/Linux shell helpers so source checkouts no longer fail on UTF-8 BOM shebang bytes or
   incorrect build-script paths.
 - Added a macOS Temurin 8 helper for local Java 7-compatible builds, including Apple Silicon
@@ -33,6 +35,9 @@
   while keeping online session data out of command-line arguments.
 - Disable the old JInput default controller plugin on macOS game launches so the app does not ask
   users for broad Input Monitoring access just to enumerate HID devices.
+- Fixed the blue/cyan macOS old-client color swap by generating local color-corrected runtime
+  copies of the user's own downloaded Minecraft/LWJGL jars under `launcher_revive/runtime`.
+- Updated the launcher favicon/app icon source to the new MCLauncherRevival icon.
 
 ## v0.5.8.1-alpha
 

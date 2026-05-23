@@ -58,9 +58,9 @@ cat > "$CONTENTS_DIR/Info.plist" <<'PLIST'
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>0.5.8.1-alpha</string>
+    <string>0.7.0-alpha</string>
     <key>CFBundleVersion</key>
-    <string>0.5.8.1</string>
+    <string>0.7.0</string>
     <key>LSApplicationCategoryType</key>
     <string>public.app-category.games</string>
     <key>LSMinimumSystemVersion</key>

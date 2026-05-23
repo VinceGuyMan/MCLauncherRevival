@@ -53,6 +53,7 @@ docs/WINDOWS.md                         Windows 7-11 notes
 docs/WINDOWS_XP.md                      XP offline/classic notes
 docs/RELEASES.md                        Release package layout
 docs/RELEASE_CHECKLIST.md               Manual release validation checklist
+docs/RELEASE_NOTES_v0.7.0.md            v0.7.0-alpha release notes
 ```
 
 ## Source
@@ -106,3 +107,13 @@ tools/temurin8-jdk*.tar.gz
 ```
 
 The jar should be attached to a GitHub Release rather than committed to normal source history.
+
+On macOS, old-client launches can also generate local helper/cache files under:
+
+```text
+~/Library/Application Support/minecraft/launcher_revive/runtime/
+```
+
+Those runtime files include the foreground game helper, private launch config, and local
+color-correction jar copies made from the user's own downloaded game files. They should not be
+committed or packaged as project source.

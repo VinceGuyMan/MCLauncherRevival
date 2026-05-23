@@ -105,6 +105,12 @@ available. It does not install Java automatically.
 `run-macos.sh` builds the jar if needed, prefers Java 8, warns when running on a newer Java runtime,
 and starts the launcher with macOS-friendly app-name/Dock properties.
 
+For old LWJGL clients on macOS, the Play path uses a small locally built foreground app helper so
+Minecraft appears as a normal window. It also generates local color-corrected copies of the user's
+own downloaded Minecraft/LWJGL jars under `launcher_revive/runtime/color-fix` to work around the
+red/blue channel swap observed on modern macOS. Those generated jars are runtime cache files, not
+source files or release artifacts.
+
 Finder users can double-click:
 
 ```text

@@ -5,7 +5,7 @@ for %%I in ("%ROOT_DIR%") do set "ROOT_DIR=%%~fI"
 cd /d "%ROOT_DIR%"
 
 set "RELEASE_VERSION=%~1"
-if "%RELEASE_VERSION%"=="" set "RELEASE_VERSION=v0.5.8.1-alpha"
+if "%RELEASE_VERSION%"=="" set "RELEASE_VERSION=v0.7.0-alpha"
 
 set "PACKAGE_NAME=MCLauncherRevival-%RELEASE_VERSION%"
 set "RELEASE_ROOT=%ROOT_DIR%\..\release"
@@ -55,6 +55,10 @@ copy /y "NOTICE.md" "%STAGE_DIR%" >nul
 copy /y "Setup MCLR.cmd" "%STAGE_DIR%" >nul
 copy /y "Start MCLR.cmd" "%STAGE_DIR%" >nul
 copy /y "Start MCLR XP.cmd" "%STAGE_DIR%" >nul
+copy /y "Start MCLauncherRevival.command" "%STAGE_DIR%" >nul
+copy /y "build-macos.sh" "%STAGE_DIR%" >nul
+copy /y "run-macos.sh" "%STAGE_DIR%" >nul
+copy /y "package-macos.sh" "%STAGE_DIR%" >nul
 copy /y "scripts\run-win.cmd" "%STAGE_DIR%\scripts" >nul
 copy /y "scripts\build-win.cmd" "%STAGE_DIR%\scripts" >nul
 copy /y "scripts\banner.txt" "%STAGE_DIR%\scripts" >nul
@@ -90,6 +94,10 @@ if exist "tools\download-temurin8-jdk-macos.sh" copy /y "tools\download-temurin8
   echo Start on Windows XP offline/classic mode:
   echo   Start MCLR XP.cmd
   echo.
+  echo Start on macOS:
+  echo   Start MCLauncherRevival.command
+  echo   or ./run-macos.sh
+  echo.
   echo Internal helper scripts live under scripts\.
   echo.
   echo This project is unofficial alpha software and is not affiliated with Mojang, Microsoft, Xbox, or Minecraft.
@@ -112,16 +120,16 @@ if errorlevel 1 (
   exit /b 1
 )
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "Add-Type -AssemblyName System.IO.Compression.FileSystem; $zip = [IO.Compression.ZipFile]::OpenRead('%ZIP_PATH%'); try { if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)MCLauncherRevival\.jar$' })) { exit 2 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)scripts/run-win\.cmd$' })) { exit 3 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)scripts/banner\.txt$' })) { exit 5 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)resources/net/minecraft/themes/beta\.png$' })) { exit 4 } } finally { $zip.Dispose() }"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Add-Type -AssemblyName System.IO.Compression.FileSystem; $zip = [IO.Compression.ZipFile]::OpenRead('%ZIP_PATH%'); try { if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)MCLauncherRevival\.jar$' })) { exit 2 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)scripts/run-win\.cmd$' })) { exit 3 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)Start MCLauncherRevival\.command$' })) { exit 6 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)run-macos\.sh$' })) { exit 7 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)scripts/banner\.txt$' })) { exit 5 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)resources/net/minecraft/themes/beta\.png$' })) { exit 4 } } finally { $zip.Dispose() }"
 if errorlevel 1 (
   echo Release ZIP verification failed.
-  echo Expected MCLauncherRevival.jar, scripts\run-win.cmd, scripts\banner.txt, and theme resources.
+  echo Expected MCLauncherRevival.jar, Windows and macOS launchers, scripts\banner.txt, and theme resources.
   pause
   exit /b 1
 )
 
 echo.
-echo Release ZIP verified: MCLauncherRevival.jar, scripts\run-win.cmd, scripts\banner.txt, and theme resources are included.
+echo Release ZIP verified: MCLauncherRevival.jar, Windows and macOS launchers, scripts\banner.txt, and theme resources are included.
 rmdir /s /q "%STAGE_DIR%" >nul 2>nul
 if exist "%STAGE_DIR%" (
   echo [WARN] Could not remove temporary staging folder:

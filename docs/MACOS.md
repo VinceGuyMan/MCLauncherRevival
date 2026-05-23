@@ -10,6 +10,8 @@ Tested locally so far:
 - Swing launcher startup.
 - Non-GUI `--smoke-test`.
 - Offline b1.6.6 and b1.7.3 window creation through the foreground game helper.
+- Offline b1.6.6 and b1.7.3 title-screen color correction for the old LWJGL red/blue channel
+  swap seen on modern macOS.
 - Unsigned `.app` bundle creation under `dist/`.
 
 Old Beta/Alpha Minecraft game launch is still experimental on macOS. The launcher now stages a
@@ -18,6 +20,11 @@ actual Minecraft window instead of treating the child Java process as background
 LWJGL/OpenGL/native-library behavior can still fail on some machines. The helper disables the old
 JInput controller plugin on macOS so normal users should not have to grant broad Input Monitoring
 access just to play in the game window.
+
+For tested Beta clients, the launcher also creates local color-corrected copies of the user's own
+downloaded Minecraft/LWJGL jars under `launcher_revive/runtime/color-fix` before launching. These
+generated jars stay on the user's machine, are rebuilt from locally downloaded files, and are not
+release artifacts.
 
 Windows remains the primary supported target.
 
@@ -159,6 +166,12 @@ Launcher settings, auth cache, backups, and logs:
 ~/Library/Application Support/minecraft/launcher_revive
 ```
 
+Generated macOS old-client helper files:
+
+```text
+~/Library/Application Support/minecraft/launcher_revive/runtime
+```
+
 Primary game launch log:
 
 ```text
@@ -245,5 +258,8 @@ Game starts then immediately exits or shows a blank window:
 Game colors look blue/cyan or inverted:
 
 - In Minecraft, check `Options...` and make sure `3D Anaglyph` is off.
-- If that setting is already off, this is likely old LWJGL texture color-channel behavior on modern
-  macOS. It is visual-only in current testing, but it still needs more version-by-version work.
+- MCLauncherRevival now applies a local macOS color-correction pass for tested Beta old-client
+  launches. If colors still look wrong, close the game, delete
+  `~/Library/Application Support/minecraft/launcher_revive/runtime/color-fix`, and try again.
+- To troubleshoot the raw old-client behavior without the local color fix, start the launcher with
+  `-Dmclauncher.macColorFix=false` in `MCLAUNCHER_JAVA_OPTS`.

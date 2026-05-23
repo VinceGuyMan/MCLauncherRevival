@@ -1,6 +1,6 @@
 # Release Checklist
 
-For `v0.5.8.1` and later alpha builds:
+For `v0.7.0` and later alpha builds:
 
 - Confirm the project builds from a clean clone.
 - Confirm the jar launches.
@@ -33,7 +33,11 @@ For `v0.5.8.1` and later alpha builds:
 - On macOS, run `java -jar MCLauncherRevival.jar --smoke-test`.
 - On macOS, run `./package-macos.sh` and confirm `dist/MCLauncherRevival.app` exists.
 - Confirm `Start MCLauncherRevival.command` uses LF line endings and can call `run-macos.sh`.
-- Confirm the macOS blank-window/LWJGL limitation remains documented.
+- Confirm b1.6.6 and b1.7.3 can reach a visible title screen on macOS when a compatible Java 8
+  runtime and Mojang version files are available.
+- Confirm the macOS local color-correction cache is generated under
+  `~/Library/Application Support/minecraft/launcher_revive/runtime/color-fix` and is not committed.
+- Confirm remaining macOS old-client/LWJGL limitations are documented.
 - Confirm saved tokens/settings can be removed if implemented.
 - Confirm no secrets, tokens, client secrets, or personal credentials are committed.
 - Confirm README instructions match the actual release files.
@@ -82,7 +86,7 @@ Expected project files include:
 - `docs/HISTORICAL_THEMES.md`
 - `docs/RELEASES.md`
 - `docs/MACOS.md`
-- `docs/RELEASE_NOTES_v0.5.8.1.md`
+- `docs/RELEASE_NOTES_v0.7.0.md`
 - `LICENSE`
 
 ## Do not commit
@@ -100,7 +104,7 @@ Expected project files include:
 Recommended release tag and artifact names:
 
 ```text
-v0.5.8.1
-MCLauncherRevival-v0.5.8.1-alpha.zip
+v0.7.0
+MCLauncherRevival-v0.7.0-alpha.zip
 MCLauncherRevival.jar
 ```

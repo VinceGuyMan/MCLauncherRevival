@@ -59,7 +59,7 @@ The v0.5.0 historical style system is documented in
 | Windows 7-11 support | Primary target | Java 8 is recommended, especially for old Minecraft/LWJGL behavior. |
 | Windows XP / older Windows behavior | Offline/classic only | Real XP hardware testing confirmed classic launches can work with prepared files, Java, and drivers. Performance depends on hardware. |
 | Linux behavior | Preliminary / experimental | Launcher UI may run, but old Minecraft/LWJGL game launch may fail with blank windows, OpenGL errors, or native-library issues. See docs/LINUX.md. |
-| macOS behavior | Build/UI smoke-tested, game launch experimental | macOS scripts, Finder `.command`, unsigned `.app` packaging, and `--smoke-test` are available. Old Minecraft/LWJGL game launch may still fail with blank windows or native-library issues. See docs/MACOS.md. |
+| macOS behavior | Build/UI/game-launch smoke-tested, still experimental | macOS scripts, Finder `.command`, unsigned `.app` packaging, `--smoke-test`, foreground old-client launch, and local LWJGL color correction are available. Old Minecraft/LWJGL behavior may still vary by Mac, Java, and version. See docs/MACOS.md. |
 | Release packaging | Alpha packages available | Use the attached GitHub Releases ZIP, not the source-code ZIP. |
 
 ## Installation / running
@@ -77,13 +77,13 @@ Those source archives are useful for reading or building the code, but they may 
 The current alpha package is:
 
 ```text
-MCLauncherRevival-v0.5.8.1-alpha.zip
+MCLauncherRevival-v0.7.0-alpha.zip
 ```
 
 If an XP bundled-Java package is published, it should be named like:
 
 ```text
-MCLauncherRevival-v0.5.8.1-alpha-xp-bundled-java.zip
+MCLauncherRevival-v0.7.0-alpha-xp-bundled-java.zip
 ```
 
 That XP package is for offline/classic use only. It may include a maintainer-provided
@@ -235,8 +235,10 @@ See [SECURITY.md](SECURITY.md) and [Trust and Safety](docs/TRUST_AND_SAFETY.md) 
   instead of an already-extracted runtime.
 - Some Minecraft versions may require specific Java/LWJGL combinations.
 - Linux behavior has preliminary scripts/docs, but old Minecraft/LWJGL game launch is experimental.
-- macOS has build/run scripts, a Finder `.command`, unsigned `.app` packaging, and smoke coverage,
-  but old Minecraft/LWJGL game launch is still experimental and blank game windows may occur.
+- macOS has build/run scripts, a Finder `.command`, unsigned `.app` packaging, smoke coverage,
+  foreground old-client launch, and local color correction for tested Beta clients. Old
+  Minecraft/LWJGL game launch is still experimental and may vary by Mac, Java, and selected
+  version.
 
 ## Troubleshooting
 

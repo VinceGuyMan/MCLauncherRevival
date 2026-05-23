@@ -2,6 +2,7 @@ package net.minecraft;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -19,12 +20,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 import javax.net.ssl.SSLHandshakeException;
 
 final class BetaLauncher {
     static final String DEFAULT_VERSION = "b1.7.3";
     private static final String MANIFEST_URL = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
     private static final long STARTUP_CHECK_MILLIS = 25000L;
+    private static final String MAC_COLOR_FIX_CACHE_VERSION = "v1";
 
     private final String version;
     private final String memoryMegabytes;
@@ -167,7 +170,9 @@ final class BetaLauncher {
             minecraftArguments = "${auth_player_name} ${auth_session}";
         }
         boolean macForegroundHelper = shouldUseMacForegroundHelper(mainClass);
+        File runtimeDir = macForegroundHelper ? new File(new File(minecraftDir, "launcher_revive"), "runtime") : null;
         if (macForegroundHelper) {
+            stageMacColorFixJars(runtimeDir, classpath);
             File launcherPath = launcherCodePath();
             if (launcherPath != null) {
                 classpath.add(launcherPath);
@@ -207,7 +212,6 @@ final class BetaLauncher {
                         + (profile.online ? " (online token)." : " (offline mode)."));
         ProcessBuilder builder;
         if (macForegroundHelper) {
-            File runtimeDir = new File(new File(minecraftDir, "launcher_revive"), "runtime");
             File gameApp = stageMacGameApp(runtimeDir);
             File launchConfig = writeMacLaunchConfig(
                     runtimeDir,
@@ -470,16 +474,33 @@ final class BetaLauncher {
             Map<String, Object> rule = Json.object(value);
             String action = Json.string(rule, "action");
             Map<String, Object> os = Json.object(rule.get("os"));
-            boolean matches = os == null;
-            if (os != null) {
-                String name = Json.string(os, "name");
-                matches = name == null || name.equals(osName());
-            }
+            boolean matches = os == null || matchesOsRule(os);
             if (matches) {
                 allowed = "allow".equals(action);
             }
         }
         return allowed;
+    }
+
+    private static boolean matchesOsRule(Map<String, Object> os) {
+        String name = Json.string(os, "name");
+        if (name != null && !name.equals(osName())) {
+            return false;
+        }
+        String version = Json.string(os, "version");
+        if (version != null && !matchesRegex(System.getProperty("os.version", ""), version)) {
+            return false;
+        }
+        String arch = Json.string(os, "arch");
+        return arch == null || matchesRegex(System.getProperty("os.arch", ""), arch);
+    }
+
+    private static boolean matchesRegex(String value, String regex) {
+        try {
+            return value != null && value.matches(regex);
+        } catch (Exception ignored) {
+            return false;
+        }
     }
 
     private IOException missingGameFile(String kind, File file, IOException cause) {
@@ -808,6 +829,433 @@ final class BetaLauncher {
         return "osx".equals(osName())
                 && ("net.minecraft.launchwrapper.Launch".equals(mainClass)
                 || "net.minecraft.client.Minecraft".equals(mainClass));
+    }
+
+    private static void stageMacColorFixJars(File runtimeDir, ArrayList<File> classpath) throws IOException {
+        if (!"osx".equals(osName()) || runtimeDir == null || classpath == null || classpath.size() == 0) {
+            return;
+        }
+        if ("false".equalsIgnoreCase(System.getProperty("mclauncher.macColorFix", ""))) {
+            return;
+        }
+        // Modern macOS can show old LWJGL 2 clients with red/blue swapped; patch local copies only.
+        File colorDir = new File(runtimeDir, "color-fix");
+        if (!colorDir.exists() && !colorDir.mkdirs()) {
+            throw new IOException("Could not create " + colorDir.getAbsolutePath());
+        }
+
+        File clientJar = classpath.get(0);
+        File patchedClient = new File(colorDir, safeFileName(versionedName(clientJar, "client")) + "-"
+                + MAC_COLOR_FIX_CACHE_VERSION + ".jar");
+        if (stagePatchedClientJar(clientJar, patchedClient)) {
+            classpath.set(0, patchedClient);
+        }
+
+        for (int i = 0; i < classpath.size(); i++) {
+            File file = classpath.get(i);
+            if (!isLwjglCoreJar(file)) {
+                continue;
+            }
+            File patchedLwjgl = new File(colorDir, safeFileName(file.getName()) + "-"
+                    + MAC_COLOR_FIX_CACHE_VERSION + ".jar");
+            if (stagePatchedLwjglJar(file, patchedLwjgl)) {
+                classpath.set(i, patchedLwjgl);
+            }
+            return;
+        }
+    }
+
+    private static boolean stagePatchedClientJar(File sourceJar, File outputJar) throws IOException {
+        if (sourceJar == null || !sourceJar.exists()) {
+            return false;
+        }
+        ZipInputStream in = new ZipInputStream(new BufferedInputStream(new FileInputStream(sourceJar)));
+        ZipOutputStream out = null;
+        boolean patched = false;
+        try {
+            out = new ZipOutputStream(new FileOutputStream(outputJar));
+            ZipEntry entry;
+            byte[] buffer = new byte[8192];
+            while ((entry = in.getNextEntry()) != null) {
+                String name = entry.getName();
+                if (isJarSignatureEntry(name)) {
+                    continue;
+                }
+                byte[] data = readZipEntryBytes(in, buffer);
+                if (!entry.isDirectory() && name.endsWith(".class") && containsAscii(data, "glTexImage2D")) {
+                    int count = patchClassCode(data, new CodePatcher() {
+                        public int patch(String methodName, String descriptor, byte[] code) {
+                            return patchTextureByteStores(code);
+                        }
+                    });
+                    if (count > 0) {
+                        patched = true;
+                    }
+                }
+                writeZipEntry(out, name, entry.isDirectory(), data);
+            }
+        } finally {
+            in.close();
+            if (out != null) {
+                out.close();
+            }
+        }
+        if (!patched) {
+            outputJar.delete();
+        }
+        return patched;
+    }
+
+    private static boolean stagePatchedLwjglJar(File sourceJar, File outputJar) throws IOException {
+        if (sourceJar == null || !sourceJar.exists()) {
+            return false;
+        }
+        ZipInputStream in = new ZipInputStream(new BufferedInputStream(new FileInputStream(sourceJar)));
+        ZipOutputStream out = null;
+        boolean patched = false;
+        try {
+            out = new ZipOutputStream(new FileOutputStream(outputJar));
+            ZipEntry entry;
+            byte[] buffer = new byte[8192];
+            while ((entry = in.getNextEntry()) != null) {
+                String name = entry.getName();
+                if (isJarSignatureEntry(name)) {
+                    continue;
+                }
+                byte[] data = readZipEntryBytes(in, buffer);
+                if ("org/lwjgl/opengl/GL11.class".equals(name)) {
+                    int count = patchClassCode(data, new CodePatcher() {
+                        public int patch(String methodName, String descriptor, byte[] code) {
+                            return patchGl11ColorMethod(methodName, descriptor, code);
+                        }
+                    });
+                    if (count > 0) {
+                        patched = true;
+                    }
+                }
+                writeZipEntry(out, name, entry.isDirectory(), data);
+            }
+        } finally {
+            in.close();
+            if (out != null) {
+                out.close();
+            }
+        }
+        if (!patched) {
+            outputJar.delete();
+        }
+        return patched;
+    }
+
+    private static int patchGl11ColorMethod(String methodName, String descriptor, byte[] code) {
+        if ("glClearColor".equals(methodName) && "(FFFF)V".equals(descriptor)) {
+            return replaceCode(code,
+                    new byte[] {0x22, 0x23, 0x24, 0x25, 0x16, 0x05, (byte)0xb8},
+                    new byte[] {0x24, 0x23, 0x22, 0x25, 0x16, 0x05, (byte)0xb8});
+        }
+        if ("glColor3f".equals(methodName) && "(FFF)V".equals(descriptor)) {
+            return replaceCode(code,
+                    new byte[] {0x22, 0x23, 0x24, 0x16, 0x04, (byte)0xb8},
+                    new byte[] {0x24, 0x23, 0x22, 0x16, 0x04, (byte)0xb8});
+        }
+        if ("glColor4f".equals(methodName) && "(FFFF)V".equals(descriptor)) {
+            return replaceCode(code,
+                    new byte[] {0x22, 0x23, 0x24, 0x25, 0x16, 0x05, (byte)0xb8},
+                    new byte[] {0x24, 0x23, 0x22, 0x25, 0x16, 0x05, (byte)0xb8});
+        }
+        if ("glColor3d".equals(methodName) && "(DDD)V".equals(descriptor)) {
+            return replaceCode(code,
+                    new byte[] {0x26, 0x28, 0x18, 0x04, 0x16, 0x07, (byte)0xb8},
+                    new byte[] {0x18, 0x04, 0x28, 0x26, 0x16, 0x07, (byte)0xb8});
+        }
+        if ("glColor4d".equals(methodName) && "(DDDD)V".equals(descriptor)) {
+            return replaceCode(code,
+                    new byte[] {0x26, 0x28, 0x18, 0x04, 0x18, 0x06, 0x16, 0x09, (byte)0xb8},
+                    new byte[] {0x18, 0x04, 0x28, 0x26, 0x18, 0x06, 0x16, 0x09, (byte)0xb8});
+        }
+        if (("glColor3b".equals(methodName) || "glColor3ub".equals(methodName))
+                && "(BBB)V".equals(descriptor)) {
+            return replaceCode(code,
+                    new byte[] {0x1a, 0x1b, 0x1c, 0x16, 0x04, (byte)0xb8},
+                    new byte[] {0x1c, 0x1b, 0x1a, 0x16, 0x04, (byte)0xb8});
+        }
+        if (("glColor4b".equals(methodName) || "glColor4ub".equals(methodName))
+                && "(BBBB)V".equals(descriptor)) {
+            return replaceCode(code,
+                    new byte[] {0x1a, 0x1b, 0x1c, 0x1d, 0x16, 0x05, (byte)0xb8},
+                    new byte[] {0x1c, 0x1b, 0x1a, 0x1d, 0x16, 0x05, (byte)0xb8});
+        }
+        return 0;
+    }
+
+    private static int patchTextureByteStores(byte[] code) {
+        int patches = 0;
+        for (int i = 0; i + 12 <= code.length; i++) {
+            ByteStore red = readByteStore(code, i);
+            if (red == null || red.offset != 0) {
+                continue;
+            }
+            ByteStore blue = null;
+            int searchLimit = Math.min(code.length - 12, i + 96);
+            for (int j = i + 12; j <= searchLimit; j++) {
+                ByteStore candidate = readByteStore(code, j);
+                if (candidate != null && candidate.offset == 2
+                        && candidate.arrayVar == red.arrayVar && candidate.indexVar == red.indexVar) {
+                    blue = candidate;
+                    break;
+                }
+            }
+            if (blue != null) {
+                byte redVar = code[red.colorVarOperandIndex];
+                code[red.colorVarOperandIndex] = code[blue.colorVarOperandIndex];
+                code[blue.colorVarOperandIndex] = redVar;
+                patches++;
+                i = blue.start + 11;
+            }
+        }
+        return patches;
+    }
+
+    private static ByteStore readByteStore(byte[] code, int offset) {
+        if (offset + 12 > code.length) {
+            return null;
+        }
+        if (u1(code[offset]) != 0x19
+                || u1(code[offset + 2]) != 0x15
+                || u1(code[offset + 4]) != 0x07
+                || u1(code[offset + 5]) != 0x68
+                || u1(code[offset + 7]) != 0x60
+                || u1(code[offset + 8]) != 0x15
+                || u1(code[offset + 10]) != 0x91
+                || u1(code[offset + 11]) != 0x54) {
+            return null;
+        }
+        int iconst = u1(code[offset + 6]);
+        if (iconst < 0x03 || iconst > 0x06) {
+            return null;
+        }
+        return new ByteStore(offset, u1(code[offset + 1]), u1(code[offset + 3]), iconst - 0x03, offset + 9);
+    }
+
+    private static int patchClassCode(byte[] bytes, CodePatcher patcher) throws IOException {
+        if (bytes == null || bytes.length < 10 || readU4(bytes, 0) != 0xcafebabe) {
+            return 0;
+        }
+        int offset = 8;
+        int cpCount = readU2(bytes, offset);
+        offset += 2;
+        String[] utf8 = new String[cpCount];
+        for (int i = 1; i < cpCount; i++) {
+            int tag = u1(bytes[offset++]);
+            switch (tag) {
+                case 1:
+                    int length = readU2(bytes, offset);
+                    offset += 2;
+                    utf8[i] = new String(bytes, offset, length, "UTF-8");
+                    offset += length;
+                    break;
+                case 3:
+                case 4:
+                    offset += 4;
+                    break;
+                case 5:
+                case 6:
+                    offset += 8;
+                    i++;
+                    break;
+                case 7:
+                case 8:
+                case 16:
+                    offset += 2;
+                    break;
+                case 9:
+                case 10:
+                case 11:
+                case 12:
+                case 18:
+                    offset += 4;
+                    break;
+                case 15:
+                    offset += 3;
+                    break;
+                default:
+                    throw new IOException("Unsupported class constant-pool tag: " + tag);
+            }
+        }
+        offset += 6;
+        int interfaces = readU2(bytes, offset);
+        offset += 2 + interfaces * 2;
+        offset = skipMembers(bytes, offset);
+
+        int patched = 0;
+        int methodCount = readU2(bytes, offset);
+        offset += 2;
+        for (int method = 0; method < methodCount; method++) {
+            offset += 2;
+            String methodName = utf8[readU2(bytes, offset)];
+            offset += 2;
+            String descriptor = utf8[readU2(bytes, offset)];
+            offset += 2;
+            int attrCount = readU2(bytes, offset);
+            offset += 2;
+            for (int attr = 0; attr < attrCount; attr++) {
+                String attrName = utf8[readU2(bytes, offset)];
+                offset += 2;
+                int attrLength = readU4(bytes, offset);
+                offset += 4;
+                if ("Code".equals(attrName)) {
+                    int codeLength = readU4(bytes, offset + 4);
+                    byte[] code = new byte[codeLength];
+                    System.arraycopy(bytes, offset + 8, code, 0, codeLength);
+                    int count = patcher.patch(methodName, descriptor, code);
+                    if (count > 0) {
+                        System.arraycopy(code, 0, bytes, offset + 8, codeLength);
+                        patched += count;
+                    }
+                }
+                offset += attrLength;
+            }
+        }
+        return patched;
+    }
+
+    private static int skipMembers(byte[] bytes, int offset) throws IOException {
+        int count = readU2(bytes, offset);
+        offset += 2;
+        for (int i = 0; i < count; i++) {
+            offset += 6;
+            int attrCount = readU2(bytes, offset);
+            offset += 2;
+            for (int attr = 0; attr < attrCount; attr++) {
+                offset += 2;
+                int length = readU4(bytes, offset);
+                offset += 4 + length;
+            }
+        }
+        return offset;
+    }
+
+    private static int replaceCode(byte[] code, byte[] from, byte[] to) {
+        int replacements = 0;
+        for (int i = 0; i + from.length <= code.length; i++) {
+            boolean match = true;
+            for (int j = 0; j < from.length; j++) {
+                if (code[i + j] != from[j]) {
+                    match = false;
+                    break;
+                }
+            }
+            if (!match) {
+                continue;
+            }
+            System.arraycopy(to, 0, code, i, to.length);
+            replacements++;
+            i += from.length - 1;
+        }
+        return replacements;
+    }
+
+    private static byte[] readZipEntryBytes(InputStream in, byte[] buffer) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        int read;
+        while ((read = in.read(buffer)) != -1) {
+            out.write(buffer, 0, read);
+        }
+        return out.toByteArray();
+    }
+
+    private static void writeZipEntry(ZipOutputStream out, String name, boolean directory, byte[] data)
+            throws IOException {
+        ZipEntry entry = new ZipEntry(name);
+        out.putNextEntry(entry);
+        if (!directory && data != null && data.length > 0) {
+            out.write(data);
+        }
+        out.closeEntry();
+    }
+
+    private static boolean containsAscii(byte[] bytes, String text) {
+        byte[] needle;
+        try {
+            needle = text.getBytes("US-ASCII");
+        } catch (java.io.UnsupportedEncodingException e) {
+            needle = text.getBytes();
+        }
+        outer:
+        for (int i = 0; i + needle.length <= bytes.length; i++) {
+            for (int j = 0; j < needle.length; j++) {
+                if (bytes[i + j] != needle[j]) {
+                    continue outer;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean isJarSignatureEntry(String name) {
+        if (name == null) {
+            return false;
+        }
+        String upper = name.toUpperCase(Locale.ENGLISH);
+        return upper.startsWith("META-INF/")
+                && (upper.endsWith(".SF") || upper.endsWith(".DSA") || upper.endsWith(".RSA"));
+    }
+
+    private static boolean isLwjglCoreJar(File file) {
+        if (file == null) {
+            return false;
+        }
+        String name = file.getName();
+        String path = file.getPath().replace(File.separatorChar, '/');
+        return name.startsWith("lwjgl-")
+                && name.endsWith(".jar")
+                && name.indexOf("lwjgl_util") < 0
+                && name.indexOf("platform") < 0
+                && path.indexOf("/org/lwjgl/lwjgl/lwjgl/") >= 0;
+    }
+
+    private static String versionedName(File file, String fallback) {
+        return file == null || file.getName().length() == 0 ? fallback : file.getName();
+    }
+
+    private static String safeFileName(String value) {
+        return value == null ? "file" : value.replaceAll("[^A-Za-z0-9._-]", "_");
+    }
+
+    private static int readU2(byte[] bytes, int offset) {
+        return (u1(bytes[offset]) << 8) | u1(bytes[offset + 1]);
+    }
+
+    private static int readU4(byte[] bytes, int offset) {
+        return (u1(bytes[offset]) << 24)
+                | (u1(bytes[offset + 1]) << 16)
+                | (u1(bytes[offset + 2]) << 8)
+                | u1(bytes[offset + 3]);
+    }
+
+    private static int u1(byte value) {
+        return value & 0xff;
+    }
+
+    private interface CodePatcher {
+        int patch(String methodName, String descriptor, byte[] code);
+    }
+
+    private static final class ByteStore {
+        final int start;
+        final int arrayVar;
+        final int indexVar;
+        final int offset;
+        final int colorVarOperandIndex;
+
+        ByteStore(int start, int arrayVar, int indexVar, int offset, int colorVarOperandIndex) {
+            this.start = start;
+            this.arrayVar = arrayVar;
+            this.indexVar = indexVar;
+            this.offset = offset;
+            this.colorVarOperandIndex = colorVarOperandIndex;
+        }
     }
 
     private static File stageMacGameApp(File runtimeDir) throws IOException {

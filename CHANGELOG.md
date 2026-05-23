@@ -28,6 +28,8 @@
   preferring Java 8 for old child Minecraft processes when the launcher is running on newer Java,
   passing LWJGL native-library paths more explicitly, and surfacing immediate game exits instead of
   leaving the launcher looking stuck.
+- Added a macOS-only first-thread game wrapper for old Beta/Alpha LWJGL clients so the game window
+  is created on the first JVM thread instead of stalling in hidden window creation.
 
 ## v0.5.8.1-alpha
 

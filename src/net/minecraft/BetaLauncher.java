@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.CodeSource;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ import javax.net.ssl.SSLHandshakeException;
 final class BetaLauncher {
     static final String DEFAULT_VERSION = "b1.7.3";
     private static final String MANIFEST_URL = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
+    private static final long STARTUP_CHECK_MILLIS = 25000L;
 
     private final String version;
     private final String memoryMegabytes;
@@ -164,20 +166,39 @@ final class BetaLauncher {
         if (minecraftArguments == null || minecraftArguments.trim().length() == 0) {
             minecraftArguments = "${auth_player_name} ${auth_session}";
         }
+        boolean macFirstThreadWrapper = shouldUseMacFirstThreadWrapper(mainClass);
+        if (macFirstThreadWrapper) {
+            File launcherPath = launcherCodePath();
+            if (launcherPath != null) {
+                classpath.add(launcherPath);
+            }
+        }
 
         ArrayList<String> command = new ArrayList<String>();
         command.add(javaExecutable());
         if ("osx".equals(osName())) {
             command.add("-XstartOnFirstThread");
+            command.add("-Xdock:name=Minecraft");
+            command.add("-Dapple.awt.application.name=Minecraft");
+            command.add("-Dapple.awt.UIElement=false");
+            command.add("-Djava.awt.headless=false");
         }
         command.add("-Xmx" + memoryMegabytes + "M");
         command.add("-Djava.library.path=" + nativeDir.getAbsolutePath());
         command.add("-Dorg.lwjgl.librarypath=" + nativeDir.getAbsolutePath());
         command.add("-Dnet.java.games.input.librarypath=" + nativeDir.getAbsolutePath());
         command.add("-cp");
-        command.add(joinClasspath(classpath));
-        command.add(mainClass);
-        command.addAll(expandArguments(minecraftArguments, profile, gameDir));
+        String classpathText = joinClasspath(classpath);
+        command.add(classpathText);
+        if (macFirstThreadWrapper) {
+            command.add("net.minecraft.MacFirstThreadMinecraft");
+            command.add(version);
+            command.add("854");
+            command.add("480");
+        } else {
+            command.add(mainClass);
+            command.addAll(expandArguments(minecraftArguments, profile, gameDir));
+        }
 
         File logFile = new File(logDir, "last-launch.log");
         status.status(
@@ -187,14 +208,22 @@ final class BetaLauncher {
                         + profile.name
                         + (profile.online ? " (online token)." : " (offline mode)."));
         ProcessBuilder builder = new ProcessBuilder(command);
+        if (macFirstThreadWrapper) {
+            Map<String, String> environment = builder.environment();
+            environment.put("MCLR_GAME_USERNAME", profile.name);
+            environment.put("MCLR_GAME_SESSION", profile.sessionId());
+            environment.put("MCLR_GAME_DIR", gameDir.getAbsolutePath());
+            environment.put("MCLR_GAME_VERSION", version);
+        }
         builder.directory(gameDir);
         builder.redirectErrorStream(true);
         builder.redirectOutput(ProcessBuilder.Redirect.appendTo(logFile));
+        long launchLogOffset = logFile.exists() ? logFile.length() : 0L;
         appendLaunchHeader(logFile, version, javaMajorSummary(command.get(0)), nativeDir);
         Process process = builder.start();
         status.status("Minecraft process started. Checking early startup...");
-        checkForImmediateExit(process, logFile);
-        status.status("Minecraft started. Launch log: " + logFile.getAbsolutePath());
+        checkForImmediateExit(process, logFile, launchLogOffset);
+        status.status("Minecraft is running after the startup check. Launch log: " + logFile.getAbsolutePath());
     }
 
     private Map<String, Object> loadVersionJson(File versionDir) throws IOException {
@@ -761,17 +790,35 @@ final class BetaLauncher {
         return out.toString();
     }
 
-    private static void checkForImmediateExit(Process process, File logFile) throws IOException {
+    private static boolean shouldUseMacFirstThreadWrapper(String mainClass) {
+        return "osx".equals(osName())
+                && ("net.minecraft.launchwrapper.Launch".equals(mainClass)
+                || "net.minecraft.client.Minecraft".equals(mainClass));
+    }
+
+    private static File launcherCodePath() {
         try {
-            Thread.sleep(12000L);
+            CodeSource source = BetaLauncher.class.getProtectionDomain().getCodeSource();
+            if (source == null || source.getLocation() == null) {
+                return null;
+            }
+            return new File(source.getLocation().toURI());
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+
+    private static void checkForImmediateExit(Process process, File logFile, long logOffset) throws IOException {
+        try {
+            Thread.sleep(STARTUP_CHECK_MILLIS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new IOException("Minecraft launch was interrupted while checking startup.", e);
         }
-        String tail = readLogTail(logFile, 30);
+        String tail = readLogTail(logFile, 30, logOffset);
         if (hasFatalLaunchFailure(tail)) {
             process.destroy();
-            throw new IOException("Minecraft startup failed. The game process was stopped because the launch log already contains a fatal startup error.\n\n"
+            throw new IOException("Minecraft startup failed or exited before the startup check finished. The game process was stopped because the launch log already contains a startup failure.\n\n"
                     + "Open the Launcher Log tab or this file for details:\n"
                     + logFile.getAbsolutePath()
                     + (tail.length() == 0 ? "" : "\n\nRecent game log:\n" + tail));
@@ -794,6 +841,8 @@ final class BetaLauncher {
         String lower = text.toLowerCase(Locale.ENGLISH);
         return lower.indexOf("unsatisfiedlinkerror") >= 0
                 || lower.indexOf("classcastexception") >= 0
+                || lower.indexOf("exceptionininitializererror") >= 0
+                || lower.indexOf("mclauncherrevival macos wrapper: game run loop ended") >= 0
                 || lower.indexOf("no lwjgl in java.library.path") >= 0
                 || lower.indexOf("can't load library") >= 0
                 || lower.indexOf("failed to find an accelerated opengl mode") >= 0
@@ -801,13 +850,26 @@ final class BetaLauncher {
     }
 
     private static String readLogTail(File file, int maxLines) {
+        return readLogTail(file, maxLines, 0L);
+    }
+
+    private static String readLogTail(File file, int maxLines, long minOffset) {
         if (file == null || !file.exists()) {
             return "";
         }
         ArrayList<String> lines = new ArrayList<String>();
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new FileReader(file));
+            FileInputStream in = new FileInputStream(file);
+            long offset = minOffset < 0L || minOffset > file.length() ? 0L : minOffset;
+            while (offset > 0L) {
+                long skipped = in.skip(offset);
+                if (skipped <= 0L) {
+                    break;
+                }
+                offset -= skipped;
+            }
+            reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
             String line;
             while ((line = reader.readLine()) != null) {
                 lines.add(safeLogLine(line));

@@ -21,12 +21,13 @@ For `v0.7.1` and later alpha builds:
 - Confirm the XErr `2148916233` troubleshooting note points users to Xbox profile setup.
 - Confirm `Redownload Version` refuses empty or path-like version names and only deletes the
   selected `.minecraft\versions\<version>` folder.
-- Confirm Linux shell scripts pass syntax checks and are clearly marked as preliminary until tested
-  on a real distro.
+- Confirm Linux shell scripts pass syntax checks and remain clear about old-client game-launch
+  limits.
 - On Linux, run `bash -n scripts/run-linux.sh scripts/build-linux.sh` when a machine with bash is
   available.
-- On Linux, manually smoke-test `java -jar MCLauncherRevival.jar` only as UI/preliminary behavior
-  unless old-client game launch is tested.
+- On Linux, run `./scripts/run-linux.sh --smoke-test` from the release package or built source tree.
+- On Linux, treat `java -jar MCLauncherRevival.jar --smoke-test` as launcher validation only unless
+  old-client game launch is tested.
 - Confirm macOS shell scripts pass syntax checks on a real Mac.
 - On macOS, run `sh -n build-macos.sh run-macos.sh package-macos.sh scripts/run-macos.sh scripts/build-macos.sh`.
 - On macOS, run `./build-macos.sh` and confirm `MCLauncherRevival.jar` exists.

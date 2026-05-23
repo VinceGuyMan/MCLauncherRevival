@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Fixed `scripts/run-linux.sh` so it forwards launcher arguments such as `--smoke-test` and warns
+  when Java newer than 8 is used for old Beta/Alpha clients.
+- Added a Linux GitHub Actions smoke job using the Linux runner script.
+- Documented the first Kali Linux ARM64 release-package smoke pass.
+
 ## v0.7.1-alpha
 
 - Fixed macOS `.app` game launches for cached Beta/Alpha versions whose extracted LWJGL natives

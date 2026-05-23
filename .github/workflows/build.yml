@@ -72,3 +72,32 @@ jobs:
       - name: Verify app bundle
         shell: bash
         run: test -d dist/MCLauncherRevival.app/Contents/MacOS
+
+  linux-smoke:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java 8
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "8"
+
+      - name: Check Linux scripts
+        shell: bash
+        run: sh -n scripts/build-linux.sh scripts/run-linux.sh
+
+      - name: Build launcher
+        shell: bash
+        run: sh ./scripts/build-linux.sh
+
+      - name: Verify launcher jar
+        shell: bash
+        run: test -f MCLauncherRevival.jar
+
+      - name: Smoke test launcher through Linux runner
+        shell: bash
+        run: ./scripts/run-linux.sh --smoke-test

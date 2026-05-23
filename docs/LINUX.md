@@ -1,11 +1,19 @@
 # Linux Compatibility Notes
 
-Linux support is preliminary. The Java launcher is mostly platform-neutral, but real desktop testing
-still needs to be performed on actual Linux distributions.
+Linux support is preliminary. The Java launcher is mostly platform-neutral, and the release package
+has now had a basic Kali Linux smoke pass, but old Minecraft/LWJGL game launch is still
+experimental on Linux.
 
-This repository currently has Windows-tested release behavior and static Linux compatibility checks.
-WSL and Docker were not available in the local development environment used for this pass, so this is
-not yet a confirmed native Linux field test.
+Tested baseline:
+
+- Kali GNU/Linux Rolling 2026.1 in Parallels Desktop on Apple Silicon.
+- `aarch64` guest architecture.
+- OpenJDK 21 runtime.
+- Release ZIP download/extract, Linux shell syntax, and `java -jar MCLauncherRevival.jar
+  --smoke-test` passed.
+- Source build was not run in that VM because it had only a JRE; `javac` and `jar` were missing.
+- Old Minecraft game launch was not validated on Linux, and ARM64 old LWJGL support should not be
+  assumed.
 
 Primary launch log path:
 
@@ -52,6 +60,11 @@ chmod +x scripts/run-linux.sh scripts/build-linux.sh
 ```
 
 If `MCLauncherRevival.jar` is already included, `scripts/run-linux.sh` only needs a Java runtime.
+For non-GUI validation, run:
+
+```sh
+./scripts/run-linux.sh --smoke-test
+```
 
 If the jar is missing, you may have downloaded GitHub's source-code ZIP instead of the attached
 release ZIP. For normal use, download the attached release asset from GitHub Releases. Source ZIPs
@@ -78,7 +91,10 @@ MCLauncherRevival.jar
 
 ## Known Linux limitations
 
-- Native Linux distro testing is still needed.
+- Linux has only had release-package smoke testing so far; full game launch and Microsoft login
+  still need broader distro testing.
+- ARM64 Linux can run the launcher smoke test, but old Minecraft/LWJGL native game libraries may be
+  unavailable or incompatible.
 - Microsoft login depends on the desktop/browser environment and may ask you to copy the final
   Microsoft redirect URL from the browser, then use `Paste from Clipboard` in the launcher.
 - Old Minecraft versions may open blank, crash, fail to create an OpenGL context, or fail to load

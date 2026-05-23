@@ -39,5 +39,19 @@ if [ -z "$JAVA" ]; then
     exit 1
 fi
 
+java_major() {
+    first_line="$("$1" -version 2>&1 | sed -n '1p')"
+    major="$(printf '%s\n' "$first_line" | sed -n 's/.*version "\([0-9][0-9]*\).*/\1/p')"
+    if [ "$major" = "1" ]; then
+        major="$(printf '%s\n' "$first_line" | sed -n 's/.*version "1\.\([0-9][0-9]*\).*/\1/p')"
+    fi
+    printf '%s\n' "$major"
+}
+
 echo "Java runtime found: $JAVA"
-exec "$JAVA" ${MCLAUNCHER_JAVA_OPTS:-} -jar MCLauncherRevival.jar
+JAVA_MAJOR="$(java_major "$JAVA")"
+if [ -n "$JAVA_MAJOR" ] && [ "$JAVA_MAJOR" -gt 8 ] 2>/dev/null; then
+    echo "Warning: Java $JAVA_MAJOR detected. Java 8 is recommended for old Beta/Alpha Minecraft clients."
+fi
+
+exec "$JAVA" ${MCLAUNCHER_JAVA_OPTS:-} -jar MCLauncherRevival.jar "$@"

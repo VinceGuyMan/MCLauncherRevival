@@ -24,6 +24,10 @@
   in the Launcher Log and macOS docs.
 - Fixed the Microsoft redirect paste dialog layout so the clipboard status and action buttons no
   longer get clipped on macOS.
+- Improved macOS Play behavior by preserving `Application Support` paths in game arguments,
+  preferring Java 8 for old child Minecraft processes when the launcher is running on newer Java,
+  passing LWJGL native-library paths more explicitly, and surfacing immediate game exits instead of
+  leaving the launcher looking stuck.
 
 ## v0.5.8.1-alpha
 

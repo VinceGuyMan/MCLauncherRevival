@@ -172,6 +172,8 @@ final class BetaLauncher {
         }
         command.add("-Xmx" + memoryMegabytes + "M");
         command.add("-Djava.library.path=" + nativeDir.getAbsolutePath());
+        command.add("-Dorg.lwjgl.librarypath=" + nativeDir.getAbsolutePath());
+        command.add("-Dnet.java.games.input.librarypath=" + nativeDir.getAbsolutePath());
         command.add("-cp");
         command.add(joinClasspath(classpath));
         command.add(mainClass);
@@ -188,7 +190,10 @@ final class BetaLauncher {
         builder.directory(gameDir);
         builder.redirectErrorStream(true);
         builder.redirectOutput(ProcessBuilder.Redirect.appendTo(logFile));
-        builder.start();
+        appendLaunchHeader(logFile, version, javaMajorSummary(command.get(0)), nativeDir);
+        Process process = builder.start();
+        status.status("Minecraft process started. Checking early startup...");
+        checkForImmediateExit(process, logFile);
         status.status("Minecraft started. Launch log: " + logFile.getAbsolutePath());
     }
 
@@ -337,6 +342,7 @@ final class BetaLauncher {
                     new IOException("Version metadata did not include a client jar URL."));
         }
         try {
+            status.status("Checking client jar for " + version + "...");
             downloadFile(url, jar, sha1);
         } catch (IOException ex) {
             throw missingGameFile("client jar", jar, ex);
@@ -366,6 +372,7 @@ final class BetaLauncher {
             if (artifact != null) {
                 File artifactFile = libraryFile(librariesDir, artifact, Json.string(library, "name"), null);
                 try {
+                    status.status("Checking library " + shortLibraryName(Json.string(library, "name")) + "...");
                     downloadFile(artifactUrl(library, artifact, null), artifactFile, Json.string(artifact, "sha1"));
                 } catch (IOException ex) {
                     throw missingGameFile("library", artifactFile, ex);
@@ -374,6 +381,7 @@ final class BetaLauncher {
             } else if (Json.object(library.get("natives")) == null && Json.string(library, "name") != null) {
                 File artifactFile = libraryFile(librariesDir, null, Json.string(library, "name"), null);
                 try {
+                    status.status("Checking library " + shortLibraryName(Json.string(library, "name")) + "...");
                     downloadFile(artifactUrl(library, null, null), artifactFile, null);
                 } catch (IOException ex) {
                     throw missingGameFile("library", artifactFile, ex);
@@ -393,11 +401,14 @@ final class BetaLauncher {
                     File nativeJar =
                             libraryFile(librariesDir, nativeArtifact, Json.string(library, "name"), classifier);
                     try {
+                        status.status("Checking native library " + shortLibraryName(Json.string(library, "name")) + "...");
                         downloadFile(
                                 artifactUrl(library, nativeArtifact, classifier),
                                 nativeJar,
                                 Json.string(nativeArtifact, "sha1"));
+                        status.status("Extracting native library " + shortLibraryName(Json.string(library, "name")) + "...");
                         extractNatives(nativeJar, nativeDir);
+                        ensureMacNativeAliases(nativeDir);
                     } catch (IOException ex) {
                         throw missingGameFile("native", nativeJar, ex);
                     }
@@ -519,9 +530,55 @@ final class BetaLauncher {
         }
     }
 
+    private static void ensureMacNativeAliases(File nativeDir) throws IOException {
+        if (!"osx".equals(osName()) || nativeDir == null) {
+            return;
+        }
+        copyNativeAlias(nativeDir, "liblwjgl.jnilib", "liblwjgl.dylib");
+        copyNativeAlias(nativeDir, "liblwjgl64.jnilib", "liblwjgl64.dylib");
+        copyNativeAlias(nativeDir, "libjinput-osx.jnilib", "libjinput-osx.dylib");
+        copyNativeAlias(nativeDir, "libjinput-osx.jnilib", "libjinput.dylib");
+    }
+
+    private static void copyNativeAlias(File dir, String sourceName, String targetName) throws IOException {
+        File source = new File(dir, sourceName);
+        File target = new File(dir, targetName);
+        if (!source.exists() || target.exists()) {
+            return;
+        }
+        copyFile(source, target);
+    }
+
+    private static void copyFile(File source, File target) throws IOException {
+        FileInputStream in = new FileInputStream(source);
+        try {
+            FileOutputStream out = new FileOutputStream(target);
+            try {
+                byte[] buffer = new byte[8192];
+                int read;
+                while ((read = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, read);
+                }
+            } finally {
+                out.close();
+            }
+        } finally {
+            in.close();
+        }
+    }
+
     private List<String> expandArguments(String raw, AuthProfile profile, File gameDir) {
+        List<String> rawArguments = splitArguments(raw);
+        ArrayList<String> expandedArguments = new ArrayList<String>();
+        for (int i = 0; i < rawArguments.size(); i++) {
+            expandedArguments.add(expandArgument(rawArguments.get(i), profile, gameDir));
+        }
+        return expandedArguments;
+    }
+
+    private String expandArgument(String raw, AuthProfile profile, File gameDir) {
         String assets = new File(TokenCache.minecraftDir(), "assets").getAbsolutePath();
-        String expanded = raw
+        return raw
                 .replace("${auth_player_name}", profile.name)
                 .replace("${auth_session}", profile.sessionId())
                 .replace("${auth_uuid}", profile.uuid)
@@ -533,7 +590,6 @@ final class BetaLauncher {
                 .replace("${assets_root}", assets)
                 .replace("${game_assets}", assets)
                 .replace("${assets_index_name}", "legacy");
-        return splitArguments(expanded);
     }
 
     private static List<String> splitArguments(String raw) {
@@ -705,11 +761,255 @@ final class BetaLauncher {
         return out.toString();
     }
 
+    private static void checkForImmediateExit(Process process, File logFile) throws IOException {
+        try {
+            Thread.sleep(12000L);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IOException("Minecraft launch was interrupted while checking startup.", e);
+        }
+        String tail = readLogTail(logFile, 30);
+        if (hasFatalLaunchFailure(tail)) {
+            process.destroy();
+            throw new IOException("Minecraft startup failed. The game process was stopped because the launch log already contains a fatal startup error.\n\n"
+                    + "Open the Launcher Log tab or this file for details:\n"
+                    + logFile.getAbsolutePath()
+                    + (tail.length() == 0 ? "" : "\n\nRecent game log:\n" + tail));
+        }
+        try {
+            int exit = process.exitValue();
+            throw new IOException("Minecraft exited immediately with code " + exit + ".\n\n"
+                    + "Open the Launcher Log tab or this file for details:\n"
+                    + logFile.getAbsolutePath()
+                    + (tail.length() == 0 ? "" : "\n\nRecent game log:\n" + tail));
+        } catch (IllegalThreadStateException stillRunning) {
+            // Expected path: the client is still alive after early startup.
+        }
+    }
+
+    private static boolean hasFatalLaunchFailure(String text) {
+        if (text == null || text.length() == 0) {
+            return false;
+        }
+        String lower = text.toLowerCase(Locale.ENGLISH);
+        return lower.indexOf("unsatisfiedlinkerror") >= 0
+                || lower.indexOf("classcastexception") >= 0
+                || lower.indexOf("no lwjgl in java.library.path") >= 0
+                || lower.indexOf("can't load library") >= 0
+                || lower.indexOf("failed to find an accelerated opengl mode") >= 0
+                || lower.indexOf("pixel format not accelerated") >= 0;
+    }
+
+    private static String readLogTail(File file, int maxLines) {
+        if (file == null || !file.exists()) {
+            return "";
+        }
+        ArrayList<String> lines = new ArrayList<String>();
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lines.add(safeLogLine(line));
+                while (lines.size() > maxLines) {
+                    lines.remove(0);
+                }
+            }
+        } catch (IOException ignored) {
+            return "";
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException ignored) {
+                }
+            }
+        }
+        StringBuilder out = new StringBuilder();
+        for (int i = 0; i < lines.size(); i++) {
+            if (out.length() > 0) {
+                out.append('\n');
+            }
+            out.append(lines.get(i));
+        }
+        return out.toString();
+    }
+
+    private static String safeLogLine(String line) {
+        if (line == null) {
+            return "";
+        }
+        String lower = line.toLowerCase(Locale.ENGLISH);
+        if (lower.indexOf("access_token") >= 0
+                || lower.indexOf("refreshtoken") >= 0
+                || lower.indexOf("refresh_token") >= 0
+                || lower.indexOf("auth_access_token") >= 0
+                || lower.indexOf("authorization") >= 0) {
+            return "[redacted log line containing auth material]";
+        }
+        return line;
+    }
+
+    private static void appendLaunchHeader(File logFile, String version, String javaSummary, File nativeDir) {
+        FileOutputStream out = null;
+        try {
+            File parent = logFile.getParentFile();
+            if (parent != null && !parent.exists()) {
+                parent.mkdirs();
+            }
+            out = new FileOutputStream(logFile, true);
+            String header = "\n---- MCLauncherRevival launch "
+                    + new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date())
+                    + " ----\n"
+                    + "Version: " + version + "\n"
+                    + "Java: " + javaSummary + "\n"
+                    + "Native path: " + nativeDir.getAbsolutePath() + "\n";
+            out.write(header.getBytes("UTF-8"));
+        } catch (IOException ignored) {
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException ignored) {
+                }
+            }
+        }
+    }
+
     private static String javaExecutable() {
         String home = System.getProperty("java.home");
         String exe = osName().equals("windows") ? "javaw.exe" : "java";
+        if ("osx".equals(osName()) && javaMajorVersion() > 8) {
+            String java8 = findMacJava8();
+            if (java8 != null) {
+                return java8;
+            }
+        }
         File java = new File(new File(home, "bin"), exe);
         return java.exists() ? java.getAbsolutePath() : exe;
+    }
+
+    private static String findMacJava8() {
+        String property = System.getProperty("mclauncher.gameJava");
+        String fromProperty = executablePath(property);
+        if (fromProperty != null) {
+            return fromProperty;
+        }
+        String env = System.getenv("MCLAUNCHER_GAME_JAVA");
+        String fromEnv = executablePath(env);
+        if (fromEnv != null) {
+            return fromEnv;
+        }
+        String local = findLocalJava8(new File(System.getProperty("user.dir", "."), "tools/jdk8"));
+        if (local != null) {
+            return local;
+        }
+        String javaHome = macJavaHome("1.8");
+        if (javaHome != null) {
+            String fromJavaHome = executablePath(new File(new File(javaHome, "bin"), "java").getAbsolutePath());
+            if (fromJavaHome != null) {
+                return fromJavaHome;
+            }
+        }
+        return null;
+    }
+
+    private static String findLocalJava8(File root) {
+        String direct = executablePath(new File(new File(new File(root, "Contents"), "Home"), "bin/java").getPath());
+        if (direct != null) {
+            return direct;
+        }
+        direct = executablePath(new File(root, "bin/java").getPath());
+        if (direct != null) {
+            return direct;
+        }
+        File[] children = root.listFiles();
+        if (children == null) {
+            return null;
+        }
+        for (int i = 0; i < children.length; i++) {
+            File child = children[i];
+            if (child == null || !child.isDirectory()) {
+                continue;
+            }
+            String nested = executablePath(new File(new File(new File(child, "Contents"), "Home"), "bin/java").getPath());
+            if (nested != null) {
+                return nested;
+            }
+            nested = executablePath(new File(child, "bin/java").getPath());
+            if (nested != null) {
+                return nested;
+            }
+        }
+        return null;
+    }
+
+    private static String executablePath(String path) {
+        if (path == null || path.trim().length() == 0) {
+            return null;
+        }
+        File file = new File(path.trim());
+        return file.exists() && file.canExecute() ? file.getAbsolutePath() : null;
+    }
+
+    private static String macJavaHome(String version) {
+        try {
+            Process process = new ProcessBuilder("/usr/libexec/java_home", "-v", version).start();
+            String out = readAll(process.getInputStream()).trim();
+            process.waitFor();
+            return out.length() == 0 ? null : out;
+        } catch (Throwable ignored) {
+            return null;
+        }
+    }
+
+    private static int javaMajorVersion() {
+        return javaMajorVersion(System.getProperty("java.specification.version", ""));
+    }
+
+    private static int javaMajorVersion(String version) {
+        try {
+            if (version == null || version.length() == 0) {
+                return 0;
+            }
+            if (version.startsWith("1.")) {
+                return Integer.parseInt(version.substring(2));
+            }
+            int dot = version.indexOf('.');
+            return Integer.parseInt(dot >= 0 ? version.substring(0, dot) : version);
+        } catch (Exception ignored) {
+            return 0;
+        }
+    }
+
+    private static String javaMajorSummary(String javaCommand) {
+        if (javaCommand == null || javaCommand.length() == 0) {
+            return "unknown";
+        }
+        try {
+            Process process = new ProcessBuilder(javaCommand, "-version").start();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream(), "UTF-8"));
+            try {
+                String line = reader.readLine();
+                process.waitFor();
+                return line == null ? javaCommand : line;
+            } finally {
+                reader.close();
+            }
+        } catch (Throwable ignored) {
+            return javaCommand;
+        }
+    }
+
+    private static String shortLibraryName(String name) {
+        if (name == null || name.length() == 0) {
+            return "library";
+        }
+        int colon = name.lastIndexOf(':');
+        if (colon >= 0 && colon + 1 < name.length()) {
+            return name.substring(0, colon);
+        }
+        return name;
     }
 
     private static String osName() {

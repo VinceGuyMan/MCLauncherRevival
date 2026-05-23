@@ -1990,22 +1990,131 @@ public final class MinecraftLauncher extends JFrame {
             try {
                 SwingUtilities.invokeAndWait(new Runnable() {
                     public void run() {
-                        JOptionPane pane = new JOptionPane(message, JOptionPane.PLAIN_MESSAGE,
-                                JOptionPane.OK_CANCEL_OPTION);
-                        pane.setWantsInput(true);
-                        javax.swing.JDialog dialog = pane.createDialog(MinecraftLauncher.this, title);
-                        dialog.setAlwaysOnTop(true);
-                        dialog.setVisible(true);
-                        Object value = pane.getInputValue();
-                        if (value != null && value != JOptionPane.UNINITIALIZED_VALUE) {
-                            result[0] = String.valueOf(value);
+                        final javax.swing.JDialog dialog = new javax.swing.JDialog(MinecraftLauncher.this, title, true);
+                        JPanel panel = new JPanel(new BorderLayout(8, 8));
+                        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+                        javax.swing.JTextArea instructions = new javax.swing.JTextArea(message);
+                        instructions.setEditable(false);
+                        instructions.setOpaque(false);
+                        instructions.setLineWrap(true);
+                        instructions.setWrapStyleWord(true);
+                        instructions.setFont(new Font("Dialog", Font.PLAIN, 12));
+                        panel.add(instructions, BorderLayout.NORTH);
+
+                        final javax.swing.JTextArea input = new javax.swing.JTextArea(6, 58);
+                        input.setLineWrap(true);
+                        input.setWrapStyleWord(false);
+                        input.setFont(new Font("Monospaced", Font.PLAIN, 12));
+                        String clipboard = clipboardText();
+                        if (looksLikeMicrosoftRedirect(clipboard)) {
+                            input.setText(clipboard.trim());
                         }
+                        JScrollPane inputScroll = new JScrollPane(input);
+                        panel.add(inputScroll, BorderLayout.CENTER);
+
+                        final JLabel feedback = new JLabel(" ");
+                        feedback.setFont(new Font("Dialog", Font.PLAIN, 11));
+
+                        JButton pasteButton = new JButton("Paste from Clipboard");
+                        pasteButton.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                String value = clipboardText();
+                                if (value == null || value.trim().length() == 0) {
+                                    feedback.setText("Clipboard does not contain text.");
+                                    return;
+                                }
+                                input.setText(value.trim());
+                                input.setCaretPosition(0);
+                                feedback.setText(looksLikeMicrosoftRedirect(value)
+                                        ? "Pasted Microsoft redirect URL from clipboard."
+                                        : "Pasted clipboard text. Make sure it is the full final Microsoft URL.");
+                            }
+                        });
+
+                        JButton continueButton = new JButton("Continue");
+                        continueButton.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                result[0] = input.getText();
+                                dialog.dispose();
+                            }
+                        });
+
+                        JButton cancelButton = new JButton("Cancel");
+                        cancelButton.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                dialog.dispose();
+                            }
+                        });
+
+                        final Timer clipboardTimer = new Timer(1000, new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                String value = clipboardText();
+                                String current = input.getText();
+                                if (looksLikeMicrosoftRedirect(value)
+                                        && (current == null || !looksLikeMicrosoftRedirect(current))) {
+                                    input.setText(value.trim());
+                                    input.setCaretPosition(0);
+                                    feedback.setText("Detected Microsoft redirect URL on clipboard.");
+                                }
+                            }
+                        });
+                        dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                            public void windowClosed(java.awt.event.WindowEvent e) {
+                                clipboardTimer.stop();
+                            }
+
+                            public void windowClosing(java.awt.event.WindowEvent e) {
+                                clipboardTimer.stop();
+                            }
+                        });
+
+                        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 6, 0));
+                        buttons.add(feedback);
+                        buttons.add(pasteButton);
+                        buttons.add(continueButton);
+                        buttons.add(cancelButton);
+                        panel.add(buttons, BorderLayout.SOUTH);
+
+                        dialog.setContentPane(panel);
+                        dialog.getRootPane().setDefaultButton(continueButton);
+                        dialog.setAlwaysOnTop(true);
+                        dialog.pack();
+                        dialog.setLocationRelativeTo(MinecraftLauncher.this);
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                input.requestFocusInWindow();
+                                if (input.getText().length() > 0) {
+                                    input.selectAll();
+                                }
+                            }
+                        });
+                        clipboardTimer.start();
+                        dialog.setVisible(true);
                     }
                 });
             } catch (Exception e) {
                 return null;
             }
             return result[0];
+        }
+
+        private String clipboardText() {
+            try {
+                java.awt.datatransfer.Clipboard clipboard =
+                        java.awt.Toolkit.getDefaultToolkit().getSystemClipboard();
+                java.awt.datatransfer.Transferable contents = clipboard.getContents(null);
+                if (contents != null && contents.isDataFlavorSupported(java.awt.datatransfer.DataFlavor.stringFlavor)) {
+                    Object value = contents.getTransferData(java.awt.datatransfer.DataFlavor.stringFlavor);
+                    return value == null ? "" : String.valueOf(value);
+                }
+            } catch (Throwable ignored) {
+            }
+            return "";
+        }
+
+        private boolean looksLikeMicrosoftRedirect(String value) {
+            return value != null && value.indexOf("https://login.live.com/oauth20_desktop.srf") >= 0;
         }
 
         public int choose(final String title, final String message, final String[] options) {
@@ -2379,5 +2488,3 @@ public final class MinecraftLauncher extends JFrame {
         }
     }
 }
-
-

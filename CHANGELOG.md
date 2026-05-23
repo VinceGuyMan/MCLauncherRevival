@@ -8,6 +8,9 @@
   Rosetta guidance and release-package inclusion.
 - Improved macOS launcher startup under local JDK 8 by pointing Java at macOS system font
   directories and making Swing HTML panes honor the launcher fonts.
+- Removed the broken visible code-login option from Microsoft Login and replaced the stock redirect
+  paste prompt with a larger dialog that includes `Paste from Clipboard`, clipboard auto-detection,
+  and retry feedback.
 
 ## v0.5.8.1-alpha
 

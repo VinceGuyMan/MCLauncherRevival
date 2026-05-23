@@ -94,8 +94,8 @@ MCLauncherRevival.jar
 - Apple Silicon may be more problematic because old native libraries were not built for that
   platform.
 - There is no signed or notarized `.app` bundle yet.
-- Microsoft login depends on the desktop/browser environment and may need manual redirect paste
-  fallback.
+- Microsoft login depends on the desktop/browser environment and may ask you to copy the final
+  Microsoft redirect URL from the browser, then use `Paste from Clipboard` in the launcher.
 - Old Minecraft versions may be sensitive to Java and LWJGL native-library combinations.
 - Fresh downloads require Java HTTPS/TLS support that works with current Mojang/Minecraft endpoints.
 
@@ -122,7 +122,8 @@ successfully on macOS.
 ## Browser did not open
 
 Microsoft login first tries Java desktop browsing, then a macOS `open` fallback. If no browser opens,
-the manual redirect paste flow may still work, but macOS auth remains experimental.
+copy the final Microsoft redirect URL from an already-open browser and use `Paste from Clipboard` in
+the launcher, but macOS auth remains experimental.
 
 ## Account safety
 

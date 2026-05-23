@@ -201,7 +201,9 @@ compatibility.
   redirect, validates state/PKCE, then continues Xbox/XSTS and Minecraft services login.
 - Local `127.0.0.1` callback login is only available when using a custom Microsoft client ID with a
   matching loopback redirect registration.
-- Device-code login is a fallback. Manual paste-back is an advanced fallback only.
+- The default desktop redirect flow may ask the user to copy the final Microsoft redirect URL from
+  the browser. The launcher includes a paste field and a `Paste from Clipboard` button for that
+  handoff.
 - OAuth tokens/settings are stored locally under the user's `.minecraft\launcher_revive` or
   `.minecraft/launcher_revive` folder when login/config data is saved.
 - The `Forget Login` button is intended to remove saved login data.
@@ -310,4 +312,3 @@ styles used by the historical theme system:
 
 These are project-owned visual interpretations, not bundled original Mojang/Microsoft launcher
 assets.
-

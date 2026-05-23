@@ -34,8 +34,6 @@ final class ModernAuth {
     private static final String SCOPE = "XboxLive.signin offline_access";
     private static final String AUTHORIZE_URL = "https://login.live.com/oauth20_authorize.srf";
     private static final String TOKEN_URL = "https://login.live.com/oauth20_token.srf";
-    private static final String DEVICE_CODE_URL = "https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode";
-    private static final String AAD_TOKEN_URL = "https://login.microsoftonline.com/consumers/oauth2/v2.0/token";
     private static final String XBL_AUTH_URL = "https://user.auth.xboxlive.com/user/authenticate";
     private static final String XSTS_AUTH_URL = "https://xsts.auth.xboxlive.com/xsts/authorize";
     private static final String MC_LOGIN_URL = "https://api.minecraftservices.com/authentication/login_with_xbox";
@@ -72,13 +70,10 @@ final class ModernAuth {
 
     private MicrosoftToken interactiveLogin() throws IOException {
         int choice = status.choose("Microsoft Sign-In", trustMessage(), new String[] {
-                "Open Microsoft Sign-In", "Use Code Login Instead", "Cancel"
+                "Open Microsoft Sign-In", "Cancel"
         });
-        if (choice == 2 || choice < 0) {
+        if (choice != 0) {
             throw new IOException("Microsoft login was cancelled.");
-        }
-        if (choice == 1) {
-            return deviceCodeOrAdvanced(null);
         }
         if (!loopbackEnabled()) {
             return desktopRedirectLogin(false);
@@ -94,38 +89,14 @@ final class ModernAuth {
     private MicrosoftToken fallbackAfterBrowserFailure(IOException primaryFailure) throws IOException {
         int choice = status.choose("Microsoft Login Fallback", "Normal browser sign-in did not finish.\n\n"
                 + safeReason(primaryFailure) + "\n\n"
-                + "You can try code login, or use the advanced paste-back fallback if this computer cannot receive the local browser callback.\n\n"
+                + "Use the paste-back fallback if this computer cannot receive the local browser callback.\n\n"
                 + "This launcher still never asks for your raw Microsoft password.", new String[] {
-                "Use Code Login", "Advanced Paste-Back", "Cancel"
+                "Advanced Paste-Back", "Cancel"
         });
         if (choice == 0) {
-            return deviceCodeOrAdvanced(primaryFailure);
-        }
-        if (choice == 1) {
             return manualPasteBackLogin();
         }
         throw new IOException("Microsoft login was cancelled.");
-    }
-
-    private MicrosoftToken deviceCodeOrAdvanced(IOException previousFailure) throws IOException {
-        try {
-            return deviceCodeLogin();
-        } catch (IOException deviceFailure) {
-            StringBuilder message = new StringBuilder();
-            message.append("Code login did not finish.\n\n");
-            if (previousFailure != null) {
-                message.append("Normal browser sign-in: ").append(safeReason(previousFailure)).append("\n\n");
-            }
-            message.append("Code login: ").append(safeReason(deviceFailure)).append("\n\n");
-            message.append("Use advanced paste-back only if the normal browser callback and code login both failed.");
-            int choice = status.choose("Advanced Login Fallback", message.toString(), new String[] {
-                    "Advanced Paste-Back", "Cancel"
-            });
-            if (choice == 0) {
-                return manualPasteBackLogin();
-            }
-            throw deviceFailure;
-        }
     }
 
     private MicrosoftToken loopbackBrowserLogin() throws IOException {
@@ -208,7 +179,7 @@ final class ModernAuth {
         final String loginUrl = authorizationUrl(DESKTOP_REDIRECT_URI, state, verifier);
         String title = advanced ? "Advanced Paste-Back Login" : "Microsoft Browser Login";
         String intro = advanced
-                ? "Use this only if normal browser sign-in and code login failed.\n\n"
+                ? "Use this only if normal browser sign-in could not return to the launcher automatically.\n\n"
                 : "This compatibility login uses Microsoft's registered desktop redirect.\n\n";
         int choice = status.choose(title, intro
                 + "After Microsoft sign-in, copy only the final redirect URL from the browser address bar and paste it into the launcher.\n\n"
@@ -220,94 +191,29 @@ final class ModernAuth {
             throw new IOException("Microsoft login was cancelled.");
         }
         openBrowser(loginUrl);
-        String redirected = status.ask(title,
-                "Paste the final Microsoft redirect URL here.\n\n"
-                        + "It should start with:\n"
-                        + DESKTOP_REDIRECT_URI + "?code=\n\n"
-                        + "Do not share this URL publicly.");
-        if (redirected == null || redirected.trim().length() == 0) {
-            throw new IOException("Microsoft login was cancelled.");
-        }
-        String trimmed = redirected.trim();
-        if (trimmed.indexOf(DESKTOP_REDIRECT_URI) < 0) {
-            throw new IOException("That does not look like the expected Microsoft desktop redirect URL.");
-        }
-        return readAuthorizationCallback(trimmed, DESKTOP_REDIRECT_URI, state, verifier);
-    }
-
-    private MicrosoftToken deviceCodeLogin() throws IOException {
-        LinkedHashMap<String, String> form = new LinkedHashMap<String, String>();
-        form.put("client_id", clientId());
-        form.put("scope", SCOPE);
-        HttpResult setup = postForm(DEVICE_CODE_URL, form);
-        ensureSuccess(setup, "Microsoft device-code request failed");
-        Map<String, Object> json = Json.object(Json.parse(setup.body));
-        final String deviceCode = Json.string(json, "device_code");
-        String userCode = Json.string(json, "user_code");
-        String verificationUri = Json.string(json, "verification_uri");
-        if (verificationUri == null || verificationUri.length() == 0) {
-            verificationUri = Json.string(json, "verification_url");
-        }
-        long expiresIn = Json.number(json, "expires_in", 900L);
-        int interval = (int) Json.number(json, "interval", 5L);
-        String message = Json.string(json, "message");
-        if (deviceCode == null || userCode == null || verificationUri == null) {
-            throw new IOException("Microsoft device-code response was missing required fields.");
-        }
-
-        int choice = status.choose("Microsoft Code Login", "Use this only if normal browser sign-in did not work.\n\n"
-                + "1. Open the Microsoft page shown below.\n"
-                + "2. Enter this code: " + userCode + "\n"
-                + "3. Confirm the page says you are signing in to MCLauncherRevival or a Microsoft/Xbox sign-in app you trust.\n"
-                + "4. If it shows a different or suspicious app name, cancel.\n\n"
-                + "Page:\n" + verificationUri + "\n\n"
-                + (message == null ? "" : message + "\n\n")
-                + "This launcher never needs your Microsoft password. Only enter your password on Microsoft's website.", new String[] {
-                "Open Microsoft Code Page", "Cancel"
-        });
-        if (choice != 0) {
-            throw new IOException("Microsoft code login was cancelled.");
-        }
-        openBrowser(verificationUri);
-        status.status("Waiting for Microsoft code login approval...");
-        return pollDeviceCode(deviceCode, expiresIn, interval);
-    }
-
-    private MicrosoftToken pollDeviceCode(String deviceCode, long expiresIn, int interval) throws IOException {
-        long deadline = System.currentTimeMillis() + expiresIn * 1000L;
-        int sleepSeconds = Math.max(3, interval);
-        while (System.currentTimeMillis() < deadline) {
-            LinkedHashMap<String, String> form = new LinkedHashMap<String, String>();
-            form.put("grant_type", "urn:ietf:params:oauth:grant-type:device_code");
-            form.put("client_id", clientId());
-            form.put("device_code", deviceCode);
-            HttpResult result = postForm(AAD_TOKEN_URL, form);
-            if (result.code >= 200 && result.code < 300) {
-                status.status("Microsoft code login approved. Finishing sign-in...");
-                return readMicrosoftToken(Json.object(Json.parse(result.body)), AAD_TOKEN_URL);
+        while (true) {
+            String redirected = status.ask(title,
+                    "After Microsoft sign-in, copy the full final URL from the browser address bar.\n\n"
+                            + "It should start with:\n"
+                            + DESKTOP_REDIRECT_URI + "?code=\n\n"
+                            + "Paste it here, or use the Paste from Clipboard button.\n\n"
+                            + "Do not share this URL publicly.");
+            if (redirected == null || redirected.trim().length() == 0) {
+                throw new IOException("Microsoft login was cancelled.");
             }
-            Map<String, Object> error = parseObjectQuietly(result.body);
-            String errorCode = Json.string(error, "error");
-            String description = Json.string(error, "error_description");
-            if ("authorization_pending".equals(errorCode)) {
-                sleep(sleepSeconds);
-                continue;
+            String trimmed = redirected.trim();
+            if (trimmed.indexOf(DESKTOP_REDIRECT_URI) >= 0) {
+                return readAuthorizationCallback(trimmed, DESKTOP_REDIRECT_URI, state, verifier);
             }
-            if ("slow_down".equals(errorCode)) {
-                sleepSeconds += 5;
-                sleep(sleepSeconds);
-                continue;
+            int retry = status.choose("Microsoft Redirect URL Needed",
+                    "That does not look like the final Microsoft redirect URL.\n\n"
+                            + "Copy the full browser address after Microsoft sign-in. It should start with:\n"
+                            + DESKTOP_REDIRECT_URI + "?code=\n\n"
+                            + "Try again?", new String[] { "Try Again", "Cancel" });
+            if (retry != 0) {
+                throw new IOException("Microsoft login was cancelled.");
             }
-            if ("expired_token".equals(errorCode)) {
-                throw new IOException("Microsoft code login expired before approval. Try Microsoft Login again.");
-            }
-            if ("authorization_declined".equals(errorCode)) {
-                throw new IOException("Microsoft code login was declined in the browser.");
-            }
-            throw new IOException("Microsoft code login failed"
-                    + (description == null || description.length() == 0 ? "." : ": " + description));
         }
-        throw new IOException("Microsoft code login expired before approval. Try Microsoft Login again.");
     }
 
     private MicrosoftToken exchangeAuthorizationCode(String code, String redirectUri, String verifier, String tokenUrl) throws IOException {
@@ -672,14 +578,6 @@ final class ModernAuth {
         return null;
     }
 
-    private static Map<String, Object> parseObjectQuietly(String body) {
-        try {
-            return Json.object(Json.parse(body));
-        } catch (Throwable ignored) {
-            return null;
-        }
-    }
-
     private static String pkceChallenge(String verifier) throws IOException {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -718,15 +616,6 @@ final class ModernAuth {
         String value = out.toString();
         value = value.replace('+', '-').replace('/', '_');
         return value;
-    }
-
-    private static void sleep(int seconds) throws IOException {
-        try {
-            Thread.sleep(seconds * 1000L);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new IOException("Microsoft login was interrupted.");
-        }
     }
 
     private static String nullToEmpty(String value) {

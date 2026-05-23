@@ -52,8 +52,8 @@ The normal path:
 1. Opens the user's default browser.
 2. Sends a high-entropy `state` value and PKCE challenge.
 3. Receives the authorization response through Microsoft's registered desktop redirect.
-4. Asks the user to paste the final Microsoft redirect URL only when needed to finish the desktop
-   OAuth handoff.
+4. Asks the user to paste the final Microsoft redirect URL, or use `Paste from Clipboard`, to finish
+   the desktop OAuth handoff.
 5. Validates `state`.
 6. Exchanges the authorization code with the PKCE verifier.
 7. Continues Xbox Live, XSTS, Minecraft services login, and profile lookup.
@@ -74,8 +74,8 @@ or:
 MCLR_MICROSOFT_CLIENT_ID=<registered-client-id>
 ```
 
-If the default desktop redirect cannot complete, the launcher offers device-code login and an
-advanced paste-back fallback.
+If the default desktop redirect cannot complete, the launcher retries the paste-back handoff and
+keeps Offline Play available.
 
 The launcher does not use embedded webviews and should never ask for a raw Microsoft password.
 

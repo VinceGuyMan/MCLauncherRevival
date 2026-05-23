@@ -79,8 +79,8 @@ MCLauncherRevival.jar
 ## Known Linux limitations
 
 - Native Linux distro testing is still needed.
-- Microsoft login depends on the desktop/browser environment and may need manual redirect paste
-  fallback.
+- Microsoft login depends on the desktop/browser environment and may ask you to copy the final
+  Microsoft redirect URL from the browser, then use `Paste from Clipboard` in the launcher.
 - Old Minecraft versions may open blank, crash, fail to create an OpenGL context, or fail to load
   LWJGL native libraries depending on the distro, Java version, desktop session, and graphics
   driver.
@@ -102,8 +102,8 @@ supported by the Swing launcher UI.
 ## Browser did not open
 
 Microsoft login first tries Java desktop browsing, then `xdg-open`, `gio open`, and
-`sensible-browser`. If no browser opens, the manual redirect paste flow may still work, but Linux
-auth remains experimental.
+`sensible-browser`. If no browser opens, copy the final Microsoft redirect URL from an already-open
+browser and use `Paste from Clipboard` in the launcher, but Linux auth remains experimental.
 
 ## Account safety
 

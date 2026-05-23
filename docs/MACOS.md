@@ -15,7 +15,9 @@ Tested locally so far:
 Old Beta/Alpha Minecraft game launch is still experimental on macOS. The launcher now stages a
 small local foreground app helper before starting old LWJGL clients so modern macOS exposes an
 actual Minecraft window instead of treating the child Java process as background-only. Old
-LWJGL/OpenGL/native-library behavior can still fail on some machines.
+LWJGL/OpenGL/native-library behavior can still fail on some machines. The helper disables the old
+JInput controller plugin on macOS so normal users should not have to grant broad Input Monitoring
+access just to play in the game window.
 
 Windows remains the primary supported target.
 
@@ -239,3 +241,9 @@ Game starts then immediately exits or shows a blank window:
 - If the log says the macOS game app helper could not compile, install Apple's Command Line Tools
   with `xcode-select --install` and try Play again.
 - This often points to old LWJGL/OpenGL/native compatibility, not Microsoft login.
+
+Game colors look blue/cyan or inverted:
+
+- In Minecraft, check `Options...` and make sure `3D Anaglyph` is off.
+- If that setting is already off, this is likely old LWJGL texture color-channel behavior on modern
+  macOS. It is visual-only in current testing, but it still needs more version-by-version work.

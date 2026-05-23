@@ -146,7 +146,7 @@ int main(int argc, char **argv) {
     char *java_library_path;
     char *lwjgl_library_path;
     char *jinput_library_path;
-    char *java_argv[17];
+    char *java_argv[19];
     int index = 0;
 
     memset(&config, 0, sizeof(config));
@@ -179,6 +179,8 @@ int main(int argc, char **argv) {
     java_argv[index++] = "-Dapple.awt.application.name=Minecraft";
     java_argv[index++] = "-Dapple.awt.UIElement=false";
     java_argv[index++] = "-Djava.awt.headless=false";
+    java_argv[index++] = "-Djinput.useDefaultPlugin=false";
+    java_argv[index++] = "-Dnet.java.games.input.useDefaultPlugin=false";
     java_argv[index++] = xmx;
     java_argv[index++] = java_library_path;
     java_argv[index++] = lwjgl_library_path;

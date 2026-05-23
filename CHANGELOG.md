@@ -31,6 +31,8 @@
 - Launch old macOS game clients through a tiny locally built foreground app helper so modern macOS
   does not classify the Minecraft child process as a background-only Java process with no window,
   while keeping online session data out of command-line arguments.
+- Disable the old JInput default controller plugin on macOS game launches so the app does not ask
+  users for broad Input Monitoring access just to enumerate HID devices.
 
 ## v0.5.8.1-alpha
 

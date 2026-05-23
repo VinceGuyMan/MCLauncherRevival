@@ -9,8 +9,8 @@ trust-flow changes.
 - The default login path now uses Microsoft's registered desktop redirect again.
 - Loopback callback login is still available only for custom registered Microsoft client IDs with
   matching loopback redirect registration.
-- The trust dialog, PKCE/state validation, device-code fallback, and advanced paste-back fallback
-  remain in place.
+- The trust dialog, PKCE/state validation, and paste-back fallback remain in place.
+- The broken visible code-login/device-code button has been removed from current builds.
 
 ## Launcher polish included
 

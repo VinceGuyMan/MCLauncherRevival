@@ -11,6 +11,15 @@
 - Removed the broken visible code-login option from Microsoft Login and replaced the stock redirect
   paste prompt with a larger dialog that includes `Paste from Clipboard`, clipboard auto-detection,
   and retry feedback.
+- Added root-level macOS build/run wrappers, a Finder-friendly `Start MCLauncherRevival.command`,
+  and `package-macos.sh` for staging an unsigned `dist/MCLauncherRevival.app`.
+- Added `java -jar MCLauncherRevival.jar --smoke-test` for CI-safe non-GUI validation and wired a
+  macOS GitHub Actions smoke/package job.
+- Added macOS game launch handling for old LWJGL clients with `-XstartOnFirstThread`, plus
+  macOS-friendly app naming during launcher startup.
+- Improved Swing accessibility and Mac usability with accessible names/descriptions, mnemonics,
+  Enter-to-play behavior for key fields, Escape support in the redirect dialog, and a simple menu
+  for opening the Minecraft folder, launcher log, account-safety help, and About.
 
 ## v0.5.8.1-alpha
 

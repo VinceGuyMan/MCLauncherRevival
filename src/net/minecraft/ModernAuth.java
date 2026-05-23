@@ -183,6 +183,9 @@ final class ModernAuth {
                 : "This compatibility login uses Microsoft's registered desktop redirect.\n\n";
         int choice = status.choose(title, intro
                 + "After Microsoft sign-in, copy only the final redirect URL from the browser address bar and paste it into the launcher.\n\n"
+                + "Example shape:\n"
+                + DESKTOP_REDIRECT_URI + "?code=...&state=...\n\n"
+                + "If Microsoft shows removed=true on that page, copy the full address bar URL anyway. That usually means Microsoft returned to its desktop redirect page, not that your password was sent to the launcher.\n\n"
                 + "Do not paste this URL into Discord, GitHub issues, screenshots, or support chats. It may contain a short-lived sign-in code.\n\n"
                 + "Your Microsoft password still belongs only on Microsoft-owned websites.", new String[] {
                 "Open Browser", "Cancel"
@@ -196,6 +199,7 @@ final class ModernAuth {
                     "After Microsoft sign-in, copy the full final URL from the browser address bar.\n\n"
                             + "It should start with:\n"
                             + DESKTOP_REDIRECT_URI + "?code=\n\n"
+                            + "If the page text says removed=true, still copy the full browser address bar URL.\n\n"
                             + "Paste it here, or use the Paste from Clipboard button.\n\n"
                             + "Do not share this URL publicly.");
             if (redirected == null || redirected.trim().length() == 0) {
@@ -387,7 +391,7 @@ final class ModernAuth {
         if (redirect == null || redirect.length() == 0) {
             return "Offline Play remains available.";
         }
-        return "Microsoft/Xbox suggested this page: " + redirect + " Offline Play remains available.";
+        return "Microsoft/Xbox suggested this page: " + safeDisplayUrl(redirect) + " Offline Play remains available.";
     }
 
     private XboxToken readXboxToken(String body) throws IOException {
@@ -490,36 +494,86 @@ final class ModernAuth {
         if (uri == null || uri.length() == 0) {
             return;
         }
+        if (openWithJavaDesktop(uri)) {
+            return;
+        }
+        if (windowsOs()) {
+            openBrowserWindows(uri);
+        } else if (macOs()) {
+            openBrowserMac(uri);
+        } else {
+            openBrowserGeneric(uri);
+        }
+    }
+
+    private static boolean openWithJavaDesktop(String uri) {
         try {
-            if (Desktop.isDesktopSupported()) {
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                 Desktop.getDesktop().browse(new URI(uri));
-                return;
+                return true;
             }
         } catch (Throwable ignored) {
         }
-        String os = System.getProperty("os.name", "").toLowerCase();
-        if (os.indexOf("mac") >= 0) {
-            if (tryStart("open", uri)) {
-                return;
-            }
+        return false;
+    }
+
+    private static boolean openBrowserWindows(String uri) {
+        if (tryStart("rundll32", "url.dll,FileProtocolHandler", uri)) {
+            return true;
         }
-        if (os.indexOf("linux") >= 0 || os.indexOf("nux") >= 0
-                || os.indexOf("nix") >= 0 || os.indexOf("aix") >= 0) {
-            if (tryStart("xdg-open", uri)) {
-                return;
-            }
-            if (tryStart("gio", "open", uri)) {
-                return;
-            }
-            if (tryStart("sensible-browser", uri)) {
-                return;
-            }
+        return tryStart("cmd", "/c", "start", "", uri);
+    }
+
+    private static boolean openBrowserMac(String uri) {
+        return tryStart("open", uri);
+    }
+
+    private static boolean openBrowserGeneric(String uri) {
+        return tryStart("xdg-open", uri)
+                || tryStart("gio", "open", uri)
+                || tryStart("sensible-browser", uri);
+    }
+
+    private static boolean windowsOs() {
+        return osName().indexOf("win") >= 0;
+    }
+
+    private static boolean macOs() {
+        return osName().indexOf("mac") >= 0;
+    }
+
+    private static String osName() {
+        return System.getProperty("os.name", "").toLowerCase();
+    }
+
+    private static String safeDisplayUrl(String value) {
+        if (value == null || value.length() == 0) {
+            return "";
         }
-        if (os.indexOf("win") >= 0) {
-            if (tryStart("rundll32", "url.dll,FileProtocolHandler", uri)) {
-                return;
+        try {
+            URI uri = new URI(value);
+            StringBuilder safe = new StringBuilder();
+            if (uri.getScheme() != null) {
+                safe.append(uri.getScheme()).append("://");
             }
-            tryStart("cmd", "/c", "start", "", uri);
+            if (uri.getHost() != null) {
+                safe.append(uri.getHost());
+            }
+            if (uri.getPath() != null) {
+                safe.append(uri.getPath());
+            }
+            return safe.length() == 0 ? "(link omitted)" : safe.toString();
+        } catch (Exception ignored) {
+            int query = value.indexOf('?');
+            int fragment = value.indexOf('#');
+            int end = value.length();
+            if (query >= 0 && query < end) {
+                end = query;
+            }
+            if (fragment >= 0 && fragment < end) {
+                end = fragment;
+            }
+            return end > 0 ? value.substring(0, end) : "(link omitted)";
         }
     }
 

@@ -19,7 +19,11 @@ tools/                       Dependency helper scripts and optional local Java p
 ```text
 Setup MCLR.cmd              Recommended setup/launcher hub
 Start MCLR.cmd              Friendly Windows entrypoint
-Start MCLR XP.cmd   XP offline/classic entrypoint
+Start MCLR XP.cmd           XP offline/classic entrypoint
+Start MCLauncherRevival.command       Friendly macOS Finder entrypoint
+build-macos.sh                         Root macOS build wrapper
+run-macos.sh                           Root macOS run wrapper
+package-macos.sh                       Root unsigned macOS app-bundle packager
 README.md                                Main GitHub project page
 MODERNIZATION.md                         Technical modernization notes
 SECURITY.md                              Auth/token safety notes
@@ -36,8 +40,19 @@ scripts/package-release.cmd              Normal release ZIP builder
 scripts/package-xp-release.cmd           Optional XP bundled-Java ZIP builder
 scripts/run-linux.sh                     Preliminary Linux runtime helper
 scripts/build-linux.sh                   Preliminary Linux build helper
-scripts/run-macos.sh                     Preliminary macOS runtime helper
-scripts/build-macos.sh                   Preliminary macOS build helper
+scripts/run-macos.sh                     macOS runtime helper used by root wrapper
+scripts/build-macos.sh                   macOS build helper used by root wrapper
+```
+
+## Key docs
+
+```text
+docs/MACOS.md                           macOS build, run, package, and troubleshooting notes
+docs/LINUX.md                           Linux preliminary testing notes
+docs/WINDOWS.md                         Windows 7-11 notes
+docs/WINDOWS_XP.md                      XP offline/classic notes
+docs/RELEASES.md                        Release package layout
+docs/RELEASE_CHECKLIST.md               Manual release validation checklist
 ```
 
 ## Source
@@ -87,6 +102,7 @@ dist/
 release/
 tools/jdk8/
 tools/temurin8-jdk.zip
+tools/temurin8-jdk*.tar.gz
 ```
 
 The jar should be attached to a GitHub Release rather than committed to normal source history.

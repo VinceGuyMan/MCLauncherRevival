@@ -1,6 +1,7 @@
 package net.minecraft;
 
 import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -8,10 +9,15 @@ import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -33,11 +39,13 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -89,6 +97,10 @@ public final class MinecraftLauncher extends JFrame {
 
     public static void main(String[] args) {
         configureCompatibilityProperties();
+        if (isSmokeTest(args)) {
+            System.exit(runSmokeTest());
+            return;
+        }
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         } catch (Exception ignored) {
@@ -104,6 +116,38 @@ public final class MinecraftLauncher extends JFrame {
         if (System.getProperty("https.protocols") == null) {
             System.setProperty("https.protocols", "TLSv1.2,TLSv1.1,TLSv1");
         }
+        if (System.getProperty("apple.awt.application.name") == null) {
+            System.setProperty("apple.awt.application.name", "MCLauncherRevival");
+        }
+        if (macOs() && System.getProperty("apple.laf.useScreenMenuBar") == null) {
+            System.setProperty("apple.laf.useScreenMenuBar", "true");
+        }
+    }
+
+    private static boolean isSmokeTest(String[] args) {
+        return args != null && args.length > 0 && "--smoke-test".equals(args[0]);
+    }
+
+    private static int runSmokeTest() {
+        System.out.println("MCLauncherRevival smoke test");
+        System.out.println("OS name: " + System.getProperty("os.name", "unknown"));
+        System.out.println("OS arch: " + System.getProperty("os.arch", "unknown"));
+        System.out.println("Java version: " + System.getProperty("java.version", "unknown"));
+        System.out.println("Minecraft dir: " + TokenCache.minecraftDir().getAbsolutePath());
+        boolean logo = resourceAvailable("/net/minecraft/logo.png");
+        boolean dirt = resourceAvailable("/net/minecraft/dirt.png");
+        boolean block = resourceAvailable("/net/minecraft/Block.png");
+        System.out.println("Resources: logo=" + logo + ", dirt=" + dirt + ", block=" + block);
+        if (!logo || !dirt || !block) {
+            System.out.println("Smoke test failed: required launcher resources are missing.");
+            return 1;
+        }
+        System.out.println("Smoke test passed.");
+        return 0;
+    }
+
+    private static boolean resourceAvailable(String path) {
+        return MinecraftLauncher.class.getResource(path) != null;
     }
 
     private MinecraftLauncher() {
@@ -113,6 +157,7 @@ public final class MinecraftLauncher extends JFrame {
         setMinimumSize(new Dimension(854, 560));
         setIconImage(loadImage("/net/minecraft/favicon.png"));
         buildUi();
+        installMenuBar();
         if (settings.getBoolean("lowEndMode", false)) {
             setSize(854, 560);
         } else {
@@ -141,6 +186,8 @@ public final class MinecraftLauncher extends JFrame {
         setOfflineHead();
         wireActions();
         applyToolTips();
+        applyAccessibility();
+        installKeyboardAffordances();
         maybeShowFirstRunWelcome();
         versionBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -180,6 +227,7 @@ public final class MinecraftLauncher extends JFrame {
             loadSkinPreview(cached);
             status("Ready to play Minecraft " + selectedVersion());
         }
+        updateDefaultPlayButton();
     }
 
     private JPanel buildTabs() {
@@ -373,6 +421,7 @@ public final class MinecraftLauncher extends JFrame {
                     tokenCache.clear();
                     currentProfile = null;
                     playOnlineButton.setEnabled(false);
+                    updateDefaultPlayButton();
                     welcomeLabel.setText("Welcome, guest");
                     setOfflineHead();
                     status("Forgot cached OAuth tokens.");
@@ -406,6 +455,128 @@ public final class MinecraftLauncher extends JFrame {
                 chooseCustomMemoryIfNeeded();
             }
         });
+    }
+
+    private void installMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu file = new JMenu("File");
+        file.setMnemonic(KeyEvent.VK_F);
+        file.add(menuItem("Open Minecraft Folder", KeyEvent.VK_M,
+                KeyStroke.getKeyStroke(KeyEvent.VK_M, menuShortcutMask() | ActionEvent.SHIFT_MASK),
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        openMinecraftFolder();
+                    }
+                }));
+        file.add(menuItem("Open Launcher Log", KeyEvent.VK_L,
+                KeyStroke.getKeyStroke(KeyEvent.VK_L, menuShortcutMask() | ActionEvent.SHIFT_MASK),
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        openLauncherLog();
+                    }
+                }));
+        file.addSeparator();
+        file.add(menuItem("Profile Editor", KeyEvent.VK_P,
+                KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, menuShortcutMask()),
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        switchTab("profile");
+                    }
+                }));
+        file.addSeparator();
+        file.add(menuItem("Exit", KeyEvent.VK_X, null, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                System.exit(0);
+            }
+        }));
+
+        JMenu help = new JMenu("Help");
+        help.setMnemonic(KeyEvent.VK_H);
+        help.add(menuItem("Security / Account Safety", KeyEvent.VK_S, null, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showAccountSafety();
+            }
+        }));
+        help.add(menuItem("About MCLauncherRevival", KeyEvent.VK_A, null, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showAbout();
+            }
+        }));
+
+        menuBar.add(file);
+        menuBar.add(help);
+        setJMenuBar(menuBar);
+    }
+
+    private JMenuItem menuItem(String text, int mnemonic, KeyStroke accelerator, ActionListener listener) {
+        JMenuItem item = new JMenuItem(text);
+        item.setMnemonic(mnemonic);
+        if (accelerator != null) {
+            item.setAccelerator(accelerator);
+        }
+        item.addActionListener(listener);
+        return item;
+    }
+
+    private static int menuShortcutMask() {
+        try {
+            return Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+        } catch (Throwable ignored) {
+            return ActionEvent.CTRL_MASK;
+        }
+    }
+
+    private void openMinecraftFolder() {
+        java.io.File dir = TokenCache.minecraftDir();
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        if (openLocalFile(dir)) {
+            status("Opened Minecraft folder: " + dir.getAbsolutePath());
+        } else {
+            status("Could not open Minecraft folder: " + dir.getAbsolutePath());
+        }
+    }
+
+    private void openLauncherLog() {
+        java.io.File logFile = launcherLogFile();
+        java.io.File target = logFile.exists() ? logFile : logFile.getParentFile();
+        if (target != null && !target.exists()) {
+            target.mkdirs();
+        }
+        if (target != null && openLocalFile(target)) {
+            status(logFile.exists()
+                    ? "Opened launcher log: " + logFile.getAbsolutePath()
+                    : "Opened log folder. last-launch.log will appear after Minecraft starts.");
+        } else {
+            status("Could not open launcher log folder.");
+        }
+    }
+
+    private void showAccountSafety() {
+        switchTab("notes");
+        setNewsHtml(htmlStart("#e8e8e8", "#aaaaff", "Verdana,Arial,sans-serif", 11, 24)
+                + "<font size='+3'><b>Security / Account Safety</b></font><br><br>"
+                + "<p>MCLauncherRevival is unofficial and is not affiliated with Mojang, Microsoft, Xbox, or Minecraft.</p>"
+                + "<p><b>Microsoft Login:</b><br>"
+                + "+ Opens your default browser for Microsoft OAuth.<br>"
+                + "+ Never asks for your raw Microsoft password.<br>"
+                + "+ Stores local OAuth tokens under the launcher_revive folder so you do not need to sign in every time.<br>"
+                + "+ Forget Login clears cached local login data.</p>"
+                + "<p>Do not share pasted redirect URLs, auth logs, screenshots containing URLs, or files from the auth cache.</p>"
+                + "</body></html>");
+        appendLog("Opened Security / Account Safety help.");
+    }
+
+    private void showAbout() {
+        JOptionPane.showMessageDialog(this,
+                "MCLauncherRevival\n"
+                        + "Unofficial alpha nostalgia/preservation launcher.\n\n"
+                        + "Not affiliated with Mojang, Microsoft, Xbox, or Minecraft.",
+                "About MCLauncherRevival",
+                JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void chooseCustomMemoryIfNeeded() {
@@ -474,6 +645,105 @@ public final class MinecraftLauncher extends JFrame {
         redownloadButton.setToolTipText("Delete and re-fetch only the selected version folder.");
         loginButton.setToolTipText("Sign in through browser OAuth. The launcher should never ask for your Microsoft password.");
         signOutButton.setToolTipText("Remove cached local login tokens/settings.");
+    }
+
+    private void applyAccessibility() {
+        accessible(offlineName, "Profile/offline name field", "Player name used for offline singleplayer launches.");
+        accessible(versionBox, "Version selector", "Choose or type a classic Minecraft version.");
+        accessible(memoryBox, "Memory selector", "Choose how much RAM the Minecraft client may use.");
+        accessible(styleBox, "Launcher style selector", "Choose the launcher visual style for the selected version era.");
+        accessible(loginButton, "Microsoft Login", "Open browser-based Microsoft OAuth sign-in. Never enter your Microsoft password into this launcher.");
+        accessible(playOnlineButton, "Play", "Launch with the current Microsoft or Minecraft session when available.");
+        accessible(playOfflineButton, "Play Offline", "Launch singleplayer without Microsoft login.");
+        accessible(randomVersionButton, "Random version", "Pick a random loaded classic version.");
+        accessible(signOutButton, "Forget Login", "Remove cached local OAuth login data.");
+        accessible(redownloadButton, "Redownload Version", "Delete and re-fetch only the selected version folder.");
+        accessible(compactNewsBox, "Patch Notes Mode", "Switch the news panel into concise patch-style notes.");
+        accessible(lowEndModeBox, "Potato Mode", "Use lighter settings for old or low-memory systems.");
+        accessible(updateTab, "Update Notes tab", "Show launcher update notes and classic version notes.");
+        accessible(logTab, "Launcher Log tab", "Show current launcher messages and the game launch log location.");
+        accessible(profileTab, "Profile Editor tab", "Show profile, folders, Java status, and maintenance shortcuts.");
+        accessible(news, "Launcher content panel", "Shows update notes, logs, or profile information.");
+        accessible(skinLabel, "Profile skin preview", "Shows the signed-in profile head or the offline placeholder.");
+        accessible(statusLabel, "Launcher status", "Shows the latest launcher status message.");
+        accessible(versionStatusLabel, "Version file status", "Shows whether the selected version files are ready locally.");
+        applyEditorAccessibility(versionBox, "Version selector text", "Type a Minecraft version id such as b1.7.3.");
+        applyEditorAccessibility(memoryBox, "Memory selector text", "Type a custom memory amount in megabytes.");
+    }
+
+    private static void accessible(JComponent component, String name, String description) {
+        if (component == null || component.getAccessibleContext() == null) {
+            return;
+        }
+        component.getAccessibleContext().setAccessibleName(name);
+        component.getAccessibleContext().setAccessibleDescription(description);
+    }
+
+    private static void applyEditorAccessibility(JComboBox<String> box, String name, String description) {
+        if (box == null || box.getEditor() == null) {
+            return;
+        }
+        java.awt.Component editor = box.getEditor().getEditorComponent();
+        if (editor instanceof javax.accessibility.Accessible) {
+            javax.accessibility.AccessibleContext context =
+                    ((javax.accessibility.Accessible) editor).getAccessibleContext();
+            if (context != null) {
+                context.setAccessibleName(name);
+                context.setAccessibleDescription(description);
+            }
+        }
+    }
+
+    private void installKeyboardAffordances() {
+        loginButton.setMnemonic(KeyEvent.VK_L);
+        playOnlineButton.setMnemonic(KeyEvent.VK_P);
+        playOfflineButton.setMnemonic(KeyEvent.VK_O);
+        randomVersionButton.setMnemonic(KeyEvent.VK_R);
+        signOutButton.setMnemonic(KeyEvent.VK_F);
+        redownloadButton.setMnemonic(KeyEvent.VK_D);
+        compactNewsBox.setMnemonic(KeyEvent.VK_N);
+        lowEndModeBox.setMnemonic(KeyEvent.VK_T);
+        bindLikelyPlayAction(offlineName);
+        bindLikelyPlayAction(editorComponent(versionBox));
+        bindLikelyPlayAction(editorComponent(memoryBox));
+        updateDefaultPlayButton();
+    }
+
+    private static JComponent editorComponent(JComboBox<String> box) {
+        if (box == null || box.getEditor() == null) {
+            return null;
+        }
+        java.awt.Component component = box.getEditor().getEditorComponent();
+        return component instanceof JComponent ? (JComponent) component : null;
+    }
+
+    private void bindLikelyPlayAction(JComponent component) {
+        if (component == null) {
+            return;
+        }
+        component.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "mclr.playLikely");
+        component.getActionMap().put("mclr.playLikely", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                playLikely();
+            }
+        });
+    }
+
+    private void playLikely() {
+        if (playOnlineButton.isEnabled() && currentProfile != null) {
+            playOnlineButton.doClick();
+        } else if (playOfflineButton.isEnabled()) {
+            playOfflineButton.doClick();
+        }
+    }
+
+    private void updateDefaultPlayButton() {
+        if (getRootPane() == null) {
+            return;
+        }
+        getRootPane().setDefaultButton(playOnlineButton.isEnabled() && currentProfile != null
+                ? playOnlineButton
+                : playOfflineButton);
     }
 
     private void backupSaves() {
@@ -610,6 +880,7 @@ public final class MinecraftLauncher extends JFrame {
                             currentProfile = profile;
                             offlineName.setText(profile.name);
                             playOnlineButton.setEnabled(true);
+                            updateDefaultPlayButton();
                             updateWelcome(profile);
                             loadSkinPreview(profile);
                             setBusy(false);
@@ -677,6 +948,7 @@ public final class MinecraftLauncher extends JFrame {
         redownloadButton.setEnabled(!busy);
         playOnlineButton.setEnabled(!busy && currentProfile != null && !xp);
         signOutButton.setEnabled(!busy && !xp);
+        updateDefaultPlayButton();
     }
 
     private void status(String message) {
@@ -781,8 +1053,16 @@ public final class MinecraftLauncher extends JFrame {
     }
 
     private void wireTab(final TabLabel label, final String tab) {
+        label.setFocusable(true);
         label.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
+                switchTab(tab);
+            }
+        });
+        label.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "switchTab");
+        label.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "switchTab");
+        label.getActionMap().put("switchTab", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
                 switchTab(tab);
             }
         });
@@ -1229,7 +1509,8 @@ public final class MinecraftLauncher extends JFrame {
         String mode = currentProfile == null ? "Offline or login-on-play" : "Online as " + currentProfile.name;
         String memory = BetaLauncher.memoryPreview(selectedMemoryMegabytes()) + " MB";
         String javaCommand = windowsOs() ? "javaw" : "java";
-        return javaCommand + " -Xmx" + memory + " -Djava.library.path=<selected version natives> -cp <libraries + " + selectedVersion() + ".jar> <main class> <safe auth/session args hidden>\n"
+        String macFirstThread = macOs() ? " -XstartOnFirstThread" : "";
+        return javaCommand + macFirstThread + " -Xmx" + memory + " -Djava.library.path=<selected version natives> -cp <libraries + " + selectedVersion() + ".jar> <main class> <safe auth/session args hidden>\n"
                 + "Mode: " + mode + "\n"
                 + "Version: " + selectedVersion() + "\n"
                 + "Memory: " + memory + "\n"
@@ -1710,7 +1991,7 @@ public final class MinecraftLauncher extends JFrame {
                 + cobaltWidth + "' height='" + cobaltHeight + "' border='0'></a></center>";
     }
     private String logPage() {
-        java.io.File launchLog = new java.io.File(new java.io.File(new java.io.File(TokenCache.minecraftDir(), "launcher_revive"), "logs"), "last-launch.log");
+        java.io.File launchLog = launcherLogFile();
         return htmlStart("#e8e8e8", "#aaaaff", "Verdana,Arial,sans-serif", 11, 24)
                 + "<font size='+3'><b>Launcher Log</b></font><br><br>"
                 + "<p><font color='#999999'>Current launcher session messages. Game output is also written to disk after Minecraft starts.</font></p>"
@@ -1732,6 +2013,10 @@ public final class MinecraftLauncher extends JFrame {
                 + "<pre style='font-family:Consolas,Monospaced;font-size:11px;color:#dddddd;white-space:pre-wrap'>" + escape(launchPreview()) + "</pre>"
                 + "</td></tr></table>"
                 + "</body></html>";
+    }
+
+    private static java.io.File launcherLogFile() {
+        return new java.io.File(new java.io.File(new java.io.File(TokenCache.minecraftDir(), "launcher_revive"), "logs"), "last-launch.log");
     }
 
     private static String openGlFailureNoteHtml(java.io.File launchLog) {
@@ -1952,10 +2237,72 @@ public final class MinecraftLauncher extends JFrame {
 
     private static void browse(String uri) {
         try {
-            if (Desktop.isDesktopSupported()) {
-                Desktop.getDesktop().browse(new URI(uri));
+            URI parsed = new URI(uri);
+            if ("file".equalsIgnoreCase(parsed.getScheme())) {
+                openLocalFile(new java.io.File(parsed));
+                return;
             }
         } catch (Exception ignored) {
+        }
+        openExternalUri(uri);
+    }
+
+    private static boolean openExternalUri(String uri) {
+        if (uri == null || uri.length() == 0) {
+            return false;
+        }
+        try {
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                Desktop.getDesktop().browse(new URI(uri));
+                return true;
+            }
+        } catch (Exception ignored) {
+        }
+        if (macOs() && tryStart("open", uri)) {
+            return true;
+        }
+        if (windowsOs()) {
+            if (tryStart("rundll32", "url.dll,FileProtocolHandler", uri)) {
+                return true;
+            }
+            return tryStart("cmd", "/c", "start", "", uri);
+        }
+        return tryStart("xdg-open", uri)
+                || tryStart("gio", "open", uri)
+                || tryStart("sensible-browser", uri);
+    }
+
+    private static boolean openLocalFile(java.io.File file) {
+        if (file == null) {
+            return false;
+        }
+        try {
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
+                Desktop.getDesktop().open(file);
+                return true;
+            }
+        } catch (Exception ignored) {
+        }
+        String path = file.getAbsolutePath();
+        if (macOs() && tryStart("open", path)) {
+            return true;
+        }
+        if (windowsOs()) {
+            if (tryStart("rundll32", "url.dll,FileProtocolHandler", path)) {
+                return true;
+            }
+            return tryStart("cmd", "/c", "start", "", path);
+        }
+        return tryStart("xdg-open", path)
+                || tryStart("gio", "open", path);
+    }
+
+    private static boolean tryStart(String... command) {
+        try {
+            new ProcessBuilder(command).start();
+            return true;
+        } catch (Throwable ignored) {
+            return false;
         }
     }
 
@@ -1965,6 +2312,16 @@ public final class MinecraftLauncher extends JFrame {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    private static void installEscapeToClose(final javax.swing.JDialog dialog) {
+        dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "closeDialog");
+        dialog.getRootPane().getActionMap().put("closeDialog", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                dialog.dispose();
+            }
+        });
     }
 
     private final class SwingStatus implements StatusSink {
@@ -2000,12 +2357,14 @@ public final class MinecraftLauncher extends JFrame {
                         instructions.setLineWrap(true);
                         instructions.setWrapStyleWord(true);
                         instructions.setFont(new Font("Dialog", Font.PLAIN, 12));
+                        accessible(instructions, "Microsoft login instructions", "Explains what redirect URL to copy from the browser.");
                         panel.add(instructions, BorderLayout.NORTH);
 
                         final javax.swing.JTextArea input = new javax.swing.JTextArea(6, 58);
                         input.setLineWrap(true);
                         input.setWrapStyleWord(false);
                         input.setFont(new Font("Monospaced", Font.PLAIN, 12));
+                        accessible(input, "Microsoft redirect URL field", "Paste the final Microsoft OAuth redirect URL here.");
                         String clipboard = clipboardText();
                         if (looksLikeMicrosoftRedirect(clipboard)) {
                             input.setText(clipboard.trim());
@@ -2017,6 +2376,7 @@ public final class MinecraftLauncher extends JFrame {
                         feedback.setFont(new Font("Dialog", Font.PLAIN, 11));
 
                         JButton pasteButton = new JButton("Paste from Clipboard");
+                        accessible(pasteButton, "Paste from Clipboard", "Paste text from the system clipboard into the redirect URL field.");
                         pasteButton.addActionListener(new ActionListener() {
                             public void actionPerformed(ActionEvent e) {
                                 String value = clipboardText();
@@ -2033,6 +2393,7 @@ public final class MinecraftLauncher extends JFrame {
                         });
 
                         JButton continueButton = new JButton("Continue");
+                        accessible(continueButton, "Continue Microsoft login", "Submit the pasted Microsoft redirect URL.");
                         continueButton.addActionListener(new ActionListener() {
                             public void actionPerformed(ActionEvent e) {
                                 result[0] = input.getText();
@@ -2041,6 +2402,7 @@ public final class MinecraftLauncher extends JFrame {
                         });
 
                         JButton cancelButton = new JButton("Cancel");
+                        accessible(cancelButton, "Cancel Microsoft login", "Close this dialog and cancel Microsoft login.");
                         cancelButton.addActionListener(new ActionListener() {
                             public void actionPerformed(ActionEvent e) {
                                 dialog.dispose();
@@ -2078,6 +2440,7 @@ public final class MinecraftLauncher extends JFrame {
 
                         dialog.setContentPane(panel);
                         dialog.getRootPane().setDefaultButton(continueButton);
+                        installEscapeToClose(dialog);
                         dialog.setAlwaysOnTop(true);
                         dialog.pack();
                         dialog.setLocationRelativeTo(MinecraftLauncher.this);

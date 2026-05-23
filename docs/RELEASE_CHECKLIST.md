@@ -1,6 +1,6 @@
 # Release Checklist
 
-For `v0.5.6`:
+For `v0.5.8.1` and later alpha builds:
 
 - Confirm the project builds from a clean clone.
 - Confirm the jar launches.
@@ -27,10 +27,13 @@ For `v0.5.6`:
   available.
 - On Linux, manually smoke-test `java -jar MCLauncherRevival.jar` only as UI/preliminary behavior
   unless old-client game launch is tested.
-- Confirm macOS shell scripts pass syntax checks and are clearly marked as preliminary until tested
-  on a real Mac.
-- On macOS, run `sh -n scripts/run-macos.sh scripts/build-macos.sh` and verify the blank-window
-  limitation remains documented.
+- Confirm macOS shell scripts pass syntax checks on a real Mac.
+- On macOS, run `sh -n build-macos.sh run-macos.sh package-macos.sh scripts/run-macos.sh scripts/build-macos.sh`.
+- On macOS, run `./build-macos.sh` and confirm `MCLauncherRevival.jar` exists.
+- On macOS, run `java -jar MCLauncherRevival.jar --smoke-test`.
+- On macOS, run `./package-macos.sh` and confirm `dist/MCLauncherRevival.app` exists.
+- Confirm `Start MCLauncherRevival.command` uses LF line endings and can call `run-macos.sh`.
+- Confirm the macOS blank-window/LWJGL limitation remains documented.
 - Confirm saved tokens/settings can be removed if implemented.
 - Confirm no secrets, tokens, client secrets, or personal credentials are committed.
 - Confirm README instructions match the actual release files.
@@ -55,6 +58,10 @@ Expected project files include:
 - `Setup MCLR.cmd`
 - `Start MCLR.cmd`
 - `Start MCLR XP.cmd`
+- `Start MCLauncherRevival.command`
+- `build-macos.sh`
+- `run-macos.sh`
+- `package-macos.sh`
 - `scripts/run-win.cmd`
 - `scripts/build-win.cmd`
 - `scripts/run-linux.sh`
@@ -74,7 +81,8 @@ Expected project files include:
 - `docs/AUTH_FLOW.md`
 - `docs/HISTORICAL_THEMES.md`
 - `docs/RELEASES.md`
-- `docs/RELEASE_NOTES_v0.5.6.md`
+- `docs/MACOS.md`
+- `docs/RELEASE_NOTES_v0.5.8.1.md`
 - `LICENSE`
 
 ## Do not commit
@@ -82,6 +90,7 @@ Expected project files include:
 - Build output jars.
 - Release zip files.
 - Downloaded JDKs.
+- Unsigned app bundles under `dist/`.
 - `.minecraft` folders.
 - OAuth tokens, auth caches, local settings, or secrets.
 - Packed/obfuscated binaries.
@@ -91,9 +100,7 @@ Expected project files include:
 Recommended release tag and artifact names:
 
 ```text
-v0.5.0
-MCLauncherRevival-v0.5.6-alpha.zip
+v0.5.8.1
+MCLauncherRevival-v0.5.8.1-alpha.zip
 MCLauncherRevival.jar
 ```
-
-

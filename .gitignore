@@ -6,6 +6,9 @@
 /.gradle/
 *.class
 *.jar
+*.dmg
+*.pkg
+*.app/
 
 # Local downloaded dependencies
 /tools/java7/

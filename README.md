@@ -59,7 +59,7 @@ The v0.5.0 historical style system is documented in
 | Windows 7-11 support | Primary target | Java 8 is recommended, especially for old Minecraft/LWJGL behavior. |
 | Windows XP / older Windows behavior | Offline/classic only | Real XP hardware testing confirmed classic launches can work with prepared files, Java, and drivers. Performance depends on hardware. |
 | Linux behavior | Preliminary / experimental | Launcher UI may run, but old Minecraft/LWJGL game launch may fail with blank windows, OpenGL errors, or native-library issues. See docs/LINUX.md. |
-| macOS behavior | Experimental | Launcher UI may run, but old Minecraft/LWJGL game launch is experimental. Blank game windows may occur. See docs/MACOS.md. |
+| macOS behavior | Build/UI smoke-tested, game launch experimental | macOS scripts, Finder `.command`, unsigned `.app` packaging, and `--smoke-test` are available. Old Minecraft/LWJGL game launch may still fail with blank windows or native-library issues. See docs/MACOS.md. |
 | Release packaging | Alpha packages available | Use the attached GitHub Releases ZIP, not the source-code ZIP. |
 
 ## Installation / running
@@ -135,12 +135,15 @@ chmod +x scripts/run-linux.sh scripts/build-linux.sh
 
 See [docs/LINUX.md](docs/LINUX.md) before relying on Linux behavior.
 
-For preliminary macOS testing, use:
+For macOS testing, use:
 
 ```sh
-chmod +x scripts/run-macos.sh scripts/build-macos.sh
-./scripts/run-macos.sh
+chmod +x "Start MCLauncherRevival.command" run-macos.sh build-macos.sh package-macos.sh
+./run-macos.sh
 ```
+
+You can also double-click `Start MCLauncherRevival.command` from Finder, or create an unsigned app
+bundle with `./package-macos.sh`.
 
 See [docs/MACOS.md](docs/MACOS.md) before relying on macOS behavior.
 
@@ -169,7 +172,7 @@ See [docs/MACOS.md](docs/MACOS.md) before relying on macOS behavior.
    Or on macOS:
 
    ```sh
-   ./scripts/build-macos.sh
+   ./build-macos.sh
    ```
 
    On macOS, if only a modern JDK is installed and the build says Java 7-compatible bytecode is not
@@ -178,7 +181,7 @@ See [docs/MACOS.md](docs/MACOS.md) before relying on macOS behavior.
    ```sh
    chmod +x tools/download-temurin8-jdk-macos.sh
    ./tools/download-temurin8-jdk-macos.sh
-   ./scripts/build-macos.sh
+   ./build-macos.sh
    ```
 
    On Apple Silicon, that helper uses the x64 Temurin 8 JDK through Rosetta because Adoptium does
@@ -232,8 +235,8 @@ See [SECURITY.md](SECURITY.md) and [Trust and Safety](docs/TRUST_AND_SAFETY.md) 
   instead of an already-extracted runtime.
 - Some Minecraft versions may require specific Java/LWJGL combinations.
 - Linux behavior has preliminary scripts/docs, but old Minecraft/LWJGL game launch is experimental.
-- macOS behavior has preliminary scripts/docs, but old Minecraft/LWJGL game launch is experimental
-  and blank game windows may occur.
+- macOS has build/run scripts, a Finder `.command`, unsigned `.app` packaging, and smoke coverage,
+  but old Minecraft/LWJGL game launch is still experimental and blank game windows may occur.
 
 ## Troubleshooting
 

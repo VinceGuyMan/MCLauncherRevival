@@ -25,6 +25,11 @@ find_tool() {
             printf '%s\n' "$java8_home/bin/$name"
             return 0
         fi
+        java_home="$(/usr/libexec/java_home 2>/dev/null || true)"
+        if [ -n "$java_home" ] && [ -x "$java_home/bin/$name" ]; then
+            printf '%s\n' "$java_home/bin/$name"
+            return 0
+        fi
     fi
     if command -v "$name" >/dev/null 2>&1; then
         command -v "$name"

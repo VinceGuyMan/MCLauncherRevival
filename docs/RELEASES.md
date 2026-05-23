@@ -14,7 +14,7 @@ Do not use these files for normal play:
 Those source archives are useful for reading or building the code, but they may not include
 `MCLauncherRevival.jar`. The attached release asset is the runnable package.
 
-For `v0.5.6`, download:
+For `v0.5.8.1`, download:
 
 ```text
 MCLauncherRevival-v0.5.8.1-alpha.zip
@@ -62,6 +62,10 @@ MCLauncherRevival-v0.5.8.1-alpha/
   Setup MCLR.cmd
   Start MCLR.cmd
   Start MCLR XP.cmd
+  Start MCLauncherRevival.command
+  build-macos.sh
+  run-macos.sh
+  package-macos.sh
   MCLauncherRevival.jar
   scripts/
     run-win.cmd
@@ -81,6 +85,25 @@ MCLauncherRevival-v0.5.8.1-alpha/
   LICENSE
   NOTICE.md
 ```
+
+Optional unsigned macOS app artifact layout for manual testing:
+
+```text
+MCLauncherRevival-macos-unsigned-v0.5.8.1-alpha.zip
+  MCLauncherRevival.app/
+    Contents/
+      Info.plist
+      MacOS/
+        MCLauncherRevival
+      Resources/
+        MCLauncherRevival.jar
+        favicon.png
+        MCLauncherRevival.icns        if generated during packaging
+```
+
+Create this only after running `./package-macos.sh`. The `.app` is unsigned and not notarized, so
+Gatekeeper may require right-click > Open or System Settings approval. Do not publish it as a
+notarized app unless a future signing/notarization pass has actually completed.
 
 Recommended XP bundled-Java release zip layout:
 
@@ -113,7 +136,7 @@ scripts\build-win.cmd
 ```
 
 Version-specific notes for this release are in
-[RELEASE_NOTES_v0.5.6.md](RELEASE_NOTES_v0.5.6.md).
+[RELEASE_NOTES_v0.5.8.1.md](RELEASE_NOTES_v0.5.8.1.md).
 
 ## Notes
 
@@ -135,8 +158,9 @@ Version-specific notes for this release are in
   secure for general browsing or production use.
 - Linux shell wrappers are included for preliminary testing, but old Minecraft/LWJGL game launch is
   experimental. Linux logs are written to `~/.minecraft/launcher_revive/logs/last-launch.log`.
-- macOS testing can open the launcher, but old client launch may hang on a blank Minecraft window
-  due to LWJGL/OpenGL/native compatibility. macOS logs are written to
+- macOS scripts, Finder `.command`, unsigned `.app` packaging, and `--smoke-test` can be checked on
+  a Mac. Old client launch may still hang on a blank Minecraft window due to LWJGL/OpenGL/native
+  compatibility. macOS logs are written to
   `~/Library/Application Support/minecraft/launcher_revive/logs/last-launch.log`.
 - The launcher never asks for a raw Microsoft password.
 - v0.5.0 adds recreated historical launcher style layouts for Beta, Alpha, Infdev, Classic, and
@@ -145,4 +169,3 @@ Version-specific notes for this release are in
 - If the jar is missing on Windows 7 or newer, `scripts\run-win.cmd` will attempt to build it.
 - If the jar is missing in XP offline mode, download the attached release ZIP instead of the
   source-code or tag ZIP.
-

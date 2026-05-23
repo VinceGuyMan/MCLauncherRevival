@@ -167,6 +167,9 @@ final class BetaLauncher {
 
         ArrayList<String> command = new ArrayList<String>();
         command.add(javaExecutable());
+        if ("osx".equals(osName())) {
+            command.add("-XstartOnFirstThread");
+        }
         command.add("-Xmx" + memoryMegabytes + "M");
         command.add("-Djava.library.path=" + nativeDir.getAbsolutePath());
         command.add("-cp");
@@ -758,4 +761,3 @@ final class BetaLauncher {
         }
     }
 }
-

@@ -88,6 +88,37 @@ You can also run it directly:
 java -jar MCLauncherRevival.jar
 ```
 
+## macOS build and run steps
+
+macOS support is experimental, but the repo includes root-level helpers for normal users:
+
+```sh
+./build-macos.sh
+./run-macos.sh
+```
+
+`build-macos.sh` compiles the Java sources into `build/classes`, copies resources, and creates
+`MCLauncherRevival.jar` with `net.minecraft.MinecraftLauncher` as the main class. It prefers Java 8
+when available, respects a valid `JAVA_HOME`, and fails with a clear message if no usable JDK is
+available. It does not install Java automatically.
+
+`run-macos.sh` builds the jar if needed, prefers Java 8, warns when running on a newer Java runtime,
+and starts the launcher with macOS-friendly app-name/Dock properties.
+
+Finder users can double-click:
+
+```text
+Start MCLauncherRevival.command
+```
+
+Maintainers can stage an unsigned app bundle for manual testing:
+
+```sh
+./package-macos.sh
+```
+
+The `.app` output goes under `dist/`, is not signed or notarized, and should not be committed.
+
 ## How to use
 
 1. Start `run-win.cmd`.
@@ -148,4 +179,3 @@ Launch logs are written to:
 - `src/net/minecraft/StatusSink.java`
 - `build-win.cmd`
 - `run-win.cmd`
-

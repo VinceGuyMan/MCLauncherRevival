@@ -166,8 +166,8 @@ final class BetaLauncher {
         if (minecraftArguments == null || minecraftArguments.trim().length() == 0) {
             minecraftArguments = "${auth_player_name} ${auth_session}";
         }
-        boolean macFirstThreadWrapper = shouldUseMacFirstThreadWrapper(mainClass);
-        if (macFirstThreadWrapper) {
+        boolean macForegroundHelper = shouldUseMacForegroundHelper(mainClass);
+        if (macForegroundHelper) {
             File launcherPath = launcherCodePath();
             if (launcherPath != null) {
                 classpath.add(launcherPath);
@@ -176,7 +176,7 @@ final class BetaLauncher {
 
         ArrayList<String> command = new ArrayList<String>();
         command.add(javaExecutable());
-        if ("osx".equals(osName())) {
+        if ("osx".equals(osName()) && !macForegroundHelper) {
             command.add("-XstartOnFirstThread");
             command.add("-Xdock:name=Minecraft");
             command.add("-Dapple.awt.application.name=Minecraft");
@@ -190,11 +190,9 @@ final class BetaLauncher {
         command.add("-cp");
         String classpathText = joinClasspath(classpath);
         command.add(classpathText);
-        if (macFirstThreadWrapper) {
-            command.add("net.minecraft.MacFirstThreadMinecraft");
+        if (macForegroundHelper) {
+            command.add("net.minecraft.MacForegroundMinecraft");
             command.add(version);
-            command.add("854");
-            command.add("480");
         } else {
             command.add(mainClass);
             command.addAll(expandArguments(minecraftArguments, profile, gameDir));
@@ -207,13 +205,29 @@ final class BetaLauncher {
                         + " as "
                         + profile.name
                         + (profile.online ? " (online token)." : " (offline mode)."));
-        ProcessBuilder builder = new ProcessBuilder(command);
-        if (macFirstThreadWrapper) {
-            Map<String, String> environment = builder.environment();
-            environment.put("MCLR_GAME_USERNAME", profile.name);
-            environment.put("MCLR_GAME_SESSION", profile.sessionId());
-            environment.put("MCLR_GAME_DIR", gameDir.getAbsolutePath());
-            environment.put("MCLR_GAME_VERSION", version);
+        ProcessBuilder builder;
+        if (macForegroundHelper) {
+            File runtimeDir = new File(new File(minecraftDir, "launcher_revive"), "runtime");
+            File gameApp = stageMacGameApp(runtimeDir);
+            File launchConfig = writeMacLaunchConfig(
+                    runtimeDir,
+                    logFile,
+                    command.get(0),
+                    memoryMegabytes,
+                    nativeDir,
+                    classpathText,
+                    gameDir,
+                    profile);
+            ArrayList<String> openCommand = new ArrayList<String>();
+            openCommand.add("/usr/bin/open");
+            openCommand.add("-n");
+            openCommand.add("-W");
+            openCommand.add(gameApp.getAbsolutePath());
+            openCommand.add("--args");
+            openCommand.add(launchConfig.getAbsolutePath());
+            builder = new ProcessBuilder(openCommand);
+        } else {
+            builder = new ProcessBuilder(command);
         }
         builder.directory(gameDir);
         builder.redirectErrorStream(true);
@@ -790,10 +804,179 @@ final class BetaLauncher {
         return out.toString();
     }
 
-    private static boolean shouldUseMacFirstThreadWrapper(String mainClass) {
+    private static boolean shouldUseMacForegroundHelper(String mainClass) {
         return "osx".equals(osName())
                 && ("net.minecraft.launchwrapper.Launch".equals(mainClass)
                 || "net.minecraft.client.Minecraft".equals(mainClass));
+    }
+
+    private static File stageMacGameApp(File runtimeDir) throws IOException {
+        File appDir = new File(runtimeDir, "MCLauncherRevivalGame.app");
+        File contentsDir = new File(appDir, "Contents");
+        File macOsDir = new File(contentsDir, "MacOS");
+        if (!macOsDir.exists() && !macOsDir.mkdirs()) {
+            throw new IOException("Could not create " + macOsDir.getAbsolutePath());
+        }
+        writeString(new File(contentsDir, "Info.plist"),
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                        + "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" "
+                        + "\"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"
+                        + "<plist version=\"1.0\">\n"
+                        + "<dict>\n"
+                        + "  <key>CFBundleExecutable</key>\n"
+                        + "  <string>MCLauncherRevivalGame</string>\n"
+                        + "  <key>CFBundleIdentifier</key>\n"
+                        + "  <string>net.mclauncherrevival.game</string>\n"
+                        + "  <key>CFBundleName</key>\n"
+                        + "  <string>Minecraft</string>\n"
+                        + "  <key>CFBundlePackageType</key>\n"
+                        + "  <string>APPL</string>\n"
+                        + "  <key>LSBackgroundOnly</key>\n"
+                        + "  <false/>\n"
+                        + "  <key>NSHighResolutionCapable</key>\n"
+                        + "  <true/>\n"
+                        + "</dict>\n"
+                        + "</plist>\n");
+        ensureMacGameExecutable(runtimeDir, new File(macOsDir, "MCLauncherRevivalGame"));
+        return appDir;
+    }
+
+    private static void ensureMacGameExecutable(File runtimeDir, File executable) throws IOException {
+        String sourceText = readResourceString("/net/minecraft/macos-game-launcher.c");
+        File sourceFile = new File(runtimeDir, "macos-game-launcher.c");
+        boolean sourceChanged = !sourceFile.exists() || !sourceText.equals(readString(sourceFile));
+        if (!runtimeDir.exists() && !runtimeDir.mkdirs()) {
+            throw new IOException("Could not create " + runtimeDir.getAbsolutePath());
+        }
+        if (sourceChanged) {
+            writeString(sourceFile, sourceText);
+        }
+        if (!executable.exists() || sourceChanged) {
+            compileMacGameLauncher(sourceFile, executable);
+        }
+    }
+
+    private static String readResourceString(String path) throws IOException {
+        InputStream in = BetaLauncher.class.getResourceAsStream(path);
+        if (in == null) {
+            throw new IOException("Missing launcher resource: " + path);
+        }
+        StringBuilder out = new StringBuilder();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+        try {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                out.append(line).append('\n');
+            }
+        } finally {
+            reader.close();
+        }
+        return out.toString();
+    }
+
+    private static void compileMacGameLauncher(File sourceFile, File executable) throws IOException {
+        File parent = executable.getParentFile();
+        if (parent != null && !parent.exists() && !parent.mkdirs()) {
+            throw new IOException("Could not create " + parent.getAbsolutePath());
+        }
+        runChecked(new String[] {
+                "/usr/bin/clang",
+                "-Os",
+                "-mmacosx-version-min=10.13",
+                "-o",
+                executable.getAbsolutePath(),
+                sourceFile.getAbsolutePath()
+        }, "Could not compile the macOS game app helper. Install Apple's Command Line Tools and try again.");
+        executable.setExecutable(true, true);
+        if (new File("/usr/bin/codesign").exists()) {
+            runChecked(new String[] {
+                    "/usr/bin/codesign",
+                    "--force",
+                    "--sign",
+                    "-",
+                    executable.getAbsolutePath()
+            }, "Could not ad-hoc sign the macOS game app helper.");
+        }
+    }
+
+    private static void runChecked(String[] command, String failureMessage) throws IOException {
+        ProcessBuilder builder = new ProcessBuilder(command);
+        builder.redirectErrorStream(true);
+        Process process = builder.start();
+        String output = readProcessOutput(process);
+        try {
+            int exit = process.waitFor();
+            if (exit != 0) {
+                throw new IOException(failureMessage + (output.length() == 0 ? "" : "\n\n" + output));
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IOException(failureMessage, e);
+        }
+    }
+
+    private static String readProcessOutput(Process process) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), "UTF-8"));
+        StringBuilder out = new StringBuilder();
+        try {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (out.length() > 0) {
+                    out.append('\n');
+                }
+                out.append(line);
+            }
+        } finally {
+            reader.close();
+        }
+        return out.toString();
+    }
+
+    private File writeMacLaunchConfig(
+            File runtimeDir,
+            File logFile,
+            String javaCommand,
+            String memory,
+            File nativeDir,
+            String classpath,
+            File gameDir,
+            AuthProfile profile) throws IOException {
+        if (!runtimeDir.exists() && !runtimeDir.mkdirs()) {
+            throw new IOException("Could not create " + runtimeDir.getAbsolutePath());
+        }
+        File config = new File(runtimeDir, "game-launch.properties");
+        StringBuilder out = new StringBuilder();
+        appendConfig(out, "java", javaCommand);
+        appendConfig(out, "memory", memory);
+        appendConfig(out, "nativeDir", nativeDir.getAbsolutePath());
+        appendConfig(out, "classpath", classpath);
+        appendConfig(out, "log", logFile.getAbsolutePath());
+        appendConfig(out, "username", profile.name);
+        appendConfig(out, "session", profile.sessionId());
+        appendConfig(out, "gameDir", gameDir.getAbsolutePath());
+        appendConfig(out, "version", version);
+        writePrivateString(config, out.toString());
+        return config;
+    }
+
+    private static void appendConfig(StringBuilder out, String key, String value) {
+        out.append(key).append('=').append(cleanConfigValue(value)).append('\n');
+    }
+
+    private static String cleanConfigValue(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value.replace('\n', ' ').replace('\r', ' ');
+    }
+
+    private static void writePrivateString(File file, String value) throws IOException {
+        writeString(file, value);
+        file.setReadable(false, false);
+        file.setWritable(false, false);
+        file.setExecutable(false, false);
+        file.setReadable(true, true);
+        file.setWritable(true, true);
     }
 
     private static File launcherCodePath() {

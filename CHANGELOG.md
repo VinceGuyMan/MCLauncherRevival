@@ -15,8 +15,8 @@
   and `package-macos.sh` for staging an unsigned `dist/MCLauncherRevival.app`.
 - Added `java -jar MCLauncherRevival.jar --smoke-test` for CI-safe non-GUI validation and wired a
   macOS GitHub Actions smoke/package job.
-- Added macOS game launch handling for old LWJGL clients with `-XstartOnFirstThread`, plus
-  macOS-friendly app naming during launcher startup.
+- Added macOS game launch handling for old LWJGL clients plus macOS-friendly app naming during
+  launcher startup.
 - Improved Swing accessibility and Mac usability with accessible names/descriptions, mnemonics,
   Enter-to-play behavior for key fields, Escape support in the redirect dialog, and a simple menu
   for opening the Minecraft folder, launcher log, account-safety help, and About.
@@ -28,8 +28,9 @@
   preferring Java 8 for old child Minecraft processes when the launcher is running on newer Java,
   passing LWJGL native-library paths more explicitly, and surfacing immediate game exits instead of
   leaving the launcher looking stuck.
-- Added a macOS-only first-thread game wrapper for old Beta/Alpha LWJGL clients so the game window
-  is created on the first JVM thread instead of stalling in hidden window creation.
+- Launch old macOS game clients through a tiny locally built foreground app helper so modern macOS
+  does not classify the Minecraft child process as a background-only Java process with no window,
+  while keeping online session data out of command-line arguments.
 
 ## v0.5.8.1-alpha
 

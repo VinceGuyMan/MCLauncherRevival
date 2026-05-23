@@ -9,11 +9,13 @@ Tested locally so far:
 - Launcher build with a local JDK 8 under `tools/jdk8`.
 - Swing launcher startup.
 - Non-GUI `--smoke-test`.
+- Offline b1.6.6 and b1.7.3 window creation through the foreground game helper.
 - Unsigned `.app` bundle creation under `dist/`.
 
-Old Beta/Alpha Minecraft game launch is still experimental on macOS. The launcher may start the
-client process, but old LWJGL/OpenGL/native-library behavior can still produce a blank window,
-hang, or immediate exit.
+Old Beta/Alpha Minecraft game launch is still experimental on macOS. The launcher now stages a
+small local foreground app helper before starting old LWJGL clients so modern macOS exposes an
+actual Minecraft window instead of treating the child Java process as background-only. Old
+LWJGL/OpenGL/native-library behavior can still fail on some machines.
 
 Windows remains the primary supported target.
 
@@ -31,6 +33,13 @@ java -version
 
 A full JDK is required only when building from source. Building Java 7-compatible bytecode requires
 a JDK that still supports that target. Very new JDKs, such as JDK 26, do not.
+
+The macOS Play path may also need Apple's Command Line Tools the first time it builds the local
+foreground game helper:
+
+```sh
+xcode-select --install
+```
 
 If your Mac only has a modern JDK and the build reports that Java 7-compatible bytecode is not
 supported, install or extract a JDK 8 and set `JAVA_HOME`, or use the project-local helper:
@@ -227,4 +236,6 @@ Game starts then immediately exits or shows a blank window:
   ~/Library/Application Support/minecraft/launcher_revive/logs/last-launch.log
   ```
 
+- If the log says the macOS game app helper could not compile, install Apple's Command Line Tools
+  with `xcode-select --install` and try Play again.
 - This often points to old LWJGL/OpenGL/native compatibility, not Microsoft login.

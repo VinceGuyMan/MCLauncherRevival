@@ -2,52 +2,32 @@
 
 ## Unreleased
 
-- Fixed `scripts/run-linux.sh` so it forwards launcher arguments such as `--smoke-test` and warns
-  when Java newer than 8 is used for old Beta/Alpha clients.
-- Added a Linux GitHub Actions smoke job using the Linux runner script.
-- Documented the first Kali Linux ARM64 release-package smoke pass.
+- **Linux**: Fixed `scripts/run-linux.sh` so it forwards launcher arguments such as `--smoke-test` and warns when Java newer than 8 is used for old Beta/Alpha clients
+- **CI**: Added a Linux GitHub Actions smoke job using the Linux runner script
+- **Linux**: Documented the first Kali Linux ARM64 release-package smoke pass
 
 ## v0.7.1-alpha
 
-- Fixed macOS `.app` game launches for cached Beta/Alpha versions whose extracted LWJGL natives
-  still used the old `.jnilib` filenames. The launcher now repairs the expected `.dylib` aliases on
-  every launch prep, not only during first native extraction.
-- Extended the smoke test to validate the macOS native alias repair path.
+- **macOS**: Fixed `.app` game launches for cached Beta/Alpha versions whose extracted LWJGL natives still used the old `.jnilib` filenames
+- **macOS**: Launcher now repairs expected `.dylib` aliases on every launch prep (not only during first native extraction)
+- **Testing**: Extended smoke test to validate the macOS native alias repair path
 
 ## v0.7.0-alpha
 
-- Fixed macOS/Linux shell helpers so source checkouts no longer fail on UTF-8 BOM shebang bytes or
-  incorrect build-script paths.
-- Added a macOS Temurin 8 helper for local Java 7-compatible builds, including Apple Silicon
-  Rosetta guidance and release-package inclusion.
-- Improved macOS launcher startup under local JDK 8 by pointing Java at macOS system font
-  directories and making Swing HTML panes honor the launcher fonts.
-- Removed the broken visible code-login option from Microsoft Login and replaced the stock redirect
-  paste prompt with a larger dialog that includes `Paste from Clipboard`, clipboard auto-detection,
-  and retry feedback.
-- Added root-level macOS build/run wrappers, a Finder-friendly `Start MCLauncherRevival.command`,
-  and `package-macos.sh` for staging an unsigned `dist/MCLauncherRevival.app`.
-- Added `java -jar MCLauncherRevival.jar --smoke-test` for CI-safe non-GUI validation and wired a
-  macOS GitHub Actions smoke/package job.
-- Added macOS game launch handling for old LWJGL clients plus macOS-friendly app naming during
-  launcher startup.
-- Improved Swing accessibility and Mac usability with accessible names/descriptions, mnemonics,
-  Enter-to-play behavior for key fields, Escape support in the redirect dialog, and a simple menu
-  for opening the Minecraft folder, launcher log, account-safety help, and About.
-- Removed the extra macOS game-launch compatibility confirmation now that the warning is documented
-  in the Launcher Log and macOS docs.
-- Fixed the Microsoft redirect paste dialog layout so the clipboard status and action buttons no
-  longer get clipped on macOS.
-- Improved macOS Play behavior by preserving `Application Support` paths in game arguments,
-  preferring Java 8 for old child Minecraft processes when the launcher is running on newer Java,
-  passing LWJGL native-library paths more explicitly, and surfacing immediate game exits instead of
-  leaving the launcher looking stuck.
-- Launch old macOS game clients through a tiny locally built foreground app helper so modern macOS
-  does not classify the Minecraft child process as a background-only Java process with no window,
-  while keeping online session data out of command-line arguments.
-- Disable the old JInput default controller plugin on macOS game launches so the app does not ask
-  users for broad Input Monitoring access just to enumerate HID devices.
-- Fixed the blue/cyan macOS old-client color swap by generating local color-corrected runtime
+- **Shell**: Fixed macOS/Linux shell helpers so source checkouts no longer fail on UTF-8 BOM shebang bytes or incorrect build-script paths
+- **Java**: Added macOS Temurin 8 helper for local Java 7-compatible builds (includes Apple Silicon Rosetta guidance and release-package inclusion)
+- **Launcher**: Improved macOS launcher startup under local JDK 8 (points Java at macOS system font directories, makes Swing HTML panes honor launcher fonts)
+- **Auth**: Removed broken visible code-login option from Microsoft Login; replaced stock redirect paste prompt with larger dialog (includes `Paste from Clipboard`, clipboard auto-detection, retry feedback)
+- **Packaging**: Added root-level macOS build/run wrappers, Finder-friendly `Start MCLauncherRevival.command`, and `package-macos.sh` for staging unsigned `dist/MCLauncherRevival.app`
+- **Testing**: Added `java -jar MCLauncherRevival.jar --smoke-test` for CI-safe non-GUI validation; wired macOS GitHub Actions smoke/package job
+- **Game Launch**: Added macOS game launch handling for old LWJGL clients plus macOS-friendly app naming during launcher startup
+- **Accessibility**: Improved Swing accessibility and Mac usability (accessible names/descriptions, mnemonics, Enter-to-play for key fields, Escape support in redirect dialog, simple menu for opening Minecraft folder/launcher log/account-safety help/About)
+- **Cleanup**: Removed extra macOS game-launch compatibility confirmation (warning now documented in Launcher Log and macOS docs)
+- **UI**: Fixed Microsoft redirect paste dialog layout so clipboard status and action buttons no longer get clipped on macOS
+- **Performance**: Improved macOS Play behavior (preserves `Application Support` paths, prefers Java 8 for old child Minecraft processes, passes LWJGL native-library paths more explicitly, surfaces immediate game exits)
+- **Compatibility**: Launch old macOS game clients through tiny locally built foreground app helper (prevents modern macOS from classifying Minecraft as background-only Java process)
+- **Input**: Disable old JInput default controller plugin on macOS game launches (avoids requesting broad Input Monitoring access just to enumerate HID devices)
+- **Graphics**: Fixed blue/cyan macOS old-client color swap by generating local color-corrected runtime
   copies of the user's own downloaded Minecraft/LWJGL jars under `launcher_revive/runtime`.
 - Updated the launcher favicon/app icon source to the new MCLauncherRevival icon.
 

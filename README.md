@@ -2,8 +2,14 @@
 
 ![MCLauncherRevival backdrop artwork](docs/screenshots/backdrop.png)
 
+![GitHub Release](https://img.shields.io/github/v/release/VinceGuyMan/MCLauncherRevival)
+![GitHub all releases](https://img.shields.io/github/downloads/VinceGuyMan/MCLauncherRevival/total)
+![GitHub License](https://img.shields.io/github/license/VinceGuyMan/MCLauncherRevival)
+![GitHub issues](https://img.shields.io/github/issues/VinceGuyMan/MCLauncherRevival)
+![GitHub stars](https://img.shields.io/github/stars/VinceGuyMan/MCLauncherRevival)
+
 A nostalgic 2011-style Minecraft launcher revival, modernized for 2026.
-## Status
+## 📊 Status
 
 | Item | Status |
 | --- | --- |
@@ -13,7 +19,16 @@ A nostalgic 2011-style Minecraft launcher revival, modernized for 2026.
 | Risk | Use at your own risk |
 | Official launcher replacement | No. This is not a replacement for the official Minecraft Launcher. |
 
-## Screenshot / preview
+## 🚀 Quick Start
+
+1. Download the latest release from the [Releases page](https://github.com/VinceGuyMan/MCLauncherRevival/releases).
+2. Extract the ZIP file.
+3. Run the appropriate launcher script for your OS:
+   - Windows: Double-click `Start MCLR.cmd`
+   - macOS: Double-click `Start MCLauncherRevival.command`
+   - Linux: Run `./scripts/run-linux.sh`
+
+## 📸 Screenshot / preview
 
 ![MCLauncherRevival launcher preview](docs/screenshots/frontpage.png)
 
@@ -25,44 +40,54 @@ More screenshots and annotated UI guides are available in
 - [Profile Editor](docs/screenshots/profile-editor.png)
 - [Launcher Log](docs/screenshots/launcher-log.png)
 - [Microsoft login flow](docs/screenshots/microsoft-login-redirect.png)
-- [backdrop artwork](docs/screenshots/backdrop.png)
+- [Backdrop artwork](docs/screenshots/backdrop.png)
+
+### 🖼️ Era Style Showcase
+
+MCLauncherRevival includes showcase screenshots for our recreated launcher/build-era styles:
+
+| Era | Screenshot |
+|-----|------------|
+| Infdev / Prototype-era | [![Infdev showcase](docs/screenshots/era-showcase/infdev-20100618.png)](docs/screenshots/era-showcase/infdev-20100618.png) |
+| Pre-Classic | [![Pre-Classic showcase](docs/screenshots/era-showcase/preclassic-rd132211.png)](docs/screenshots/era-showcase/preclassic-rd132211.png) |
+| Classic | [![Classic showcase](docs/screenshots/era-showcase/classic-c030-01c.png)](docs/screenshots/era-showcase/classic-c030-01c.png) |
+| Alpha | [![Alpha showcase](docs/screenshots/era-showcase/alpha-a126.png)](docs/screenshots/era-showcase/alpha-a126.png) |
+| Beta | [![Beta showcase](docs/screenshots/era-showcase/beta-b173.png)](docs/screenshots/era-showcase/beta-b173.png) |
 
 The v0.5.0 historical style system is documented in
 [docs/HISTORICAL_THEMES.md](docs/HISTORICAL_THEMES.md).
 
-## What it does
+## 🚀 What it does
 
-- Presents a classic launcher-inspired Swing UI with era-aware layouts, recreated pixel textures,
-  animated splash text, and compact bottom controls.
-- Adds a `Style` selector with `Auto`, `Beta`, `Alpha`, `Infdev`, `Classic`, and `Pre-Classic`
-  presentation modes.
-- Uses a modern browser/OAuth account flow where available, with a browser desktop redirect by
-  default and fallback options when needed.
-- Keeps offline singleplayer fallback behavior available.
-- Supports selecting and launching classic Minecraft Java versions from Beta 1.8.x downward where
-  version metadata is available.
-- Stores launcher settings and local token/config data under the user's `.minecraft` folder.
-- Includes convenience shortcuts for saves backups, texture pack import, logs, and local folders.
-- Includes a `Potato Mode!` toggle for older machines: 256MB memory, compact notes, no animated
-  splash, and a smaller launcher window.
-- Includes RAM presets from `Air 64MB` through `Overkill 8192MB`, plus `Custom`.
+### Core Features
+- **Classic UI**: Presents a classic launcher-inspired Swing UI with era-aware layouts, recreated pixel textures, animated splash text, and compact bottom controls
+- **Historical Styles**: Adds a `Style` selector with `Auto`, `Beta`, `Alpha`, `Infdev`, `Classic`, and `Pre-Classic` presentation modes
+- **Modern Auth**: Uses a modern browser/OAuth account flow where available, with a browser desktop redirect by default and fallback options when needed
+- **Offline Support**: Keeps offline singleplayer fallback behavior available
+- **Version Selection**: Supports selecting and launching classic Minecraft Java versions from Beta 1.8.x downward where version metadata is available
+- **Config Management**: Stores launcher settings and local token/config data under the user's `.minecraft` folder
+- **Convenience Tools**: Includes shortcuts for saves backups, texture pack import, logs, and local folders
+- **Performance Options**: Includes a `Potato Mode!` toggle for older machines (256MB memory, compact notes, no animated splash, smaller window)
+- **RAM Presets**: Includes RAM presets from `Air 64MB` through `Overkill 8192MB`, plus `Custom`
 
-## What works / what is still experimental
+## 🧪 What works / what is still experimental
 
 | Area | Status | Notes |
 | --- | --- | --- |
-| Classic launcher UI | Working | Preserves the old launcher feel with modernized internals. |
-| Historical era layouts | New in v0.5.0 / experimental | `Auto` maps selected versions to recreated Beta, Alpha, Infdev, Classic, or Pre-Classic launcher-inspired layouts. |
-| Offline mode | Working / needs broader testing | Intended for singleplayer and older systems. |
-| Microsoft login / OAuth flow | Experimental | Uses browser OAuth and Microsoft's registered desktop redirect by default. Local callback can be enabled only with a custom registered client ID. It should never ask for a Microsoft password inside the app. |
-| Version selection | Working / needs broader testing | Classic versions are listed from Mojang metadata where available. |
-| Windows 7-11 support | Primary target | Java 8 is recommended, especially for old Minecraft/LWJGL behavior. |
-| Windows XP / older Windows behavior | Offline/classic only | Real XP hardware testing confirmed classic launches can work with prepared files, Java, and drivers. Performance depends on hardware. |
-| Linux behavior | Release smoke-tested / game launch experimental | Release ZIP download/extract and `--smoke-test` passed on Kali Linux ARM64. Old Minecraft/LWJGL game launch may still fail with blank windows, OpenGL errors, or native-library issues. See docs/LINUX.md. |
-| macOS behavior | Build/UI/game-launch smoke-tested, still experimental | macOS scripts, Finder `.command`, unsigned `.app` packaging, `--smoke-test`, foreground old-client launch, and local LWJGL color correction are available. Old Minecraft/LWJGL behavior may still vary by Mac, Java, and version. See docs/MACOS.md. |
-| Release packaging | Alpha packages available | Use the attached GitHub Releases ZIP, not the source-code ZIP. |
+| Classic launcher UI | ✅ Working | Preserves the old launcher feel with modernized internals. |
+| Historical era layouts | ⚠️ New in v0.5.0 / experimental | `Auto` maps selected versions to recreated Beta, Alpha, Infdev, Classic, or Pre-Classic launcher-inspired layouts. |
+| Offline mode | ✅ Working / needs broader testing | Intended for singleplayer and older systems. |
+| Microsoft login / OAuth flow | ⚠️ Experimental | Uses browser OAuth and Microsoft's registered desktop redirect by default. Local callback can be enabled only with a custom registered client ID. It should never ask for a Microsoft password inside the app. |
+| Version selection | ✅ Working / needs broader testing | Classic versions are listed from Mojang metadata where available. |
+| Windows 7-11 support | 🎯 Primary target | Java 8 is recommended, especially for old Minecraft/LWJGL behavior. |
+| Windows XP / older Windows behavior | 💻 Offline/classic only | Real XP hardware testing confirmed classic launches can work with prepared files, Java, and drivers. Performance depends on hardware. |
+| Linux behavior | 🐧 Release smoke-tested / game launch experimental | Release ZIP download/extract and `--smoke-test` passed on Kali Linux ARM64. Old Minecraft/LWJGL game launch may still fail with blank windows, OpenGL errors, or native-library issues. See docs/LINUX.md. |
+| macOS behavior | 🍎 Build/UI/game-launch smoke-tested, still experimental | macOS scripts, Finder `.command`, unsigned `.app` packaging, `--smoke-test`, foreground old-client launch, and local LWJGL color correction are available. Old Minecraft/LWJGL behavior may still vary by Mac, Java, and version. See docs/MACOS.md. |
+| Release packaging | 📦 Alpha packages available | Use the attached GitHub Releases ZIP, not the source-code ZIP. |
 
-## Installation / running
+## 📥 Installation / running
+
+### 📦 Download Pre-built (Recommended)
 
 Use the attached ZIP asset from the GitHub Releases page.
 
@@ -95,6 +120,47 @@ not secure for general browsing or production use.
 If a bundled-Java package is not available, follow the manual XP Java setup guide:
 
 - [Windows XP Java setup](docs/XP_JAVA_SETUP.md)
+
+### 🔧 Building from Source
+
+#### Prerequisites
+
+1. Install a Java JDK 8.
+2. Clone the repository:
+
+   ```bat
+   git clone https://github.com/VinceGuyMan/MCLauncherRevival.git
+   cd MCLauncherRevival
+   ```
+
+#### Build Commands
+
+- **Windows**: Run `scripts\build-win.cmd`
+- **Linux**: Run `./scripts/build-linux.sh`
+- **macOS**: Run `./build-macos.sh`
+
+   On macOS, if only a modern JDK is installed and the build says Java 7-compatible bytecode is not
+   supported, install a local JDK 8 into this repo:
+
+   ```sh
+   chmod +x tools/download-temurin8-jdk-macos.sh
+   ./tools/download-temurin8-jdk-macos.sh
+   ./build-macos.sh
+   ```
+
+   On Apple Silicon, that helper uses the x64 Temurin 8 JDK through Rosetta because Adoptium does
+   not provide a macOS ARM64 JDK 8 package.
+
+4. The build output is:
+
+   ```text
+   MCLauncherRevival.jar
+   ```
+
+The project is built with a JDK 8 toolchain while targeting Java 7 bytecode for older Windows
+compatibility.
+
+### ▶️ Running the Launcher
 
 After extracting the release ZIP on Windows, the recommended first-run entrypoint is:
 

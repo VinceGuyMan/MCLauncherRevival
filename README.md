@@ -102,13 +102,13 @@ Those source archives are useful for reading or building the code, but they may 
 The current alpha package is:
 
 ```text
-MCLauncherRevival-v0.7.1-alpha.zip
+MCLauncherRevival-v0.7.5-alpha.zip
 ```
 
 If an XP bundled-Java package is published, it should be named like:
 
 ```text
-MCLauncherRevival-v0.7.1-alpha-xp-bundled-java.zip
+MCLauncherRevival-v0.7.5-alpha-xp-bundled-java.zip
 ```
 
 That XP package is for offline/classic use only. It may include a maintainer-provided

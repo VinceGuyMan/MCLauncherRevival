@@ -1,6 +1,6 @@
 # Release Checklist
 
-For `v0.7.1` and later alpha builds:
+For `v0.7.5` and later alpha builds:
 
 - Confirm the project builds from a clean clone.
 - Run `scripts\test-win.cmd` on Windows and `./scripts/test-java.sh` on macOS/Linux where available.
@@ -101,6 +101,7 @@ Expected project files include:
 - `docs/HISTORICAL_THEMES.md`
 - `docs/RELEASES.md`
 - `docs/MACOS.md`
+- `docs/RELEASE_NOTES_v0.7.5.md`
 - `docs/RELEASE_NOTES_v0.7.1.md`
 - `docs/RELEASE_NOTES_v0.7.0.md`
 - `LICENSE`
@@ -120,7 +121,7 @@ Expected project files include:
 Recommended release tag and artifact names:
 
 ```text
-v0.7.1
-MCLauncherRevival-v0.7.1-alpha.zip
+v0.7.5
+MCLauncherRevival-v0.7.5-alpha.zip
 MCLauncherRevival.jar
 ```

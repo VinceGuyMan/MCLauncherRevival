@@ -36,7 +36,14 @@ jobs:
 
       - name: Build and verify standard release ZIP
         shell: cmd
-        run: echo. | scripts\package-release.cmd ci
+        run: echo. | scripts\package-release.cmd
+
+      - name: Upload standard release ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: MCLauncherRevival-standard-release
+          path: ../release/MCLauncherRevival-v0.7.5-alpha.zip
+          if-no-files-found: error
 
       - name: Upload launcher artifact
         uses: actions/upload-artifact@v4

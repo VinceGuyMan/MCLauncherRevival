@@ -34,23 +34,6 @@ jobs:
         shell: cmd
         run: scripts\test-win.cmd
 
-      - name: Build and verify standard release ZIP
-        shell: cmd
-        run: echo. | scripts\package-release.cmd
-
-      - name: Stage standard release ZIP for upload
-        shell: cmd
-        run: |
-          if not exist release-artifacts mkdir release-artifacts
-          copy /y ..\release\MCLauncherRevival-v0.7.5-alpha.zip release-artifacts\
-
-      - name: Upload standard release ZIP
-        uses: actions/upload-artifact@v4
-        with:
-          name: MCLauncherRevival-standard-release
-          path: release-artifacts/MCLauncherRevival-v0.7.5-alpha.zip
-          if-no-files-found: error
-
       - name: Upload launcher artifact
         uses: actions/upload-artifact@v4
         with:
@@ -130,3 +113,23 @@ jobs:
       - name: Run launcher self-tests
         shell: bash
         run: ./scripts/test-java.sh
+
+      - name: Build and verify cross-platform release ZIP
+        shell: bash
+        run: RELEASE_ROOT="$GITHUB_WORKSPACE/release-artifacts" ./scripts/package-release.sh
+
+      - name: Verify extracted release package
+        shell: bash
+        run: |
+          mkdir release-check
+          unzip -q release-artifacts/MCLauncherRevival-v0.7.5-alpha.zip -d release-check
+          test -x release-check/MCLauncherRevival-v0.7.5-alpha/scripts/test-java.sh
+          cd release-check/MCLauncherRevival-v0.7.5-alpha
+          ./scripts/test-java.sh
+
+      - name: Upload standard release ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: MCLauncherRevival-standard-release
+          path: release-artifacts/MCLauncherRevival-v0.7.5-alpha.zip
+          if-no-files-found: error

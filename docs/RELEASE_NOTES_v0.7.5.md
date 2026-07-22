@@ -25,8 +25,8 @@ revival. It keeps Java 7 runtime compatibility while using a JDK 8 build toolcha
 
 ## Packaging and documentation
 
-- Makes the standard ZIP self-contained with buildable source, resources, and self-tests, then
-  verifies that layout in Windows CI.
+- Makes the standard ZIP self-contained with buildable source, resources, and self-tests, preserves
+  Unix permissions, and runs the extracted package's tests in Linux CI.
 - Adds an asset provenance inventory and clarifies which inherited assets still require permission
   documentation or replacement.
 - Reduces the README backdrop from 14.5 MB to 3.0 MB while retaining a 1920-pixel presentation copy.

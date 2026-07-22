@@ -49,8 +49,9 @@ For `v0.7.5` and later alpha builds:
 - Confirm no secrets, tokens, client secrets, or personal credentials are committed.
 - Confirm README instructions match the actual release files.
 - Confirm release zip contains only expected files.
-- Confirm `scripts/package-release.cmd` fails if `MCLauncherRevival.jar` is missing.
-- Confirm `scripts/package-release.cmd` prints the final ZIP contents.
+- Confirm `scripts/package-release.cmd` builds and verifies the release ZIP on Windows.
+- Confirm `scripts/package-release.sh` builds a ZIP whose scripts remain executable after extraction
+  on macOS and Linux.
 - Confirm the final ZIP includes `MCLauncherRevival.jar`.
 - Confirm the standard ZIP includes `src/`, `tests/`, both test scripts, `ASSETS.md`, and the
   resources needed for its build fallback.
@@ -87,6 +88,7 @@ Expected project files include:
 - `scripts/test-win.cmd`
 - `scripts/test-java.sh`
 - `scripts/package-release.cmd`
+- `scripts/package-release.sh`
 - `scripts/package-xp-release.cmd`
 - `tools/download-temurin8-jdk.ps1`
 - `README.md`

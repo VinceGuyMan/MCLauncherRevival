@@ -15,8 +15,9 @@
 - **Testing**: Add dependency-free Java self-tests for JSON, path safety, HTTPS policy, redirect
   validation, atomic writes, native extraction, credential cleanup, and offline profiles; run them
   in all CI jobs.
-- **Packaging**: Include buildable source and self-tests in the standard release ZIP, verify those
-  entries during packaging, and document asset provenance.
+- **Packaging**: Include buildable source and self-tests in the standard release ZIP, preserve
+  executable shell scripts and traversable directories across platforms, verify the extracted
+  package in Linux CI, and document asset provenance.
 - **Dependencies**: Verify Adoptium's published SHA-256 before extracting portable Temurin 8 JDK
   downloads on Windows or macOS.
 - **Linux**: Fixed `scripts/run-linux.sh` so it forwards launcher arguments such as `--smoke-test` and warns when Java newer than 8 is used for old Beta/Alpha clients

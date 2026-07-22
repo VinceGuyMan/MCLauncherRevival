@@ -38,7 +38,8 @@ LICENSE                                  License for original modernization code
 ```text
 scripts/run-win.cmd                     Windows 7-11 runtime helper
 scripts/build-win.cmd                   Java build helper
-scripts/package-release.cmd              Normal release ZIP builder
+scripts/package-release.cmd              Windows release ZIP builder
+scripts/package-release.sh               Cross-platform release ZIP builder used by CI
 scripts/package-xp-release.cmd           Optional XP bundled-Java ZIP builder
 scripts/run-linux.sh                     Preliminary Linux runtime helper
 scripts/build-linux.sh                   Preliminary Linux build helper

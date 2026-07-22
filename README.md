@@ -149,7 +149,8 @@ If a bundled-Java package is not available, follow the manual XP Java setup guid
    ```
 
    On Apple Silicon, that helper uses the x64 Temurin 8 JDK through Rosetta because Adoptium does
-   not provide a macOS ARM64 JDK 8 package.
+   not provide a macOS ARM64 JDK 8 package. The dependency helpers verify Adoptium's published
+   SHA-256 before extracting a downloaded JDK.
 
 4. The build output is:
 
@@ -159,6 +160,9 @@ If a bundled-Java package is not available, follow the manual XP Java setup guid
 
 The project is built with a JDK 8 toolchain while targeting Java 7 bytecode for older Windows
 compatibility.
+
+Run the dependency-free self-tests with `scripts\test-win.cmd` on Windows or
+`./scripts/test-java.sh` on macOS/Linux.
 
 ### ▶️ Running the Launcher
 
@@ -219,55 +223,6 @@ bundle with `./package-macos.sh`.
 
 See [docs/MACOS.md](docs/MACOS.md) before relying on macOS behavior.
 
-## Building from source
-
-1. Install a Java JDK 8.
-2. Clone the repository:
-
-   ```bat
-   git clone https://github.com/VinceGuyMan/MCLauncherRevival.git
-   cd MCLauncherRevival
-   ```
-
-3. Run the build script on Windows:
-
-   ```bat
-   scripts\build-win.cmd
-   ```
-
-   Or on Linux:
-
-   ```sh
-   ./scripts/build-linux.sh
-   ```
-
-   Or on macOS:
-
-   ```sh
-   ./build-macos.sh
-   ```
-
-   On macOS, if only a modern JDK is installed and the build says Java 7-compatible bytecode is not
-   supported, install a local JDK 8 into this repo:
-
-   ```sh
-   chmod +x tools/download-temurin8-jdk-macos.sh
-   ./tools/download-temurin8-jdk-macos.sh
-   ./build-macos.sh
-   ```
-
-   On Apple Silicon, that helper uses the x64 Temurin 8 JDK through Rosetta because Adoptium does
-   not provide a macOS ARM64 JDK 8 package.
-
-4. The build output is:
-
-   ```text
-   MCLauncherRevival.jar
-   ```
-
-The project is built with a JDK 8 toolchain while targeting Java 7 bytecode for older Windows
-compatibility.
-
 ## Security / account safety
 
 - The launcher should never ask users to type their Microsoft password directly into the app.
@@ -281,7 +236,8 @@ compatibility.
   handoff.
 - OAuth tokens/settings are stored locally under the user's `.minecraft\launcher_revive` or
   `.minecraft/launcher_revive` folder when login/config data is saved.
-- The `Forget Login` button is intended to remove saved login data.
+- The `Forget Login` button removes cached tokens and leftover temporary macOS launch credentials;
+  it does not revoke tokens at Microsoft.
 - This project is unofficial and alpha-quality. Review the source before trusting it with an
   account.
 - This project is not approved, endorsed, sponsored, or reviewed by Mojang, Microsoft, or Minecraft.
@@ -296,9 +252,9 @@ See [SECURITY.md](SECURITY.md) and [Trust and Safety](docs/TRUST_AND_SAFETY.md) 
 ## Known limitations
 
 - Alpha quality; behavior may change and some flows need more testing.
-- Historical launcher styles are recreated/inspired layouts, not exact bundled historical launcher
-  assets. Proprietary Mojang/Microsoft launcher artwork is not redistributed unless rights are
-  verified.
+- Historical launcher styles use recreated/inspired layouts. Some recovered compatibility assets
+  still have unverified provenance and are identified in [ASSETS.md](ASSETS.md); they are not
+  covered by the project's MIT grant.
 - Authentication may need testing across browsers, Java versions, and Windows versions.
 - Older operating systems may have limited online login support due to TLS/root certificate/browser
   limits.
@@ -351,8 +307,8 @@ See [Windows XP Offline/Classic Guide](docs/WINDOWS_XP.md) and
 ## Roadmap
 
 - Continue refining historical launcher layout fidelity with recreated project-owned assets.
-- Improve release zip packaging and smoke-test coverage.
-- Add smoke-test/build verification around clean clones.
+- Expand unit and release-package tests beyond the current security/path/download checks.
+- Replace or document permission for every remaining asset with unverified provenance.
 - Continue compatibility testing across Windows versions.
 
 ## Legal / unofficial disclaimer
@@ -363,13 +319,14 @@ endorsed by, or sponsored by Mojang, Microsoft, or Minecraft.
 Users are responsible for owning or otherwise having the right to use Minecraft Java Edition and any
 downloaded game files.
 
-See [docs/DISCLAIMER.md](docs/DISCLAIMER.md) and [NOTICE.md](NOTICE.md) for more detail.
+See [docs/DISCLAIMER.md](docs/DISCLAIMER.md), [NOTICE.md](NOTICE.md), and
+[ASSETS.md](ASSETS.md) for more detail.
 
 ## License
 
-This repository includes a [LICENSE](LICENSE) file covering the original modernization code and
-scripts in this project. Third-party names, marks, services, game files, launcher artifacts, and
-historical assets remain owned by their respective rights holders.
+This repository includes a [LICENSE](LICENSE) file covering original modernization code and
+project-owned assets. Third-party names, marks, services, game files, launcher artifacts, and
+unverified historical assets remain outside that grant.
 
 ## Historical version notes
 

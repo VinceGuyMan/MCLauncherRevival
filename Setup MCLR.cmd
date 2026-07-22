@@ -105,7 +105,7 @@ echo If you downloaded GitHub's green Code -^> Download ZIP or an auto-generated
 echo that archive may not include the runnable jar.
 echo.
 echo For normal play, download the attached GitHub Releases ZIP named like:
-echo   MCLauncherRevival-v0.5.6-alpha.zip
+echo   MCLauncherRevival-v0.7.1-alpha.zip
 echo.
 echo Windows can try to build the jar from source.
 echo Windows XP Offline / Classic mode expects the jar to already be included.

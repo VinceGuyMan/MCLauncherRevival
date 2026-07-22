@@ -28,6 +28,10 @@ Some files in this project may exist to preserve the look and compatibility of t
 Ownership of Minecraft-related names, artwork, launcher artifacts, services, and downloads remains
 with their respective owners.
 
+See [ASSETS.md](ASSETS.md) for the repository's asset-by-asset provenance record. Assets marked as
+unverified are not covered by the project's MIT grant and should be reviewed or replaced before
+their redistribution rights are treated as established.
+
 Users are responsible for owning or otherwise having the right to use Minecraft Java Edition and any
 downloaded game files.
 

@@ -18,7 +18,7 @@ focused, readable, and safe.
 ### Windows
 
 ```bat
-build-win.cmd
+scripts\build-win.cmd
 ```
 
 ### Linux
@@ -37,6 +37,16 @@ The expected build output is:
 
 ```text
 MCLauncherRevival.jar
+```
+
+Run the dependency-free launcher self-tests after building:
+
+```bat
+scripts\test-win.cmd
+```
+
+```sh
+./scripts/test-java.sh
 ```
 
 ## 🐛 Useful issue details

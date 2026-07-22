@@ -30,6 +30,14 @@ jobs:
         shell: cmd
         run: java -jar MCLauncherRevival.jar --smoke-test
 
+      - name: Run launcher self-tests
+        shell: cmd
+        run: scripts\test-win.cmd
+
+      - name: Build and verify standard release ZIP
+        shell: cmd
+        run: echo. | scripts\package-release.cmd ci
+
       - name: Upload launcher artifact
         uses: actions/upload-artifact@v4
         with:
@@ -64,6 +72,10 @@ jobs:
       - name: Smoke test launcher
         shell: bash
         run: java -jar MCLauncherRevival.jar --smoke-test
+
+      - name: Run launcher self-tests
+        shell: bash
+        run: ./scripts/test-java.sh
 
       - name: Package unsigned macOS app
         shell: bash
@@ -101,3 +113,7 @@ jobs:
       - name: Smoke test launcher through Linux runner
         shell: bash
         run: ./scripts/run-linux.sh --smoke-test
+
+      - name: Run launcher self-tests
+        shell: bash
+        run: ./scripts/test-java.sh

@@ -55,6 +55,7 @@ mkdir "%STAGE_DIR%\scripts"
 echo Staging XP bundled-Java release files...
 copy /y "MCLauncherRevival.jar" "%STAGE_DIR%" >nul
 copy /y "README.md" "%STAGE_DIR%" >nul
+copy /y "ASSETS.md" "%STAGE_DIR%" >nul
 copy /y "LICENSE" "%STAGE_DIR%" >nul
 copy /y "NOTICE.md" "%STAGE_DIR%" >nul
 copy /y "Setup MCLR.cmd" "%STAGE_DIR%" >nul
@@ -110,10 +111,10 @@ if errorlevel 1 (
   exit /b 1
 )
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "Add-Type -AssemblyName System.IO.Compression.FileSystem; $zip = [IO.Compression.ZipFile]::OpenRead('%ZIP_PATH%'); try { $hasJar = $false; $hasJava = $false; $hasInstaller = $false; $hasThemes = $false; $hasBanner = $false; foreach ($entry in $zip.Entries) { $name = ($entry.FullName -replace '\\','/'); if ($name -match '(^|/)MCLauncherRevival\.jar$') { $hasJar = $true }; if ($name -match '(^|/)tools/java7/bin/java\.exe$') { $hasJava = $true }; if ($name -match '(^|/)tools/java-installers/[^/]+\.exe$') { $hasInstaller = $true }; if ($name -match '(^|/)resources/net/minecraft/themes/beta\.png$') { $hasThemes = $true }; if ($name -match '(^|/)scripts/banner\.txt$') { $hasBanner = $true } }; if (-not $hasJar -or -not $hasThemes -or -not $hasBanner -or (-not $hasJava -and -not $hasInstaller)) { exit 2 } } finally { $zip.Dispose() }"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Add-Type -AssemblyName System.IO.Compression.FileSystem; $zip = [IO.Compression.ZipFile]::OpenRead('%ZIP_PATH%'); try { $hasJar = $false; $hasJava = $false; $hasInstaller = $false; $hasThemes = $false; $hasBanner = $false; $hasAssets = $false; foreach ($entry in $zip.Entries) { $name = ($entry.FullName -replace '\\','/'); if ($name -match '(^|/)MCLauncherRevival\.jar$') { $hasJar = $true }; if ($name -match '(^|/)tools/java7/bin/java\.exe$') { $hasJava = $true }; if ($name -match '(^|/)tools/java-installers/[^/]+\.exe$') { $hasInstaller = $true }; if ($name -match '(^|/)resources/net/minecraft/themes/beta\.png$') { $hasThemes = $true }; if ($name -match '(^|/)scripts/banner\.txt$') { $hasBanner = $true }; if ($name -match '(^|/)ASSETS\.md$') { $hasAssets = $true } }; if (-not $hasJar -or -not $hasThemes -or -not $hasBanner -or -not $hasAssets -or (-not $hasJava -and -not $hasInstaller)) { exit 2 } } finally { $zip.Dispose() }"
 if errorlevel 1 (
   echo XP bundled-Java ZIP verification failed.
-  echo Expected MCLauncherRevival.jar, theme resources, scripts\banner.txt, and either tools\java7\bin\java.exe or Java installer EXEs under tools\java-installers.
+  echo Expected MCLauncherRevival.jar, ASSETS.md, theme resources, scripts\banner.txt, and either tools\java7\bin\java.exe or Java installer EXEs under tools\java-installers.
   pause
   exit /b 1
 )

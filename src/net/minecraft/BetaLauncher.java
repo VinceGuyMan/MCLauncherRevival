@@ -10,10 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.security.CodeSource;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -142,6 +139,7 @@ final class BetaLauncher {
     }
 
     void launch(AuthProfile profile) throws IOException {
+        SafeFiles.requireSafeVersionId(version);
         File minecraftDir = TokenCache.minecraftDir();
         File versionDir = new File(new File(minecraftDir, "versions"), version);
         File librariesDir = new File(minecraftDir, "libraries");
@@ -214,7 +212,7 @@ final class BetaLauncher {
         ProcessBuilder builder;
         if (macForegroundHelper) {
             File gameApp = stageMacGameApp(runtimeDir);
-            File launchConfig = writeMacLaunchConfig(
+            File launchConfig = MacLaunchConfig.write(
                     runtimeDir,
                     logFile,
                     command.get(0),
@@ -222,7 +220,8 @@ final class BetaLauncher {
                     nativeDir,
                     classpathText,
                     gameDir,
-                    profile);
+                    profile,
+                    version);
             ArrayList<String> openCommand = new ArrayList<String>();
             openCommand.add("/usr/bin/open");
             openCommand.add("-n");
@@ -532,7 +531,7 @@ final class BetaLauncher {
         if (path == null) {
             throw new IOException("Could not resolve library path for " + name);
         }
-        return new File(librariesDir, path.replace('/', File.separatorChar));
+        return SafeFiles.resolveInside(librariesDir, path, "Minecraft library path");
     }
 
     private static String artifactUrl(Map<String, Object> library, Map<String, Object> artifact, String classifier) {
@@ -570,29 +569,7 @@ final class BetaLauncher {
     }
 
     private static void extractNatives(File nativeJar, File nativeDir) throws IOException {
-        ZipInputStream in = new ZipInputStream(new BufferedInputStream(new FileInputStream(nativeJar)));
-        try {
-            ZipEntry entry;
-            byte[] buffer = new byte[8192];
-            while ((entry = in.getNextEntry()) != null) {
-                String name = entry.getName();
-                if (entry.isDirectory() || name.startsWith("META-INF/") || name.contains("..")) {
-                    continue;
-                }
-                File outFile = new File(nativeDir, new File(name).getName());
-                FileOutputStream out = new FileOutputStream(outFile);
-                try {
-                    int read;
-                    while ((read = in.read(buffer)) != -1) {
-                        out.write(buffer, 0, read);
-                    }
-                } finally {
-                    out.close();
-                }
-            }
-        } finally {
-            in.close();
-        }
+        NativeExtractor.extractFlat(nativeJar, nativeDir);
     }
 
     static void ensureMacNativeAliases(File nativeDir) throws IOException {
@@ -683,63 +660,25 @@ final class BetaLauncher {
     }
 
     private static void downloadFile(String url, File file, String sha1) throws IOException {
-        if (file.exists() && (sha1 == null || sha1.length() == 0 || sha1(file).equalsIgnoreCase(sha1))) {
-            return;
-        }
         if (xpCompatibilityMode()) {
             throw new IOException(xpVersionFilesMessage());
         }
         if (url == null || url.length() == 0) {
             throw new IOException("Missing download URL for Minecraft file: " + file.getAbsolutePath());
         }
-        File parent = file.getParentFile();
-        if (parent != null && !parent.exists()) {
-            parent.mkdirs();
-        }
-        File temp = new File(file.getAbsolutePath() + ".tmp");
         try {
-            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-            connection.setConnectTimeout(30000);
-            connection.setReadTimeout(30000);
-            connection.setRequestProperty("User-Agent", "MCLauncherRevival/0.1-alpha");
-            InputStream in = connection.getInputStream();
-            FileOutputStream out = new FileOutputStream(temp);
-            try {
-                byte[] buffer = new byte[8192];
-                int read;
-                while ((read = in.read(buffer)) != -1) {
-                    out.write(buffer, 0, read);
-                }
-            } finally {
-                out.close();
-                in.close();
-            }
+            DownloadClient.downloadFile(url, file, sha1);
         } catch (IOException e) {
-            temp.delete();
             if (xpCompatibilityMode() && isXpHttpsFailure(e)) {
                 throw new IOException(xpVersionFilesMessage(), e);
             }
             throw e;
         }
-        if (sha1 != null && sha1.length() > 0 && !sha1(temp).equalsIgnoreCase(sha1)) {
-            temp.delete();
-            throw new IOException("SHA-1 check failed for " + file.getName());
-        }
-        if (file.exists()) {
-            file.delete();
-        }
-        if (!temp.renameTo(file)) {
-            throw new IOException("Could not move " + temp.getAbsolutePath() + " to " + file.getAbsolutePath());
-        }
     }
 
     private static String downloadString(String url) throws IOException {
         try {
-            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-            connection.setConnectTimeout(30000);
-            connection.setReadTimeout(30000);
-            connection.setRequestProperty("User-Agent", "MCLauncherRevival/0.1-alpha");
-            return readAll(connection.getInputStream());
+            return DownloadClient.getString(url);
         } catch (IOException e) {
             if (xpCompatibilityMode() && isXpHttpsFailure(e)) {
                 throw new IOException(xpVersionFilesMessage(), e);
@@ -779,40 +718,7 @@ final class BetaLauncher {
     }
 
     private static void writeString(File file, String value) throws IOException {
-        FileOutputStream out = new FileOutputStream(file);
-        try {
-            out.write(value.getBytes("UTF-8"));
-        } finally {
-            out.close();
-        }
-    }
-
-    private static String sha1(File file) throws IOException {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-1");
-            InputStream in = new FileInputStream(file);
-            try {
-                byte[] buffer = new byte[8192];
-                int read;
-                while ((read = in.read(buffer)) != -1) {
-                    digest.update(buffer, 0, read);
-                }
-            } finally {
-                in.close();
-            }
-            byte[] bytes = digest.digest();
-            StringBuilder out = new StringBuilder(bytes.length * 2);
-            for (int i = 0; i < bytes.length; i++) {
-                String hex = Integer.toHexString(bytes[i] & 0xff);
-                if (hex.length() == 1) {
-                    out.append('0');
-                }
-                out.append(hex);
-            }
-            return out.toString();
-        } catch (Exception e) {
-            throw new IOException("Could not calculate SHA-1", e);
-        }
+        SafeFiles.writeUtf8Atomic(file, value);
     }
 
     private static String joinClasspath(List<File> files) {
@@ -1379,53 +1285,6 @@ final class BetaLauncher {
             reader.close();
         }
         return out.toString();
-    }
-
-    private File writeMacLaunchConfig(
-            File runtimeDir,
-            File logFile,
-            String javaCommand,
-            String memory,
-            File nativeDir,
-            String classpath,
-            File gameDir,
-            AuthProfile profile) throws IOException {
-        if (!runtimeDir.exists() && !runtimeDir.mkdirs()) {
-            throw new IOException("Could not create " + runtimeDir.getAbsolutePath());
-        }
-        File config = new File(runtimeDir, "game-launch.properties");
-        StringBuilder out = new StringBuilder();
-        appendConfig(out, "java", javaCommand);
-        appendConfig(out, "memory", memory);
-        appendConfig(out, "nativeDir", nativeDir.getAbsolutePath());
-        appendConfig(out, "classpath", classpath);
-        appendConfig(out, "log", logFile.getAbsolutePath());
-        appendConfig(out, "username", profile.name);
-        appendConfig(out, "session", profile.sessionId());
-        appendConfig(out, "gameDir", gameDir.getAbsolutePath());
-        appendConfig(out, "version", version);
-        writePrivateString(config, out.toString());
-        return config;
-    }
-
-    private static void appendConfig(StringBuilder out, String key, String value) {
-        out.append(key).append('=').append(cleanConfigValue(value)).append('\n');
-    }
-
-    private static String cleanConfigValue(String value) {
-        if (value == null) {
-            return "";
-        }
-        return value.replace('\n', ' ').replace('\r', ' ');
-    }
-
-    private static void writePrivateString(File file, String value) throws IOException {
-        writeString(file, value);
-        file.setReadable(false, false);
-        file.setWritable(false, false);
-        file.setExecutable(false, false);
-        file.setReadable(true, true);
-        file.setWritable(true, true);
     }
 
     private static File launcherCodePath() {

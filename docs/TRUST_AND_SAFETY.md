@@ -26,10 +26,11 @@ Users should review the source code before trusting any alpha launcher with acco
 
 ## Downloads
 
-Until GitHub Releases are published, users should build from source.
+Users should download runnable artifacts only from this repository's GitHub Releases page. Source
+checkouts and GitHub's automatic source archives are for review and local builds.
 
-Once releases exist, users should download release artifacts only from this repository's GitHub
-Releases page.
+Asset origin and licensing status are recorded in [Asset Provenance](../ASSETS.md). Files whose
+origin is not yet verified must not be presented as project-owned or covered by the MIT license.
 
 ## Project maintenance expectations
 

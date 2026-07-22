@@ -2,7 +2,6 @@ package net.minecraft;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -43,22 +42,7 @@ final class LauncherSettings {
     }
 
     void save() throws IOException {
-        if (!dir.exists() && !dir.mkdirs()) {
-            throw new IOException("Could not create " + dir.getAbsolutePath());
-        }
-        File temp = new File(dir, "launcher.properties.tmp");
-        FileOutputStream out = new FileOutputStream(temp);
-        try {
-            values.store(out, "MCLauncherRevival launcher settings.");
-        } finally {
-            out.close();
-        }
-        if (file.exists() && !file.delete()) {
-            throw new IOException("Could not replace " + file.getAbsolutePath());
-        }
-        if (!temp.renameTo(file)) {
-            throw new IOException("Could not write " + file.getAbsolutePath());
-        }
+        SafeFiles.writePropertiesPrivateAtomic(file, values, "MCLauncherRevival launcher settings.");
     }
 
     File file() {
@@ -84,4 +68,3 @@ final class LauncherSettings {
         }
     }
 }
-

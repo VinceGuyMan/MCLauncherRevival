@@ -70,10 +70,16 @@ MCLauncherRevival-v0.7.1-alpha/
   scripts/
     run-win.cmd
     build-win.cmd
+    test-win.cmd
     run-linux.sh
     build-linux.sh
     run-macos.sh
     build-macos.sh
+    test-java.sh
+  src/
+    net/minecraft/                buildable Java launcher source
+  tests/
+    net/minecraft/                dependency-free launcher self-tests
   resources/
     net/minecraft/themes/        recreated era layout textures
   tools/
@@ -82,6 +88,8 @@ MCLauncherRevival-v0.7.1-alpha/
   docs/
   README.md
   CHANGELOG.md
+  ASSETS.md
+  SECURITY.md
   LICENSE
   NOTICE.md
 ```
@@ -125,6 +133,7 @@ MCLauncherRevival-v0.7.1-alpha-xp-bundled-java/
     java-installers/          optional local installer EXEs
   docs/
   README.md
+  ASSETS.md
   LICENSE
   NOTICE.md
 ```
@@ -135,14 +144,18 @@ The jar can be built locally:
 scripts\build-win.cmd
 ```
 
+The standard release includes its source and self-tests so that the packaged build fallback is
+self-contained. Run `scripts\test-win.cmd` on Windows or `./scripts/test-java.sh` on macOS/Linux.
+
 Version-specific notes for this release are in
 [RELEASE_NOTES_v0.7.1.md](RELEASE_NOTES_v0.7.1.md).
 
 ## Notes
 
 - Java 8 is recommended on Windows 7 and newer.
-- Windows 7 dependency setup forces TLS 1.2 for the Temurin 8 download and will reuse
-  `tools\jdk8` or `tools\temurin8-jdk.zip` if either is already present.
+- Windows 7 dependency setup forces TLS 1.2 and verifies Adoptium's published SHA-256 before
+  extracting Temurin 8. It reuses `tools\jdk8`, or a cached archive that can be verified online or
+  has its previously verified checksum sidecar.
 - Microsoft login opens in the user's default browser and may require the redirect URL paste
   fallback on Windows 7.
 - Microsoft accounts need an Xbox profile before XSTS/Minecraft services login can succeed.
@@ -163,6 +176,7 @@ Version-specific notes for this release are in
   may still vary by Mac, Java runtime, and selected version. macOS logs are written to
   `~/Library/Application Support/minecraft/launcher_revive/logs/last-launch.log`.
 - The launcher never asks for a raw Microsoft password.
+- `Forget Login` removes cached tokens and leftover temporary macOS game-launch credentials.
 - v0.5.0 adds recreated historical launcher style layouts for Beta, Alpha, Infdev, Classic, and
   Pre-Classic modes. These are inspired by historical launcher references but use project-owned
   recreated assets instead of redistributed proprietary launcher files.

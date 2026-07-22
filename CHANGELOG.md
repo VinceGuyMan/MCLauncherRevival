@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.7.5-alpha
+
 - **Security**: Restrict launcher downloads and redirects to HTTPS, cap response sizes, verify
   contained paths, harden native extraction, and write sensitive/local configuration atomically.
 - **Credentials**: Delete the temporary macOS game-launch configuration after use and make

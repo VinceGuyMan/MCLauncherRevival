@@ -57,6 +57,7 @@ docs/WINDOWS.md                         Windows 7-11 notes
 docs/WINDOWS_XP.md                      XP offline/classic notes
 docs/RELEASES.md                        Release package layout
 docs/RELEASE_CHECKLIST.md               Manual release validation checklist
+docs/RELEASE_NOTES_v0.7.5.md            v0.7.5-alpha release notes
 docs/RELEASE_NOTES_v0.7.1.md            v0.7.1-alpha patch release notes
 docs/RELEASE_NOTES_v0.7.0.md            v0.7.0-alpha release notes
 ```

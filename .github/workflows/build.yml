@@ -38,11 +38,17 @@ jobs:
         shell: cmd
         run: echo. | scripts\package-release.cmd
 
+      - name: Stage standard release ZIP for upload
+        shell: cmd
+        run: |
+          if not exist release-artifacts mkdir release-artifacts
+          copy /y ..\release\MCLauncherRevival-v0.7.5-alpha.zip release-artifacts\
+
       - name: Upload standard release ZIP
         uses: actions/upload-artifact@v4
         with:
           name: MCLauncherRevival-standard-release
-          path: ../release/MCLauncherRevival-v0.7.5-alpha.zip
+          path: release-artifacts/MCLauncherRevival-v0.7.5-alpha.zip
           if-no-files-found: error
 
       - name: Upload launcher artifact

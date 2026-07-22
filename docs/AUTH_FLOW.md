@@ -89,7 +89,9 @@ OAuth tokens are cached locally so the user does not need to sign in every time:
 
 The launcher does not ask for or store raw Microsoft passwords.
 
-Use `Forget Login` to clear cached OAuth tokens.
+Use `Forget Login` to clear cached OAuth tokens and any leftover temporary macOS game-launch
+credentials. The macOS helper also deletes its one-use launch configuration as soon as it has read
+it. Local deletion does not revoke a token that Microsoft has already issued.
 
 Tokens are sensitive. They are not raw passwords, but anyone with access to them may be able to act
 as the signed-in session until the tokens expire or are revoked.

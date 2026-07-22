@@ -49,8 +49,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.io.ByteArrayInputStream;
 import java.net.URI;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -460,16 +460,21 @@ public final class MinecraftLauncher extends JFrame {
         });
         signOutButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                IOException cleanupFailure = null;
                 try {
                     tokenCache.clear();
-                    currentProfile = null;
-                    playOnlineButton.setEnabled(false);
-                    updateDefaultPlayButton();
-                    welcomeLabel.setText("Welcome, guest");
-                    setOfflineHead();
-                    status("Forgot cached OAuth tokens.");
                 } catch (IOException ex) {
-                    showError(ex);
+                    cleanupFailure = ex;
+                }
+                currentProfile = null;
+                playOnlineButton.setEnabled(false);
+                updateDefaultPlayButton();
+                welcomeLabel.setText("Welcome, guest");
+                setOfflineHead();
+                if (cleanupFailure == null) {
+                    status("Forgot cached OAuth tokens and temporary launch credentials.");
+                } else {
+                    showError(cleanupFailure);
                 }
             }
         });
@@ -687,7 +692,7 @@ public final class MinecraftLauncher extends JFrame {
         lowEndModeBox.setToolTipText("Potato Mode!: 256MB RAM, compact notes, no splash animation, and a smaller window.");
         redownloadButton.setToolTipText("Delete and re-fetch only the selected version folder.");
         loginButton.setToolTipText("Sign in through browser OAuth. The launcher should never ask for your Microsoft password.");
-        signOutButton.setToolTipText("Remove cached local login tokens/settings.");
+        signOutButton.setToolTipText("Remove cached login tokens and temporary launch credentials.");
     }
 
     private void applyAccessibility() {
@@ -948,6 +953,14 @@ public final class MinecraftLauncher extends JFrame {
     }
 
     private void launch(final AuthProfile profile) {
+        final String launchVersion = selectedVersion();
+        final String launchMemory = selectedMemoryMegabytes();
+        try {
+            SafeFiles.requireSafeVersionId(launchVersion);
+        } catch (IOException e) {
+            showError(e);
+            return;
+        }
         if (macOs()) {
             appendLog("macOS experimental launch: old LWJGL clients may open blank or fail to render.");
         }
@@ -956,7 +969,7 @@ public final class MinecraftLauncher extends JFrame {
         Thread worker = new Thread(new Runnable() {
             public void run() {
                 try {
-                    new BetaLauncher(selectedVersion(), selectedMemoryMegabytes(), new SwingStatus()).launch(profile);
+                    new BetaLauncher(launchVersion, launchMemory, new SwingStatus()).launch(profile);
                 } catch (final Exception ex) {
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
@@ -1353,6 +1366,11 @@ public final class MinecraftLauncher extends JFrame {
 
     private VersionReadiness selectedVersionReadiness() {
         String version = selectedVersion();
+        if (!SafeFiles.isSafeVersionId(version)) {
+            return new VersionReadiness("invalid version id",
+                    "Use only letters, numbers, dots, underscores, and hyphens in a version id.",
+                    new Color(145, 45, 35), false);
+        }
         java.io.File minecraftDir = TokenCache.minecraftDir();
         java.io.File versionDir = new java.io.File(new java.io.File(minecraftDir, "versions"), version);
         java.io.File jarFile = localVersionJar(versionDir, version);
@@ -1365,17 +1383,19 @@ public final class MinecraftLauncher extends JFrame {
                     "Selected version will download on launch when downloads are available.",
                     new Color(90, 90, 90), false);
         }
-        if (!jarFile.exists() && !jsonFile.exists()) {
+        boolean jarExists = jarFile != null && jarFile.exists();
+        boolean jsonExists = jsonFile != null && jsonFile.exists();
+        if (!jarExists && !jsonExists) {
             return new VersionReadiness("missing jar/json",
                     "The selected version folder exists, but the client jar and JSON metadata are missing.",
                     new Color(145, 70, 30), true);
         }
-        if (!jarFile.exists()) {
+        if (!jarExists) {
             return new VersionReadiness("missing jar",
                     "The selected version folder is missing " + version + ".jar.",
                     new Color(145, 70, 30), true);
         }
-        if (!jsonFile.exists()) {
+        if (!jsonExists) {
             return new VersionReadiness("missing json",
                     "The selected version folder is missing " + version + ".json.",
                     new Color(145, 70, 30), true);
@@ -1473,16 +1493,9 @@ public final class MinecraftLauncher extends JFrame {
     }
 
     private java.io.File selectedVersionFolderForRedownload(String version) throws IOException {
-        if (version == null || version.trim().length() == 0) {
-            throw new IOException("No selected version to redownload.");
-        }
-        String clean = version.trim();
-        if (clean.indexOf('/') >= 0 || clean.indexOf('\\') >= 0
-                || clean.indexOf(':') >= 0 || clean.indexOf("..") >= 0) {
-            throw new IOException("Invalid version name for redownload: " + clean);
-        }
+        String clean = SafeFiles.requireSafeVersionId(version);
         java.io.File root = new java.io.File(TokenCache.minecraftDir(), "versions").getCanonicalFile();
-        java.io.File target = new java.io.File(root, clean).getCanonicalFile();
+        java.io.File target = SafeFiles.resolveInside(root, clean, "version folder");
         if (target.equals(root) || !root.equals(target.getParentFile())) {
             throw new IOException("Refusing to delete outside versions folder: " + target.getAbsolutePath());
         }
@@ -1587,7 +1600,12 @@ public final class MinecraftLauncher extends JFrame {
                         });
                     }
                 } catch (Exception e) {
-                    appendLog("Skin preview unavailable: " + e.getMessage());
+                    final String reason = e.getMessage() == null ? e.toString() : e.getMessage();
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            appendLog("Skin preview unavailable: " + reason);
+                        }
+                    });
                 }
             }
         }, "Skin Preview Loader");
@@ -1622,7 +1640,8 @@ public final class MinecraftLauncher extends JFrame {
             if (url == null || url.length() == 0) {
                 return null;
             }
-            BufferedImage image = ImageIO.read(new URL(url));
+            byte[] imageBytes = DownloadClient.getImageBytes(url);
+            BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageBytes));
             if (image == null || image.getWidth() < 16 || image.getHeight() < 16) {
                 return null;
             }
@@ -1783,6 +1802,9 @@ public final class MinecraftLauncher extends JFrame {
                 continue;
             }
             String id = folder.getName();
+            if (!SafeFiles.isSafeVersionId(id)) {
+                continue;
+            }
             java.io.File jar = localVersionJar(folder, id);
             java.io.File json = localVersionJson(folder, id);
             if (jar != null && jar.exists() && json != null && json.exists()) {

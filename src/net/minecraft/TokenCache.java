@@ -2,7 +2,6 @@ package net.minecraft;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Properties;
@@ -13,7 +12,11 @@ final class TokenCache {
     private final Properties values = new Properties();
 
     TokenCache() {
-        this.dir = new File(minecraftDir(), "launcher_revive");
+        this(minecraftDir());
+    }
+
+    TokenCache(File minecraftRoot) {
+        this.dir = new File(minecraftRoot, "launcher_revive");
         this.file = new File(dir, "auth.properties");
         load();
     }
@@ -91,42 +94,38 @@ final class TokenCache {
     }
 
     synchronized void save() throws IOException {
-        save(false);
-    }
-
-    synchronized void savePlain() throws IOException {
-        save(true);
-    }
-
-    private synchronized void save(boolean plain) throws IOException {
-        if (!dir.exists() && !dir.mkdirs()) {
-            throw new IOException("Could not create " + dir.getAbsolutePath());
-        }
-        File target = plain ? new File(dir, "launcher.properties") : file;
-        File temp = new File(dir, target.getName() + ".tmp");
-        FileOutputStream out = new FileOutputStream(temp);
-        try {
-            values.store(
-                    out,
-                    plain
-                            ? "MCLauncherRevival launcher settings."
-                            : "MCLauncherRevival token cache. Contains OAuth refresh/access tokens, never raw passwords.");
-        } finally {
-            out.close();
-        }
-        if (target.exists() && !target.delete()) {
-            throw new IOException("Could not replace " + target.getAbsolutePath());
-        }
-        if (!temp.renameTo(target)) {
-            throw new IOException("Could not write " + target.getAbsolutePath());
-        }
-        restrict(target);
+        SafeFiles.writePropertiesPrivateAtomic(
+                file,
+                values,
+                "MCLauncherRevival token cache. Contains OAuth refresh/access tokens, never raw passwords.");
+        hideOnWindows(file);
     }
 
     synchronized void clear() throws IOException {
         values.clear();
+        IOException failure = null;
         if (file.exists() && !file.delete()) {
-            throw new IOException("Could not delete " + file.getAbsolutePath());
+            failure = new IOException("Could not delete " + file.getAbsolutePath());
+        }
+        File[] leftovers = dir.listFiles();
+        if (leftovers != null) {
+            for (int i = 0; i < leftovers.length; i++) {
+                String name = leftovers[i].getName();
+                if (name.startsWith("auth.properties.") && name.endsWith(".tmp")
+                        && leftovers[i].isFile() && !leftovers[i].delete() && failure == null) {
+                    failure = new IOException("Could not delete " + leftovers[i].getAbsolutePath());
+                }
+            }
+        }
+        try {
+            MacLaunchConfig.clearStored(dir);
+        } catch (IOException e) {
+            if (failure == null) {
+                failure = e;
+            }
+        }
+        if (failure != null) {
+            throw failure;
         }
     }
 
@@ -149,18 +148,6 @@ final class TokenCache {
         }
     }
 
-    private static void restrict(File target) {
-        try {
-            target.setReadable(false, false);
-            target.setWritable(false, false);
-            target.setExecutable(false, false);
-            target.setReadable(true, true);
-            target.setWritable(true, true);
-        } catch (Throwable ignored) {
-        }
-        hideOnWindows(target);
-    }
-
     private static void hideOnWindows(File target) {
         String os = System.getProperty("os.name", "").toLowerCase(Locale.ENGLISH);
         if (!os.contains("win")) {
@@ -172,4 +159,3 @@ final class TokenCache {
         }
     }
 }
-

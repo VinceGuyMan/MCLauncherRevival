@@ -5,6 +5,7 @@ human-facing launchers and documentation visible, while internal helpers live un
 
 ```text
 src/                         Java launcher source
+tests/                       Dependency-free Java self-tests
 resources/net/minecraft/     Images bundled into the launcher jar
 resources/net/minecraft/themes/
                              Recreated era-layout background textures
@@ -28,6 +29,7 @@ README.md                                Main GitHub project page
 MODERNIZATION.md                         Technical modernization notes
 SECURITY.md                              Auth/token safety notes
 NOTICE.md                                Notices and ownership notes
+ASSETS.md                                Asset provenance and redistribution status
 LICENSE                                  License for original modernization code/scripts
 ```
 
@@ -42,6 +44,8 @@ scripts/run-linux.sh                     Preliminary Linux runtime helper
 scripts/build-linux.sh                   Preliminary Linux build helper
 scripts/run-macos.sh                     macOS runtime helper used by root wrapper
 scripts/build-macos.sh                   macOS build helper used by root wrapper
+scripts/test-win.cmd                     Windows build and Java self-test helper
+scripts/test-java.sh                     macOS/Linux build and Java self-test helper
 ```
 
 ## Key docs
@@ -70,6 +74,8 @@ Contains the Java launcher implementation:
 - Token and launcher settings cache.
 - Classic Swing UI.
 - Version notes and splash text.
+- Contained path handling, capped HTTPS downloads, native extraction, and transient macOS launch
+  configuration helpers.
 
 ## Resources
 
@@ -80,9 +86,8 @@ resources/net/minecraft/
 These files are copied into the jar under `/net/minecraft/` at build time so existing resource
 lookups remain simple.
 
-The `themes/` subfolder contains small recreated pixel textures used by the v0.5.0 historical
-launcher layouts. They are project-owned recreated assets, not extracted Mojang/Microsoft launcher
-or game files.
+The `themes/` subfolder contains small recreated pixel textures used by the historical launcher
+layouts. See the root [Asset Provenance](../ASSETS.md) record before reusing other resources.
 
 ## Screenshots
 
@@ -105,6 +110,7 @@ release/
 tools/jdk8/
 tools/temurin8-jdk.zip
 tools/temurin8-jdk*.tar.gz
+tools/temurin8-jdk*.sha256.txt
 ```
 
 The jar should be attached to a GitHub Release rather than committed to normal source history.

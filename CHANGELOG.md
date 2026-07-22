@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+- **Security**: Restrict launcher downloads and redirects to HTTPS, cap response sizes, verify
+  contained paths, harden native extraction, and write sensitive/local configuration atomically.
+- **Credentials**: Delete the temporary macOS game-launch configuration after use and make
+  `Forget Login` clear both token-cache and leftover launch-credential files.
+- **Authentication**: Validate the full OAuth redirect origin/path, bound response/error handling,
+  and avoid placing raw provider response bodies in launcher errors.
+- **Reliability**: Fix version-readiness handling for incomplete version folders and capture Swing
+  selections on the event thread before background launch work starts.
+- **Testing**: Add dependency-free Java self-tests for JSON, path safety, HTTPS policy, redirect
+  validation, atomic writes, native extraction, credential cleanup, and offline profiles; run them
+  in all CI jobs.
+- **Packaging**: Include buildable source and self-tests in the standard release ZIP, verify those
+  entries during packaging, and document asset provenance.
+- **Dependencies**: Verify Adoptium's published SHA-256 before extracting portable Temurin 8 JDK
+  downloads on Windows or macOS.
 - **Linux**: Fixed `scripts/run-linux.sh` so it forwards launcher arguments such as `--smoke-test` and warns when Java newer than 8 is used for old Beta/Alpha clients
 - **CI**: Added a Linux GitHub Actions smoke job using the Linux runner script
 - **Linux**: Documented the first Kali Linux ARM64 release-package smoke pass

@@ -23,7 +23,8 @@ if defined JAVAC_EXE if defined JAR_EXE goto HAVE_JDK
 :NEED_JDK
 if /I "%MCLAUNCHER_XP_MODE%"=="1" (
   call :Status "FAIL" "Java build tools were not found."
-  echo Windows XP offline/classic mode needs Java 7 or an XP-compatible Java 8 runtime already installed or extracted at tools\java7 ^(preferred^) or tools\jdk8.
+  echo Source builds require a Java JDK 8 installed or extracted at tools\jdk8.
+  echo A Java 7 runtime can run the finished jar, but it is not the supported build toolchain.
   pause
   exit /b 1
 )
@@ -97,16 +98,6 @@ exit /b 0
 set "JAVA_EXE="
 set "JAVAC_EXE="
 set "JAR_EXE="
-if exist "%ROOT_DIR%\tools\java7\bin\java.exe" set "JAVA_EXE=%ROOT_DIR%\tools\java7\bin\java.exe"
-if exist "%ROOT_DIR%\tools\java7\bin\javac.exe" set "JAVAC_EXE=%ROOT_DIR%\tools\java7\bin\javac.exe"
-if exist "%ROOT_DIR%\tools\java7\bin\jar.exe" set "JAR_EXE=%ROOT_DIR%\tools\java7\bin\jar.exe"
-if defined JAVAC_EXE if defined JAR_EXE exit /b 0
-for /d %%D in ("%ROOT_DIR%\tools\java7\*") do (
-  if exist "%%~fD\bin\java.exe" set "JAVA_EXE=%%~fD\bin\java.exe"
-  if exist "%%~fD\bin\javac.exe" set "JAVAC_EXE=%%~fD\bin\javac.exe"
-  if exist "%%~fD\bin\jar.exe" set "JAR_EXE=%%~fD\bin\jar.exe"
-  if defined JAVAC_EXE if defined JAR_EXE exit /b 0
-)
 if exist "%ROOT_DIR%\tools\jdk8\bin\java.exe" set "JAVA_EXE=%ROOT_DIR%\tools\jdk8\bin\java.exe"
 if exist "%ROOT_DIR%\tools\jdk8\bin\javac.exe" set "JAVAC_EXE=%ROOT_DIR%\tools\jdk8\bin\javac.exe"
 if exist "%ROOT_DIR%\tools\jdk8\bin\jar.exe" set "JAR_EXE=%ROOT_DIR%\tools\jdk8\bin\jar.exe"

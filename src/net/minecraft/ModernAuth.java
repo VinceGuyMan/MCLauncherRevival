@@ -14,7 +14,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.URI;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
@@ -31,6 +30,7 @@ final class ModernAuth {
     private static final String LOOPBACK_HOST = "127.0.0.1";
     private static final String LOOPBACK_PATH = "/mclauncherrevival/oauth";
     private static final int LOOPBACK_TIMEOUT_SECONDS = 240;
+    private static final int MAX_AUTH_RESPONSE_BYTES = 2 * 1024 * 1024;
     private static final String SCOPE = "XboxLive.signin offline_access";
     private static final String AUTHORIZE_URL = "https://login.live.com/oauth20_authorize.srf";
     private static final String TOKEN_URL = "https://login.live.com/oauth20_token.srf";
@@ -112,6 +112,12 @@ final class ModernAuth {
 
         server.createContext(LOOPBACK_PATH, new HttpHandler() {
             public void handle(HttpExchange exchange) throws IOException {
+                if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())
+                        || !LOOPBACK_PATH.equals(exchange.getRequestURI().getPath())) {
+                    exchange.sendResponseHeaders(404, -1L);
+                    exchange.close();
+                    return;
+                }
                 try {
                     callbackUrl[0] = redirectUri + "?" + nullToEmpty(exchange.getRequestURI().getRawQuery());
                     sendBrowserPage(exchange, "MCLauncherRevival sign-in received",
@@ -150,6 +156,7 @@ final class ModernAuth {
     }
 
     private MicrosoftToken readAuthorizationCallback(String returnedUrl, String redirectUri, String state, String verifier) throws IOException {
+        OAuthCallback.requireExpectedRedirect(returnedUrl, redirectUri);
         String returnedState = queryValue(returnedUrl, "state");
         if (!state.equals(returnedState)) {
             throw new IOException("Microsoft login returned an unexpected state value. Please try again.");
@@ -159,7 +166,7 @@ final class ModernAuth {
             error = queryValue(returnedUrl, "error");
         }
         if (error != null && error.length() > 0) {
-            throw new IOException("Microsoft login was not approved: " + error);
+            throw new IOException("Microsoft login was not approved: " + safeProviderMessage(error));
         }
         String code = queryValue(returnedUrl, "code");
         if (code == null || code.length() == 0) {
@@ -704,32 +711,37 @@ final class ModernAuth {
             String contentType,
             String bearerToken,
             byte[] body) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) new URL(endpoint).openConnection();
-        connection.setConnectTimeout(30000);
-        connection.setReadTimeout(30000);
-        connection.setRequestMethod(method);
-        connection.setRequestProperty("Accept", "application/json");
-        connection.setRequestProperty("User-Agent", "MCLauncherRevival/alpha");
-        if (contentType != null) {
-            connection.setRequestProperty("Content-Type", contentType);
-        }
-        if (bearerToken != null) {
-            connection.setRequestProperty("Authorization", "Bearer " + bearerToken);
-        }
-        if (body != null) {
-            connection.setDoOutput(true);
-            connection.setRequestProperty("Content-Length", Integer.toString(body.length));
-            OutputStream out = connection.getOutputStream();
-            try {
-                out.write(body);
-            } finally {
-                out.close();
+        HttpURLConnection connection = (HttpURLConnection) DownloadClient.validatedUrl(endpoint).openConnection();
+        try {
+            connection.setConnectTimeout(30000);
+            connection.setReadTimeout(30000);
+            connection.setInstanceFollowRedirects(false);
+            connection.setRequestMethod(method);
+            connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("User-Agent", "MCLauncherRevival/0.7");
+            if (contentType != null) {
+                connection.setRequestProperty("Content-Type", contentType);
             }
+            if (bearerToken != null) {
+                connection.setRequestProperty("Authorization", "Bearer " + bearerToken);
+            }
+            if (body != null) {
+                connection.setDoOutput(true);
+                connection.setRequestProperty("Content-Length", Integer.toString(body.length));
+                OutputStream out = connection.getOutputStream();
+                try {
+                    out.write(body);
+                } finally {
+                    out.close();
+                }
+            }
+            int code = connection.getResponseCode();
+            InputStream in = code >= 400 ? connection.getErrorStream() : connection.getInputStream();
+            String response = readAll(in == null ? new ByteArrayInputStream(new byte[0]) : in);
+            return new HttpResult(code, response);
+        } finally {
+            connection.disconnect();
         }
-        int code = connection.getResponseCode();
-        InputStream in = code >= 400 ? connection.getErrorStream() : connection.getInputStream();
-        String response = readAll(in == null ? new ByteArrayInputStream(new byte[0]) : in);
-        return new HttpResult(code, response);
     }
 
     private static String readAll(InputStream in) throws IOException {
@@ -737,16 +749,59 @@ final class ModernAuth {
         StringBuilder out = new StringBuilder();
         char[] buffer = new char[4096];
         int read;
-        while ((read = reader.read(buffer)) != -1) {
-            out.append(buffer, 0, read);
+        try {
+            while ((read = reader.read(buffer)) != -1) {
+                if (out.length() + read > MAX_AUTH_RESPONSE_BYTES) {
+                    throw new IOException("Authentication service response exceeded the allowed size.");
+                }
+                out.append(buffer, 0, read);
+            }
+        } finally {
+            reader.close();
         }
         return out.toString();
     }
 
     private static void ensureSuccess(HttpResult result, String label) throws IOException {
         if (result.code < 200 || result.code >= 300) {
-            throw new IOException(label + " (HTTP " + result.code + "): " + result.body);
+            String providerCode = safeProviderErrorCode(result.body);
+            throw new IOException(label + " (HTTP " + result.code + ")"
+                    + (providerCode.length() == 0 ? "." : " [" + providerCode + "]."));
         }
+    }
+
+    private static String safeProviderErrorCode(String body) {
+        if (body == null || body.length() == 0) {
+            return "";
+        }
+        try {
+            Map<String, Object> object = Json.object(Json.parse(body));
+            String value = Json.string(object, "error");
+            if (value == null || value.length() == 0) {
+                value = Json.string(object, "XErr");
+            }
+            if (value == null || value.length() == 0 || value.length() > 80) {
+                return "";
+            }
+            for (int i = 0; i < value.length(); i++) {
+                char c = value.charAt(i);
+                if (!Character.isLetterOrDigit(c) && c != '_' && c != '-' && c != '.' && c != ':') {
+                    return "";
+                }
+            }
+            return value;
+        } catch (Exception ignored) {
+            return "";
+        }
+    }
+
+    private static String safeProviderMessage(String value) {
+        if (value == null || value.length() == 0) {
+            return "No reason was provided.";
+        }
+        String clean = value.replace('\n', ' ').replace('\r', ' ');
+        clean = clean.replaceAll("(?i)(access_token|refresh_token|code)=([^&\\s]+)", "$1=[redacted]");
+        return clean.length() > 300 ? clean.substring(0, 300) + "..." : clean;
     }
 
     private static final class MicrosoftToken {

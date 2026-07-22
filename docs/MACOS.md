@@ -58,6 +58,10 @@ chmod +x tools/download-temurin8-jdk-macos.sh
 ./tools/download-temurin8-jdk-macos.sh
 ```
 
+The helper resolves the official Adoptium release asset and verifies its published SHA-256 before
+extracting it. A cached archive needs online verification or its previously verified checksum
+sidecar.
+
 On Apple Silicon, that helper downloads the x64 Temurin 8 JDK and runs it through Rosetta because
 Adoptium does not provide a macOS ARM64 JDK 8 package. It does not install Java system-wide.
 
@@ -199,7 +203,8 @@ means Microsoft returned to its desktop redirect page after sign-in; it does not
 was given to the launcher.
 
 Do not share redirect URLs, screenshots containing redirect URLs, files from the auth cache, or
-OAuth tokens in support chats or GitHub issues. `Forget Login` clears cached local login data.
+OAuth tokens in support chats or GitHub issues. The game helper deletes its one-use configuration
+after reading it, and `Forget Login` clears cached login data plus any leftover configuration.
 
 ## Offline mode
 

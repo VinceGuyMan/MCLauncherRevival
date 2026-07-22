@@ -50,6 +50,8 @@ echo Staging release files...
 copy /y "MCLauncherRevival.jar" "%STAGE_DIR%" >nul
 copy /y "README.md" "%STAGE_DIR%" >nul
 copy /y "CHANGELOG.md" "%STAGE_DIR%" >nul
+copy /y "ASSETS.md" "%STAGE_DIR%" >nul
+copy /y "SECURITY.md" "%STAGE_DIR%" >nul
 copy /y "LICENSE" "%STAGE_DIR%" >nul
 copy /y "NOTICE.md" "%STAGE_DIR%" >nul
 copy /y "Setup MCLR.cmd" "%STAGE_DIR%" >nul
@@ -61,6 +63,7 @@ copy /y "run-macos.sh" "%STAGE_DIR%" >nul
 copy /y "package-macos.sh" "%STAGE_DIR%" >nul
 copy /y "scripts\run-win.cmd" "%STAGE_DIR%\scripts" >nul
 copy /y "scripts\build-win.cmd" "%STAGE_DIR%\scripts" >nul
+copy /y "scripts\test-win.cmd" "%STAGE_DIR%\scripts" >nul
 copy /y "scripts\banner.txt" "%STAGE_DIR%\scripts" >nul
 copy /y "scripts\boot-card-win.txt" "%STAGE_DIR%\scripts" >nul
 copy /y "scripts\boot-card-xp.txt" "%STAGE_DIR%\scripts" >nul
@@ -68,13 +71,18 @@ copy /y "scripts\run-linux.sh" "%STAGE_DIR%\scripts" >nul
 copy /y "scripts\build-linux.sh" "%STAGE_DIR%\scripts" >nul
 copy /y "scripts\run-macos.sh" "%STAGE_DIR%\scripts" >nul
 copy /y "scripts\build-macos.sh" "%STAGE_DIR%\scripts" >nul
+copy /y "scripts\test-java.sh" "%STAGE_DIR%\scripts" >nul
 
 if exist "%STAGE_DIR%\docs" rmdir /s /q "%STAGE_DIR%\docs"
 if exist "%STAGE_DIR%\resources" rmdir /s /q "%STAGE_DIR%\resources"
+if exist "%STAGE_DIR%\src" rmdir /s /q "%STAGE_DIR%\src"
+if exist "%STAGE_DIR%\tests" rmdir /s /q "%STAGE_DIR%\tests"
 if exist "%STAGE_DIR%\tools" rmdir /s /q "%STAGE_DIR%\tools"
 
 xcopy /e /i /y "docs" "%STAGE_DIR%\docs" >nul
 xcopy /e /i /y "resources" "%STAGE_DIR%\resources" >nul
+xcopy /e /i /y "src" "%STAGE_DIR%\src" >nul
+xcopy /e /i /y "tests" "%STAGE_DIR%\tests" >nul
 mkdir "%STAGE_DIR%\tools"
 copy /y "tools\download-temurin8-jdk.ps1" "%STAGE_DIR%\tools" >nul
 if exist "tools\download-temurin8-jdk-macos.sh" copy /y "tools\download-temurin8-jdk-macos.sh" "%STAGE_DIR%\tools" >nul
@@ -120,16 +128,16 @@ if errorlevel 1 (
   exit /b 1
 )
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "Add-Type -AssemblyName System.IO.Compression.FileSystem; $zip = [IO.Compression.ZipFile]::OpenRead('%ZIP_PATH%'); try { if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)MCLauncherRevival\.jar$' })) { exit 2 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)scripts/run-win\.cmd$' })) { exit 3 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)Start MCLauncherRevival\.command$' })) { exit 6 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)run-macos\.sh$' })) { exit 7 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)scripts/banner\.txt$' })) { exit 5 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)resources/net/minecraft/themes/beta\.png$' })) { exit 4 } } finally { $zip.Dispose() }"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Add-Type -AssemblyName System.IO.Compression.FileSystem; $zip = [IO.Compression.ZipFile]::OpenRead('%ZIP_PATH%'); try { if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)MCLauncherRevival\.jar$' })) { exit 2 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)scripts/run-win\.cmd$' })) { exit 3 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)Start MCLauncherRevival\.command$' })) { exit 6 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)run-macos\.sh$' })) { exit 7 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)scripts/banner\.txt$' })) { exit 5 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)resources/net/minecraft/themes/beta\.png$' })) { exit 4 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)src/net/minecraft/MinecraftLauncher\.java$' })) { exit 8 }; if (-not ($zip.Entries | Where-Object { ($_.FullName -replace '\\','/') -match '(^|/)tests/net/minecraft/LauncherSelfTest\.java$' })) { exit 9 } } finally { $zip.Dispose() }"
 if errorlevel 1 (
   echo Release ZIP verification failed.
-  echo Expected MCLauncherRevival.jar, Windows and macOS launchers, scripts\banner.txt, and theme resources.
+  echo Expected the jar, launchers, build/test source, scripts\banner.txt, and theme resources.
   pause
   exit /b 1
 )
 
 echo.
-echo Release ZIP verified: MCLauncherRevival.jar, Windows and macOS launchers, scripts\banner.txt, and theme resources are included.
+echo Release ZIP verified: jar, launchers, build/test source, banner, and theme resources are included.
 rmdir /s /q "%STAGE_DIR%" >nul 2>nul
 if exist "%STAGE_DIR%" (
   echo [WARN] Could not remove temporary staging folder:

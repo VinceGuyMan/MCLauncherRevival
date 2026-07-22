@@ -34,7 +34,9 @@ It stores OAuth refresh/access tokens and the latest Minecraft profile name/UUID
 the file user-readable/user-writable where Java exposes those permissions and hides it on Windows.
 This is intentionally lightweight and does not store Microsoft passwords.
 
-Use the launcher button `Forget Login` to delete the cached tokens.
+Use the launcher button `Forget Login` to delete cached tokens and leftover temporary macOS
+game-launch credentials. The macOS helper deletes its one-use configuration immediately after
+reading it. Local cleanup does not revoke an already-issued token at Microsoft.
 
 ## Windows build steps
 
@@ -52,13 +54,13 @@ Prerequisites:
 Build:
 
 ```bat
-build-win.cmd
+scripts\build-win.cmd
 ```
 
 Run:
 
 ```bat
-run-win.cmd
+scripts\run-win.cmd
 ```
 
 If Java is missing, the scripts will offer to download the latest Eclipse Temurin 8 JDK from the
@@ -75,6 +77,8 @@ tools\jdk8
 ```
 
 It does not install Java system-wide.
+The helper verifies Adoptium's published SHA-256 before extracting the archive. A cached archive is
+reused only when it can be verified online or has its previously verified checksum sidecar.
 
 The build creates:
 
@@ -127,13 +131,12 @@ The `.app` output goes under `dist/`, is not signed or notarized, and should not
 
 ## How to use
 
-1. Start `run-win.cmd`.
+1. Start `Start MCLR.cmd` or `scripts\run-win.cmd`.
 2. Click `Microsoft Login`.
 3. Sign in in the browser page that opens.
-4. On Windows, the launcher first opens a small browser helper and watches for the registered
-   desktop redirect before Microsoft scrubs it.
-5. If that helper cannot capture the redirect, the launcher falls back to asking for the redirected
-   URL from the browser.
+4. Copy the final registered desktop redirect URL from the browser into the launcher's paste dialog
+   (or use `Paste from Clipboard`).
+5. With a custom registered client ID, an exact `127.0.0.1` callback can be enabled instead.
 6. If your browser changes the final page to
    `https://login.live.com/oauth20_desktop.srf?removed=true`, that means Microsoft scrubbed the
    one-use access token from the address bar after loading the desktop OAuth page.
@@ -183,5 +186,13 @@ Launch logs are written to:
 - `src/net/minecraft/AuthProfile.java`
 - `src/net/minecraft/Json.java`
 - `src/net/minecraft/StatusSink.java`
-- `build-win.cmd`
-- `run-win.cmd`
+- `src/net/minecraft/SafeFiles.java`
+- `src/net/minecraft/DownloadClient.java`
+- `src/net/minecraft/NativeExtractor.java`
+- `src/net/minecraft/OAuthCallback.java`
+- `src/net/minecraft/MacLaunchConfig.java`
+- `tests/net/minecraft/LauncherSelfTest.java`
+- `scripts/build-win.cmd`
+- `scripts/run-win.cmd`
+- `scripts/test-win.cmd`
+- `scripts/test-java.sh`

@@ -105,6 +105,10 @@ static int read_config(const char *path, struct launch_config *config) {
         fprintf(stderr, "Could not open launch config: %s\n", strerror(errno));
         return 0;
     }
+    /* The config contains a short-lived Minecraft session token. Keep it only in memory. */
+    if (unlink(path) != 0 && errno != ENOENT) {
+        fprintf(stderr, "Warning: could not remove the temporary launch config: %s\n", strerror(errno));
+    }
     while (fgets(line, sizeof(line), file) != NULL) {
         char *equals;
         char *end = line + strlen(line);
